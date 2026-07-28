@@ -1,0 +1,23 @@
+# Source photo dumps — not referenced by the live site (platform.html uses /photos/*, not these)
+Photos Africa 2025
+Photos Americas 2026
+Photos Asia 2024
+Photos Asia Pacific 2026
+Photos Europe 2023
+Photos Global Gathering 2024
+Photos Global Gathering 2025
+Photos Latin america 2024
+Photos Oceania 2025
+Photos north america 2023
+Website imagery
+Website moodboard and references
+
+# Old mockup drafts superseded by platform.html
+cnlc_mockup.html
+cnlc_mockup_v2.html
+cnlc_mockup_v3.html
+
+# Source doc, not needed at runtime
+welcome page.docx
+
+.DS_Store

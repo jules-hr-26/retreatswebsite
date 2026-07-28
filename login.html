@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign in — Climate and Nature Leaders Community</title>
+<style>
+  :root {
+    --soil:       #1A3A2A;
+    --soil-dark:  #0F2419;
+    --warm-white: #F7F3EC;
+    --ink:        #1A3A2A;
+    --ink-soft:   #2B4E3A;
+    --ink-light:  #496354;
+    --accent:     #E8A830;
+    --border:     #D4C8A0;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Helvetica Neue',Arial,sans-serif; background:var(--soil); color:var(--ink); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+  .card { background:var(--warm-white); border-radius:4px; max-width:420px; width:100%; padding:48px 40px; text-align:center; }
+  @media(max-width:480px) {
+    body { padding:16px; }
+    .card { padding:36px 24px; }
+  }
+  .card h1 { font-family:Georgia,'Times New Roman',serif; font-size:26px; font-weight:400; color:var(--soil-dark); margin-bottom:12px; }
+  .card p { font-size:14px; line-height:1.7; color:var(--ink-light); margin-bottom:28px; }
+  .form-field { text-align:left; margin-bottom:16px; }
+  .form-label { display:block; font-size:12px; font-weight:600; letter-spacing:0.03em; color:var(--ink-soft); margin-bottom:6px; }
+  .form-input { width:100%; font-family:inherit; font-size:14px; padding:12px 14px; border:1px solid var(--border); border-radius:2px; background:#fff; color:var(--ink); }
+  .form-input:focus { outline:2px solid var(--accent); outline-offset:1px; }
+  .form-input.invalid { border-color:#B3411F; }
+  .form-error { display:none; font-size:12px; color:#B3411F; margin-top:6px; text-align:left; }
+  .form-error.show { display:block; }
+  .btn-submit { width:100%; font-family:inherit; font-size:13px; font-weight:600; letter-spacing:0.04em; color:var(--soil-dark); background:var(--accent); border:1px solid var(--accent); padding:13px 22px; border-radius:2px; cursor:pointer; margin-top:4px; }
+  .btn-submit:hover { background:#f2bc55; }
+  .btn-submit:disabled { opacity:0.6; cursor:default; }
+  .form-status { display:none; font-size:13px; line-height:1.6; margin-top:20px; color:var(--ink-soft); }
+  .form-status.show { display:block; }
+  .form-status.error { color:#B3411F; }
+  .back-link { display:inline-block; margin-top:24px; font-size:12px; color:var(--ink-light); text-decoration:none; }
+  .back-link:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>The Way Out Is In</h1>
+  <p id="intro-copy">Enter the email address you used to register for a retreat, and we'll send you a link to sign in.</p>
+
+  <div id="login-form">
+    <div class="form-field">
+      <label class="form-label" for="login-email">Email</label>
+      <input id="login-email" class="form-input" type="email" placeholder="you@example.org" autocomplete="email">
+      <div class="form-error" id="login-email-err">Please add a valid email address.</div>
+    </div>
+    <div class="form-field" id="pin-field" style="display:none">
+      <label class="form-label" for="login-pin">Dev access PIN</label>
+      <input id="login-pin" class="form-input" type="password" placeholder="••••" autocomplete="off" maxlength="20">
+    </div>
+    <button class="btn-submit" id="login-submit-btn" onclick="submitLogin()">Send me a sign-in link</button>
+    <p class="form-status" id="login-status"></p>
+    <p style="margin-top:20px;font-size:11px;color:var(--ink-light)"><a href="#" onclick="document.getElementById('pin-field').style.display=document.getElementById('pin-field').style.display==='none'?'block':'none';return false;" style="color:var(--ink-light)">Development access ↓</a></p>
+  </div>
+
+  <a class="back-link" href="index.html">← Back to the welcome page</a>
+</div>
+
+<script>
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('error') === 'expired') {
+    var status = document.getElementById('login-status');
+    status.textContent = 'That link has expired or already been used. Request a new one below.';
+    status.classList.add('show', 'error');
+  }
+
+  function isValidEmail(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  }
+
+  async function submitLogin() {
+    var input = document.getElementById('login-email');
+    var err = document.getElementById('login-email-err');
+    var email = input.value.trim();
+    var ok = isValidEmail(email);
+    input.classList.toggle('invalid', !ok);
+    err.classList.toggle('show', !ok);
+    if (!ok) { input.focus(); return; }
+
+    var btn = document.getElementById('login-submit-btn');
+    var status = document.getElementById('login-status');
+    var devPin = document.getElementById('login-pin').value.trim();
+    btn.disabled = true;
+    btn.textContent = devPin ? 'Signing in…' : 'Sending…';
+    status.classList.remove('show', 'error');
+
+    try {
+      var body = { email: email };
+      if (devPin) body.devPin = devPin;
+      var res = await fetch('/api/request-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) throw new Error('request failed');
+
+      var data = await res.json();
+      if (data.redirect) {
+        window.location.href = data.redirect;
+        return;
+      }
+
+      document.getElementById('login-form').innerHTML =
+        '<p style="font-size:14px;line-height:1.7;color:var(--ink-soft)">If <strong>' + email.replace(/</g,'&lt;') + '</strong> is on our alumni list, a sign-in link is on its way — check your inbox (and spam folder) over the next few minutes.</p>';
+    } catch (e) {
+      btn.disabled = false;
+      btn.textContent = devPin ? 'Sign in with PIN' : 'Send me a sign-in link';
+      status.textContent = devPin ? 'Incorrect PIN or email not recognized.' : 'Something went wrong sending this — please try again in a moment.';
+      status.classList.add('show', 'error');
+    }
+  }
+
+  document.getElementById('login-email').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') submitLogin();
+  });
+  document.getElementById('login-pin').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') submitLogin();
+  });
+</script>
+
+</body>
+</html>
