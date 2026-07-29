@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
   const {
     firstName, lastName, city, country, organization,
-    sector, cohort, role, email, phone, headshotData, shareWithCommunity,
+    sector, cohort, role, email, headshotData, shareWithCommunity,
   } = req.body || {};
 
   if (!firstName || !String(firstName).trim()) return res.status(400).json({ error: 'firstName required' });
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
       sector:          sector || '',
       cohort:          cohort || '',
       role_title:      role || '',
-      phone:           phone || '',
+
       in_directory:    shareWithCommunity ? true : false,
       headshot_data:   finalHeadshot,
       gdpr_consent_at: existing.length ? undefined : new Date().toISOString(),

@@ -30,7 +30,7 @@ export default async function handler(req, res) {
       sector: m.sector || '',
       cohorts: (m.cohort || '').split(',').map((c) => c.trim()).filter(Boolean),
       role: m.role_title || '',
-      phone: m.phone || '',
+
       shareWithCommunity: !!m.in_directory,
       headshotData: m.headshot_data || '',
     });

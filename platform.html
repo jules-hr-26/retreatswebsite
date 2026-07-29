@@ -884,10 +884,6 @@
           <label class="form-label" for="rf-email">Email</label>
           <input id="rf-email" class="form-input" type="email" placeholder="you@example.org">
         </div>
-        <div class="form-field">
-          <label class="form-label" for="rf-phone">Phone</label>
-          <input id="rf-phone" class="form-input" type="tel" placeholder="Optional">
-        </div>
       </div>
 
       <div class="form-field">
@@ -3245,7 +3241,7 @@ function fillProfileForm(data) {
   document.getElementById('rf-sector').value = data.sector || '';
   document.getElementById('rf-role').value = data.role || '';
   document.getElementById('rf-email').value = data.displayEmail || '';
-  document.getElementById('rf-phone').value = data.phone || '';
+
   document.getElementById('rf-optin').checked = !!data.shareWithCommunity;
   var cohorts = data.cohorts || [];
   document.querySelectorAll('#rf-cohort-grid input').forEach(function(el) {
@@ -3367,7 +3363,7 @@ async function submitProfile() {
     sector: document.getElementById('rf-sector').value,
     role: document.getElementById('rf-role').value.trim(),
     email: document.getElementById('rf-email').value.trim(),
-    phone: document.getElementById('rf-phone').value.trim(),
+
     headshotData: pendingHeadshotData,
     shareWithCommunity: document.getElementById('rf-optin').checked,
   };
@@ -3392,7 +3388,7 @@ async function submitProfile() {
       cohorts: payload.cohort ? payload.cohort.split(', ') : [],
       role: payload.role,
       displayEmail: payload.email,
-      phone: payload.phone,
+
       shareWithCommunity: payload.shareWithCommunity,
       headshotData: savedHeadshotData,
     };
