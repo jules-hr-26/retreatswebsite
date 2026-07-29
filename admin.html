@@ -52,6 +52,8 @@
     color: var(--ink);
     display: flex;
     min-height: 100vh;
+    opacity: 0;
+    transition: opacity 0.15s;
   }
 
   /* ── Sidebar ──────────────────────────────────────────────── */
@@ -400,6 +402,16 @@
   #toast.show { display: block; }
   #toast.error { background: var(--danger); }
 
+  /* ── Import preview ─────────────────────────────────────── */
+  tr.import-warn td { background: #fffbf0; }
+  tr.import-dup  td { background: #fdf6f6; }
+
+  /* ── Detail modal rows ───────────────────────────────────── */
+  .detail-row { display:flex; gap:16px; padding:10px 0; border-bottom:1px solid var(--border-soft); }
+  .detail-row:last-child { border-bottom:none; }
+  .detail-label { font-size:11px; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; color:var(--ink-light); width:120px; flex-shrink:0; padding-top:2px; }
+  .detail-value { font-size:13.5px; color:var(--ink); line-height:1.5; word-break:break-word; }
+
   /* ── Access denied ───────────────────────────────────────── */
   #access-denied {
     display: none;
@@ -471,11 +483,11 @@
     <!-- Dashboard -->
     <div class="tab-panel active" id="tab-dashboard">
       <div class="stats-grid" id="stats-grid">
-        <div class="stat-card" data-type="members"><div class="num" id="stat-members">—</div><div class="label">Members</div></div>
-        <div class="stat-card" data-type="allowlist"><div class="num" id="stat-allowlist">—</div><div class="label">Allowlist</div></div>
-        <div class="stat-card" data-type="events"><div class="num" id="stat-events">—</div><div class="label">Events</div></div>
-        <div class="stat-card" data-type="offerings"><div class="num" id="stat-offerings">—</div><div class="label">Offerings</div></div>
-        <div class="stat-card" data-type="proposed"><div class="num" id="stat-proposed">—</div><div class="label">Proposed</div></div>
+        <div class="stat-card" data-type="members"   style="cursor:pointer" onclick="switchTab('members')"><div class="num" id="stat-members">—</div><div class="label">Members</div></div>
+        <div class="stat-card" data-type="allowlist" style="cursor:pointer" onclick="switchTab('allowlist')"><div class="num" id="stat-allowlist">—</div><div class="label">Allowlist</div></div>
+        <div class="stat-card" data-type="events"    style="cursor:pointer" onclick="switchTab('events')"><div class="num" id="stat-events">—</div><div class="label">Events</div></div>
+        <div class="stat-card" data-type="offerings" style="cursor:pointer" onclick="switchTab('offerings')"><div class="num" id="stat-offerings">—</div><div class="label">Offerings</div></div>
+        <div class="stat-card" data-type="proposed"  style="cursor:pointer" onclick="switchTab('proposed')"><div class="num" id="stat-proposed">—</div><div class="label">Proposed</div></div>
       </div>
     </div>
 
@@ -498,8 +510,10 @@
       <div class="toolbar">
         <input type="search" id="allowlist-search" placeholder="Search by name or email…">
         <button class="btn btn-primary" onclick="openAddAllowlist()">+ Add person</button>
+        <button class="btn btn-ghost" onclick="triggerImportCSV()">↑ Import CSV</button>
         <button class="btn btn-ghost" onclick="loadAllowlist()">Refresh</button>
         <button class="btn btn-ghost" id="allowlist-export-btn" style="display:none" onclick="exportAllowlist()">Export list</button>
+        <input type="file" id="csv-file-input" accept=".csv,text/csv" style="display:none" onchange="handleCSVFile(this)">
       </div>
       <div class="table-wrap">
         <table>
@@ -650,6 +664,36 @@
   </div>
 </div>
 
+<!-- Modal: Detail view (proposed events / offerings) -->
+<div class="modal-overlay" id="modal-detail">
+  <div class="modal">
+    <div class="modal-header"><h2 id="modal-detail-title">Details</h2><button class="modal-close" onclick="closeModal('modal-detail')">×</button></div>
+    <div class="modal-body" id="modal-detail-body"></div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-detail')">Close</button></div>
+  </div>
+</div>
+
+<!-- Modal: Import CSV -->
+<div class="modal-overlay" id="modal-import">
+  <div class="modal" style="max-width:700px">
+    <div class="modal-header"><h2>Import from CSV</h2><button class="modal-close" onclick="closeModal('modal-import')">×</button></div>
+    <div class="modal-body">
+      <p id="import-summary" style="font-size:13px;color:var(--ink-soft);margin-bottom:14px"></p>
+      <div class="table-wrap" style="max-height:360px;overflow-y:auto">
+        <table>
+          <thead><tr><th style="width:36px"></th><th>First name</th><th>Last name</th><th>Email</th><th>Status</th></tr></thead>
+          <tbody id="import-tbody"></tbody>
+        </table>
+      </div>
+      <p style="margin-top:12px;font-size:12px;color:var(--ink-light)">CSV must have columns: <strong>first name</strong>, <strong>last name</strong>, <strong>email</strong> (or a single <strong>name</strong> column). Rows whose email is already in the allowlist are unchecked. Rows with a matching name but different email are highlighted — review before importing.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-import')">Cancel</button>
+      <button class="btn btn-primary" id="import-submit" onclick="submitImport()">Import</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast -->
 <div id="toast"></div>
 
@@ -659,47 +703,30 @@ var currentAdmin = null;
 // ── Init ─────────────────────────────────────────────────────────
 (async function init() {
   try {
-    var res = await api('GET', '?action=stats');
-    // If we get here, user is an admin — render the UI
-    document.body.style.display = 'flex';
-    document.getElementById('access-denied').style.display = 'none';
-    loadStats(res);
-    // Load admin info
-    var me = await api('GET', '?action=me').catch(() => null);
+    var [statsData, me] = await Promise.all([
+      api('GET', '?action=stats'),
+      api('GET', '?action=me').catch(() => null),
+    ]);
+    loadStats(statsData);
     if (me) {
       currentAdmin = { role: me.role };
       var displayName = [me.firstName, me.lastName].filter(Boolean).join(' ') || me.email;
       document.getElementById('admin-name').textContent = displayName;
       document.getElementById('admin-role').textContent = me.role === 'super_admin' ? 'Super Admin' : 'Admin';
+      document.querySelector('.admin-avatar').textContent = displayName.charAt(0).toUpperCase();
+      if (me.role === 'super_admin') {
+        document.getElementById('settings-link').style.display = 'flex';
+        document.getElementById('allowlist-export-btn').style.display = '';
+      }
     }
-    checkAdminRole();
+    document.body.style.opacity = '1';
   } catch(e) {
-    document.body.style.display = 'flex';
     document.getElementById('sidebar').style.display = 'none';
     document.getElementById('main').style.display = 'none';
     document.getElementById('access-denied').style.display = 'flex';
+    document.body.style.opacity = '1';
   }
 })();
-
-async function checkAdminRole() {
-  // Try fetching admins — only works for super_admin
-  try {
-    var data = await api('GET', '?action=admins');
-    document.getElementById('settings-link').style.display = 'flex';
-    document.getElementById('allowlist-export-btn').style.display = '';
-    currentAdmin = { role: 'super_admin' };
-    // Set sidebar info
-    if (data.admins && data.admins.length) {
-      // Try to identify current admin from the list
-      document.getElementById('admin-name').textContent = 'Admin';
-      document.getElementById('admin-role').textContent = 'Super Admin';
-    }
-  } catch(e) {
-    currentAdmin = { role: 'admin' };
-    document.getElementById('admin-name').textContent = 'Admin';
-    document.getElementById('admin-role').textContent = 'Admin';
-  }
-}
 
 // ── API helper ───────────────────────────────────────────────────
 async function api(method, path, body) {
@@ -733,18 +760,27 @@ function fmtDate(s) {
 var tabLoaders = { members: loadMembers, allowlist: loadAllowlist, events: loadEvents, proposed: loadProposed, offerings: loadOfferings, forum: loadForum, settings: loadAdmins };
 var tabTitles  = { dashboard:'Dashboard', members:'Administrators', allowlist:'Members (Allowlist)', events:'Events', proposed:'Proposed Events', offerings:'Offerings', forum:'Forum Moderation', settings:'Settings' };
 
+function switchTab(tab) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#sidebar nav a').forEach(a => a.classList.remove('active'));
+  var panel = document.getElementById('tab-' + tab);
+  var link  = document.querySelector('#sidebar nav a[data-tab="' + tab + '"]');
+  if (panel) panel.classList.add('active');
+  if (link)  link.classList.add('active');
+  document.getElementById('topbar-title').textContent = tabTitles[tab] || tab;
+  document.getElementById('topbar-actions').innerHTML = '';
+  if (tabLoaders[tab]) tabLoaders[tab]();
+}
+
 document.querySelectorAll('#sidebar nav a[data-tab]').forEach(function(a) {
-  a.addEventListener('click', function() {
-    var tab = this.dataset.tab;
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('#sidebar nav a').forEach(a => a.classList.remove('active'));
-    document.getElementById('tab-' + tab).classList.add('active');
-    this.classList.add('active');
-    document.getElementById('topbar-title').textContent = tabTitles[tab] || tab;
-    document.getElementById('topbar-actions').innerHTML = '';
-    if (tabLoaders[tab]) tabLoaders[tab]();
-  });
+  a.addEventListener('click', function() { switchTab(this.dataset.tab); });
 });
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+});
+
+function debounce(fn, ms) { var t; return function() { clearTimeout(t); t = setTimeout(fn, ms); }; }
 
 // ── Dashboard ────────────────────────────────────────────────────
 function loadStats(data) {
@@ -777,6 +813,7 @@ async function loadMembers() {
 }
 
 document.getElementById('members-search').addEventListener('keydown', e => { if (e.key === 'Enter') loadMembers(); });
+document.getElementById('members-search').addEventListener('input', debounce(loadMembers, 350));
 
 async function exportMember(email) {
   try {
@@ -823,6 +860,7 @@ async function loadAllowlist() {
 }
 
 document.getElementById('allowlist-search').addEventListener('keydown', e => { if (e.key === 'Enter') loadAllowlist(); });
+document.getElementById('allowlist-search').addEventListener('input', debounce(loadAllowlist, 350));
 
 var _editingAllowlistId = null;
 
@@ -976,7 +1014,10 @@ async function loadProposed() {
 }
 
 function viewProposed(p) {
-  alert('Title: ' + p.title + '\nDate: ' + p.date + '\nFormat: ' + p.format + '\nDuration: ' + p.duration + '\nLocation: ' + p.location + '\nLink: ' + p.link + '\n\n' + p.description);
+  var fields = [['Title',p.title],['Date',p.date],['Format',p.format],['Duration',p.duration],['Location',p.location],['Link',p.link],['Description',p.description],['Proposed by',p.proposed_by]].filter(([,v])=>v);
+  document.getElementById('modal-detail-title').textContent = p.title || 'Proposed Event';
+  document.getElementById('modal-detail-body').innerHTML = fields.map(([k,v])=>`<div class="detail-row"><div class="detail-label">${esc(k)}</div><div class="detail-value">${esc(String(v))}</div></div>`).join('');
+  openModal('modal-detail');
 }
 
 async function approveProposed(id) {
@@ -1022,7 +1063,10 @@ async function loadOfferings() {
 }
 
 function viewOffering(o) {
-  alert('Name: ' + o.name + '\nEmail: ' + o.email + '\nTitle: ' + o.title + '\nCategory: ' + o.category + '\nFee: ' + o.fee_type + ' — ' + o.fee_info + '\nFormat: ' + o.format + '\nLocation: ' + o.location + '\nWebsite: ' + o.website + '\nLinkedIn: ' + o.linkedin + '\n\n' + o.description);
+  var fields = [['Name',o.name],['Email',o.email],['Title',o.title],['Category',o.category],['Fee type',o.fee_type],['Fee details',o.fee_info],['Format',o.format],['Location',o.location],['Website',o.website],['LinkedIn',o.linkedin],['Description',o.description]].filter(([,v])=>v);
+  document.getElementById('modal-detail-title').textContent = o.title || 'Offering';
+  document.getElementById('modal-detail-body').innerHTML = fields.map(([k,v])=>`<div class="detail-row"><div class="detail-label">${esc(k)}</div><div class="detail-value">${esc(String(v))}</div></div>`).join('');
+  openModal('modal-detail');
 }
 
 async function approveOffering(id) {
@@ -1120,11 +1164,17 @@ function openEditAdmin(email, name, role) {
 async function submitAddAdmin() {
   var email = _editingAdminEmail || document.getElementById('adm-email').value.trim();
   var name  = document.getElementById('adm-name').value.trim();
+  var role  = document.getElementById('adm-role').value;
   if (!email || !name) { toast('Name and email required', true); return; }
   try {
-    await api('POST', '', { action: 'add-admin', email, name, role: document.getElementById('adm-role').value });
+    if (_editingAdminEmail) {
+      await api('POST', '', { action: 'update-admin', email, name, role });
+      toast('Admin updated');
+    } else {
+      await api('POST', '', { action: 'add-admin', email, name, role });
+      toast('Admin added — invitation email sent');
+    }
     closeModal('modal-admin');
-    toast(_editingAdminEmail ? 'Admin updated' : 'Admin added');
     loadAdmins();
   } catch(e) { toast(e.message, true); }
 }
@@ -1136,6 +1186,116 @@ async function removeAdmin(email, name) {
     toast('Admin removed');
     loadAdmins();
   } catch(e) { toast(e.message, true); }
+}
+
+// ── CSV Import ───────────────────────────────────────────────────
+var _importRows = [];
+
+function triggerImportCSV() { document.getElementById('csv-file-input').click(); }
+
+function parseCSV(text) {
+  text = text.replace(/^﻿/, ''); // strip BOM
+  var lines = text.split(/\r?\n/).filter(l => l.trim());
+  if (!lines.length) return [];
+  function parseLine(line) {
+    var fields = [], cur = '', inQ = false;
+    for (var i = 0; i < line.length; i++) {
+      var c = line[i];
+      if (c === '"') { if (inQ && line[i+1] === '"') { cur += '"'; i++; } else { inQ = !inQ; } }
+      else if (c === ',' && !inQ) { fields.push(cur.trim()); cur = ''; }
+      else { cur += c; }
+    }
+    fields.push(cur.trim());
+    return fields;
+  }
+  var headers = parseLine(lines[0]).map(h => h.toLowerCase().replace(/[^a-z]/g, ''));
+  var fi = headers.findIndex(h => h.startsWith('first') || h === 'givenname');
+  var li = headers.findIndex(h => h.startsWith('last') || h.includes('family') || h.includes('surname'));
+  var ei = headers.findIndex(h => h.includes('email'));
+  var ni = headers.findIndex(h => h === 'name' || h === 'fullname');
+  var rows = [];
+  for (var i = 1; i < lines.length; i++) {
+    var f = parseLine(lines[i]);
+    if (!f.some(v => v)) continue;
+    var first = fi >= 0 ? (f[fi] || '') : '';
+    var last  = li >= 0 ? (f[li] || '') : '';
+    var email = ei >= 0 ? (f[ei] || '') : '';
+    if (!first && !last && ni >= 0) {
+      var parts = (f[ni] || '').split(/\s+/);
+      first = parts[0] || ''; last = parts.slice(1).join(' ');
+    }
+    if (email.includes('@')) rows.push({ firstName: first.trim(), lastName: last.trim(), email: email.trim().toLowerCase() });
+  }
+  return rows;
+}
+
+async function handleCSVFile(input) {
+  if (!input.files.length) return;
+  var file = input.files[0];
+  input.value = '';
+  var text = await file.text();
+  var parsed = parseCSV(text);
+  if (!parsed.length) { toast('No valid rows found in CSV', true); return; }
+  var existing = [];
+  try { var d = await api('GET', '?action=allowlist'); existing = d.allowlist || []; } catch(e) {}
+  var emailSet = new Set(existing.map(r => r.email.toLowerCase()));
+  var nameSet  = new Set(existing.map(r => (r.first_name + ' ' + r.last_name).toLowerCase().trim()).filter(Boolean));
+  _importRows = parsed.map(r => {
+    var dupEmail = emailSet.has(r.email);
+    var dupName  = nameSet.has((r.firstName + ' ' + r.lastName).toLowerCase().trim());
+    var status   = dupEmail ? 'dup-email' : dupName ? 'name-match' : 'new';
+    return { ...r, status, selected: status !== 'dup-email' };
+  });
+  renderImportPreview();
+  openModal('modal-import');
+}
+
+function renderImportPreview() {
+  var total    = _importRows.length;
+  var dupCount = _importRows.filter(r => r.status === 'dup-email').length;
+  var warnCount= _importRows.filter(r => r.status === 'name-match').length;
+  var parts = [total + ' rows parsed'];
+  if (dupCount)  parts.push(dupCount + ' already in list (unchecked)');
+  if (warnCount) parts.push(warnCount + ' name match — review carefully');
+  document.getElementById('import-summary').textContent = parts.join(' · ');
+  var sel = _importRows.filter(r => r.selected).length;
+  document.getElementById('import-submit').textContent = 'Import ' + sel + ' people';
+  document.getElementById('import-tbody').innerHTML = _importRows.map((r, i) => {
+    var badge = r.status === 'new'
+      ? '<span class="badge badge-approved">New</span>'
+      : r.status === 'dup-email'
+        ? '<span class="badge badge-rejected">Already in list</span>'
+        : '<span class="badge badge-pending">Name match ⚠</span>';
+    var cls = r.status === 'name-match' ? 'import-warn' : r.status === 'dup-email' ? 'import-dup' : '';
+    return `<tr class="${cls}">
+      <td style="text-align:center"><input type="checkbox" ${r.selected?'checked':''} onchange="toggleImportRow(${i},this.checked)"></td>
+      <td>${esc(r.firstName)}</td><td>${esc(r.lastName)}</td>
+      <td>${esc(r.email)}</td><td>${badge}</td>
+    </tr>`;
+  }).join('');
+}
+
+function toggleImportRow(i, checked) {
+  _importRows[i].selected = checked;
+  var sel = _importRows.filter(r => r.selected).length;
+  document.getElementById('import-submit').textContent = 'Import ' + sel + ' people';
+}
+
+async function submitImport() {
+  var rows = _importRows.filter(r => r.selected);
+  if (!rows.length) { toast('No rows selected', true); return; }
+  var btn = document.getElementById('import-submit');
+  btn.disabled = true; btn.textContent = 'Importing…';
+  try {
+    var data = await api('POST', '', { action: 'bulk-add-allowlist', rows });
+    closeModal('modal-import');
+    toast(data.added + ' people added to allowlist');
+    loadAllowlist();
+  } catch(e) {
+    toast(e.message, true);
+    btn.disabled = false;
+    btn.textContent = 'Import ' + rows.length + ' people';
+  }
 }
 
 // ── Modal helpers ────────────────────────────────────────────────

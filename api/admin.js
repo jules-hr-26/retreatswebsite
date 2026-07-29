@@ -121,6 +121,22 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true });
   }
 
+  if (action === 'bulk-add-allowlist') {
+    const { rows } = body;
+    if (!Array.isArray(rows) || !rows.length) return res.status(400).json({ error: 'rows required' });
+    let added = 0;
+    for (const row of rows) {
+      if (!row.email || !row.email.includes('@')) continue;
+      await upsert('alumni_allowlist', {
+        email:      row.email.trim().toLowerCase(),
+        first_name: (row.firstName || '').trim(),
+        last_name:  (row.lastName  || '').trim(),
+      }, 'email');
+      added++;
+    }
+    return res.status(200).json({ ok: true, added });
+  }
+
   if (action === 'update-allowlist') {
     const { id, email, firstName, lastName } = body;
     if (!id || !email) return res.status(400).json({ error: 'id and email required' });
@@ -312,6 +328,17 @@ export default async function handler(req, res) {
       }),
     }).catch(() => {}); // non-fatal
 
+    return res.status(200).json({ ok: true });
+  }
+
+  if (action === 'update-admin') {
+    if (admin.role !== 'super_admin') return res.status(403).json({ error: 'super_admin required' });
+    const { email, name, role } = body;
+    if (!email) return res.status(400).json({ error: 'email required' });
+    await update('admins', { email: email.trim().toLowerCase() }, {
+      name: (name || '').trim(),
+      role: role === 'super_admin' ? 'super_admin' : 'admin',
+    });
     return res.status(200).json({ ok: true });
   }
 
