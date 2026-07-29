@@ -428,10 +428,10 @@
     </a>
     <div class="nav-section">Community</div>
     <a data-tab="members">
-      <span class="nav-icon">◈</span> Members
+      <span class="nav-icon">◈</span> Administrators
     </a>
     <a data-tab="allowlist">
-      <span class="nav-icon">✦</span> Allowlist
+      <span class="nav-icon">✦</span> Members (Allowlist)
     </a>
     <div class="nav-section">Content</div>
     <a data-tab="events">
@@ -730,7 +730,7 @@ function fmtDate(s) {
 
 // ── Tabs ─────────────────────────────────────────────────────────
 var tabLoaders = { members: loadMembers, allowlist: loadAllowlist, events: loadEvents, proposed: loadProposed, offerings: loadOfferings, forum: loadForum, settings: loadAdmins };
-var tabTitles  = { dashboard:'Dashboard', members:'Members', allowlist:'Alumni Allowlist', events:'Events', proposed:'Proposed Events', offerings:'Offerings', forum:'Forum Moderation', settings:'Settings' };
+var tabTitles  = { dashboard:'Dashboard', members:'Administrators', allowlist:'Members (Allowlist)', events:'Events', proposed:'Proposed Events', offerings:'Offerings', forum:'Forum Moderation', settings:'Settings' };
 
 document.querySelectorAll('#sidebar nav a[data-tab]').forEach(function(a) {
   a.addEventListener('click', function() {
