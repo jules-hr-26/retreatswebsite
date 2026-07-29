@@ -113,6 +113,17 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true });
   }
 
+  if (action === 'update-allowlist') {
+    const { id, email, firstName, lastName } = body;
+    if (!id || !email) return res.status(400).json({ error: 'id and email required' });
+    await update('alumni_allowlist', { id }, {
+      email:      email.trim().toLowerCase(),
+      first_name: (firstName || '').trim(),
+      last_name:  (lastName  || '').trim(),
+    });
+    return res.status(200).json({ ok: true });
+  }
+
   if (action === 'remove-allowlist') {
     const { email } = body;
     if (!email) return res.status(400).json({ error: 'email required' });

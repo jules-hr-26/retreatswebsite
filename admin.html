@@ -585,10 +585,10 @@
   <a href="/login.html" class="btn btn-primary">Sign in</a>
 </div>
 
-<!-- Modal: Add to allowlist -->
+<!-- Modal: Add / Edit allowlist entry -->
 <div class="modal-overlay" id="modal-allowlist">
   <div class="modal">
-    <div class="modal-header"><h2>Add to allowlist</h2><button class="modal-close" onclick="closeModal('modal-allowlist')">×</button></div>
+    <div class="modal-header"><h2 id="modal-al-title">Add to allowlist</h2><button class="modal-close" onclick="closeModal('modal-allowlist')">×</button></div>
     <div class="modal-body">
       <div class="form-group"><label class="form-label">First name</label><input class="form-input" id="al-first" type="text"></div>
       <div class="form-group"><label class="form-label">Last name</label><input class="form-input" id="al-last" type="text"></div>
@@ -596,7 +596,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-allowlist')">Cancel</button>
-      <button class="btn btn-primary" onclick="submitAddAllowlist()">Add person</button>
+      <button class="btn btn-primary" id="modal-al-submit" onclick="submitAddAllowlist()">Add person</button>
     </div>
   </div>
 </div>
@@ -816,27 +816,52 @@ async function loadAllowlist() {
         <td>${esc(r.first_name)}</td>
         <td>${esc(r.last_name)}</td>
         <td>${esc(r.email)}</td>
-        <td><button class="btn btn-ghost btn-sm" onclick="removeAllowlist('${esc(r.email)}')">Remove</button></td>
+        <td style="display:flex;gap:6px">
+          <button class="btn btn-ghost btn-sm" onclick="openEditAllowlist('${esc(r.id)}','${esc(r.first_name)}','${esc(r.last_name)}','${esc(r.email)}')">Edit</button>
+          <button class="btn btn-ghost btn-sm" onclick="removeAllowlist('${esc(r.email)}')">Remove</button>
+        </td>
       </tr>`).join('');
   } catch(e) { toast(e.message, true); }
 }
 
 document.getElementById('allowlist-search').addEventListener('keydown', e => { if (e.key === 'Enter') loadAllowlist(); });
 
+var _editingAllowlistId = null;
+
 function openAddAllowlist() {
+  _editingAllowlistId = null;
   document.getElementById('al-first').value = '';
   document.getElementById('al-last').value = '';
   document.getElementById('al-email').value = '';
+  document.getElementById('modal-al-title').textContent = 'Add to allowlist';
+  document.getElementById('modal-al-submit').textContent = 'Add person';
+  openModal('modal-allowlist');
+}
+
+function openEditAllowlist(id, firstName, lastName, email) {
+  _editingAllowlistId = id;
+  document.getElementById('al-first').value = firstName;
+  document.getElementById('al-last').value = lastName;
+  document.getElementById('al-email').value = email;
+  document.getElementById('modal-al-title').textContent = 'Edit allowlist entry';
+  document.getElementById('modal-al-submit').textContent = 'Save changes';
   openModal('modal-allowlist');
 }
 
 async function submitAddAllowlist() {
   var email = document.getElementById('al-email').value.trim();
   if (!email) { toast('Email required', true); return; }
+  var firstName = document.getElementById('al-first').value.trim();
+  var lastName  = document.getElementById('al-last').value.trim();
   try {
-    await api('POST', '', { action: 'add-allowlist', email, firstName: document.getElementById('al-first').value, lastName: document.getElementById('al-last').value });
+    if (_editingAllowlistId) {
+      await api('POST', '', { action: 'update-allowlist', id: _editingAllowlistId, email, firstName, lastName });
+      toast('Entry updated');
+    } else {
+      await api('POST', '', { action: 'add-allowlist', email, firstName, lastName });
+      toast('Added to allowlist');
+    }
     closeModal('modal-allowlist');
-    toast('Added to allowlist');
     loadAllowlist();
   } catch(e) { toast(e.message, true); }
 }
