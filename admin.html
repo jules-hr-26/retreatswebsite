@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CNLC Admin</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --sidebar-w: 200px;
+    --bg: #f7f7f5;
+    --surface: #ffffff;
+    --sidebar-bg: #1a1a18;
+    --sidebar-text: #c8c8c0;
+    --sidebar-active: #ffffff;
+    --sidebar-active-bg: #2e2e2a;
+    --ink: #1a1a18;
+    --ink-soft: #555550;
+    --ink-light: #999990;
+    --border: #e2e2dc;
+    --accent: #e6c96a;
+    --danger: #c0392b;
+    --success: #27ae60;
+    --warning: #e67e22;
+    --radius: 4px;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; background: var(--bg); color: var(--ink); display: flex; min-height: 100vh; }
+
+  /* Sidebar */
+  #sidebar { width: var(--sidebar-w); background: var(--sidebar-bg); color: var(--sidebar-text); display: flex; flex-direction: column; flex-shrink: 0; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto; z-index: 10; }
+  #sidebar .logo { padding: 20px 16px 16px; border-bottom: 1px solid #2e2e2a; }
+  #sidebar .logo span { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+  #sidebar .logo small { display: block; font-size: 11px; color: #666; margin-top: 2px; }
+  #sidebar nav { padding: 8px 0; flex: 1; }
+  #sidebar nav a { display: block; padding: 9px 16px; font-size: 13px; color: var(--sidebar-text); text-decoration: none; cursor: pointer; border-left: 3px solid transparent; transition: background 0.1s; }
+  #sidebar nav a:hover { background: #252521; color: var(--sidebar-active); }
+  #sidebar nav a.active { background: var(--sidebar-active-bg); color: var(--sidebar-active); border-left-color: var(--accent); }
+  #sidebar nav .section-label { padding: 16px 16px 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #444; }
+  #sidebar .admin-info { padding: 12px 16px; border-top: 1px solid #2e2e2a; font-size: 12px; color: #666; }
+  #sidebar .admin-info strong { display: block; color: var(--sidebar-text); }
+
+  /* Main */
+  #main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+  #topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 5; }
+  #topbar h1 { font-size: 16px; font-weight: 600; }
+  #topbar .actions { display: flex; gap: 8px; }
+  #content { padding: 28px; flex: 1; }
+
+  /* Tabs */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Cards */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; margin-bottom: 28px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .stat-card .num { font-size: 32px; font-weight: 700; line-height: 1; }
+  .stat-card .label { font-size: 12px; color: var(--ink-soft); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  /* Tables */
+  .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th { background: #fafaf8; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  tbody tr:hover { background: #fafaf8; }
+  tbody td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: none; }
+  .truncate { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* Toolbar */
+  .toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
+  .toolbar input[type=search], .toolbar input[type=text] { flex: 1; min-width: 200px; max-width: 340px; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-family: inherit; font-size: 13px; background: var(--surface); }
+  .toolbar input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border-radius: var(--radius); font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid transparent; transition: opacity 0.1s; white-space: nowrap; }
+  .btn:hover { opacity: 0.85; }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  .btn-primary { background: var(--accent); color: #1a1a18; border-color: var(--accent); }
+  .btn-danger  { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .btn-ghost   { background: transparent; color: var(--ink-soft); border-color: var(--border); }
+  .btn-success { background: var(--success); color: #fff; border-color: var(--success); }
+  .btn-warn    { background: var(--warning); color: #fff; border-color: var(--warning); }
+  .btn-sm      { padding: 4px 10px; font-size: 12px; }
+
+  /* Badges */
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.03em; }
+  .badge-pending  { background: #fef3cd; color: #856404; }
+  .badge-approved { background: #d4edda; color: #155724; }
+  .badge-rejected { background: #f8d7da; color: #721c24; }
+  .badge-published { background: #d4edda; color: #155724; }
+
+  /* Modal */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--surface); border-radius: var(--radius); width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+  .modal-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .modal-header h2 { font-size: 16px; font-weight: 600; }
+  .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--ink-soft); line-height: 1; padding: 0 4px; }
+  .modal-body { padding: 20px 24px; }
+  .modal-footer { padding: 12px 24px 20px; display: flex; gap: 8px; justify-content: flex-end; }
+
+  /* Forms */
+  .form-group { margin-bottom: 16px; }
+  .form-label { display: block; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; color: var(--ink-soft); margin-bottom: 5px; }
+  .form-input, .form-select, .form-textarea { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-family: inherit; font-size: 13px; background: var(--surface); color: var(--ink); }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .form-textarea { resize: vertical; min-height: 80px; }
+
+  /* Empty state */
+  .empty { text-align: center; padding: 48px 24px; color: var(--ink-light); }
+  .empty p { margin-top: 8px; font-size: 13px; }
+
+  /* Spinner */
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Toast */
+  #toast { position: fixed; bottom: 24px; right: 24px; background: #1a1a18; color: #fff; padding: 10px 18px; border-radius: var(--radius); font-size: 13px; z-index: 200; display: none; }
+  #toast.show { display: block; }
+  #toast.error { background: var(--danger); }
+
+  /* Access denied */
+  #access-denied { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100vh; text-align: center; padding: 40px; }
+  #access-denied h1 { font-size: 24px; margin-bottom: 12px; }
+  #access-denied p { color: var(--ink-soft); margin-bottom: 20px; }
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <div class="logo">
+    <span>CNLC Admin</span>
+    <small>Climate & Nature Leaders</small>
+  </div>
+  <nav>
+    <a class="active" data-tab="dashboard">Dashboard</a>
+    <div class="section-label">Community</div>
+    <a data-tab="members">Members</a>
+    <a data-tab="allowlist">Allowlist</a>
+    <div class="section-label">Content</div>
+    <a data-tab="events">Events</a>
+    <a data-tab="proposed">Proposed Events</a>
+    <a data-tab="offerings">Offerings</a>
+    <div class="section-label">Forum</div>
+    <a data-tab="forum">Moderation</a>
+    <div class="section-label">System</div>
+    <a data-tab="settings" id="settings-link" style="display:none">Settings</a>
+  </nav>
+  <div class="admin-info">
+    <strong id="admin-name">—</strong>
+    <span id="admin-role">—</span>
+  </div>
+</div>
+
+<div id="main">
+  <div id="topbar">
+    <h1 id="topbar-title">Dashboard</h1>
+    <div class="actions" id="topbar-actions"></div>
+  </div>
+  <div id="content">
+
+    <!-- Dashboard -->
+    <div class="tab-panel active" id="tab-dashboard">
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-card"><div class="num" id="stat-members">—</div><div class="label">Members</div></div>
+        <div class="stat-card"><div class="num" id="stat-allowlist">—</div><div class="label">Allowlist</div></div>
+        <div class="stat-card"><div class="num" id="stat-events">—</div><div class="label">Events</div></div>
+        <div class="stat-card"><div class="num" id="stat-offerings">—</div><div class="label">Offerings</div></div>
+        <div class="stat-card"><div class="num" id="stat-proposed">—</div><div class="label">Proposed</div></div>
+      </div>
+    </div>
+
+    <!-- Members -->
+    <div class="tab-panel" id="tab-members">
+      <div class="toolbar">
+        <input type="search" id="members-search" placeholder="Search by name, email, org…">
+        <button class="btn btn-ghost" onclick="loadMembers()">Refresh</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>Organisation</th><th>Country</th><th>Cohort</th><th>Directory</th><th></th></tr></thead>
+          <tbody id="members-tbody"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Allowlist -->
+    <div class="tab-panel" id="tab-allowlist">
+      <div class="toolbar">
+        <input type="search" id="allowlist-search" placeholder="Search by name or email…">
+        <button class="btn btn-primary" onclick="openAddAllowlist()">+ Add person</button>
+        <button class="btn btn-ghost" onclick="loadAllowlist()">Refresh</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>First name</th><th>Last name</th><th>Email</th><th></th></tr></thead>
+          <tbody id="allowlist-tbody"><tr><td colspan="4" class="empty">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Events -->
+    <div class="tab-panel" id="tab-events">
+      <div class="toolbar">
+        <button class="btn btn-primary" onclick="openAddEvent()">+ Add event</button>
+        <button class="btn btn-ghost" onclick="loadEvents()">Refresh</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Date</th><th>City</th><th>Status</th><th></th></tr></thead>
+          <tbody id="events-tbody"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Proposed events -->
+    <div class="tab-panel" id="tab-proposed">
+      <div class="toolbar">
+        <button class="btn btn-ghost" onclick="loadProposed()">Refresh</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Title</th><th>Date</th><th>Format</th><th>Location</th><th>Status</th><th></th></tr></thead>
+          <tbody id="proposed-tbody"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Offerings -->
+    <div class="tab-panel" id="tab-offerings">
+      <div class="toolbar">
+        <button class="btn btn-ghost" onclick="loadOfferings()">Refresh</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>Title</th><th>Category</th><th>Status</th><th></th></tr></thead>
+          <tbody id="offerings-tbody"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Forum -->
+    <div class="tab-panel" id="tab-forum">
+      <div class="toolbar">
+        <button class="btn btn-ghost" onclick="loadForum()">Refresh</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Type</th><th>Forum</th><th>Author</th><th>Content</th><th>Date</th><th></th></tr></thead>
+          <tbody id="forum-tbody"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div class="tab-panel" id="tab-settings">
+      <div class="toolbar">
+        <button class="btn btn-primary" onclick="openAddAdmin()">+ Add admin</button>
+        <button class="btn btn-ghost" onclick="loadAdmins()">Refresh</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Added</th><th></th></tr></thead>
+          <tbody id="admins-tbody"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Access denied overlay -->
+<div id="access-denied">
+  <h1>Access denied</h1>
+  <p>You need admin access to view this page.</p>
+  <a href="/login.html" class="btn btn-primary">Sign in</a>
+</div>
+
+<!-- Modal: Add to allowlist -->
+<div class="modal-overlay" id="modal-allowlist">
+  <div class="modal">
+    <div class="modal-header"><h2>Add to allowlist</h2><button class="modal-close" onclick="closeModal('modal-allowlist')">×</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">First name</label><input class="form-input" id="al-first" type="text"></div>
+      <div class="form-group"><label class="form-label">Last name</label><input class="form-input" id="al-last" type="text"></div>
+      <div class="form-group"><label class="form-label">Email *</label><input class="form-input" id="al-email" type="email"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-allowlist')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitAddAllowlist()">Add person</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Add/edit event -->
+<div class="modal-overlay" id="modal-event">
+  <div class="modal">
+    <div class="modal-header"><h2 id="event-modal-title">Add event</h2><button class="modal-close" onclick="closeModal('modal-event')">×</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="ev-id">
+      <div class="form-group"><label class="form-label">Name *</label><input class="form-input" id="ev-name" type="text"></div>
+      <div class="form-group"><label class="form-label">Start date</label><input class="form-input" id="ev-start" type="text" placeholder="e.g. September 20, 2026"></div>
+      <div class="form-group"><label class="form-label">End date</label><input class="form-input" id="ev-end" type="text"></div>
+      <div class="form-group"><label class="form-label">City</label><input class="form-input" id="ev-city" type="text"></div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="ev-desc"></textarea></div>
+      <div class="form-group"><label class="form-label">Discussion link</label><input class="form-input" id="ev-link" type="text"></div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-select" id="ev-status">
+          <option value="approved">Approved</option>
+          <option value="pending">Pending</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-event')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitEvent()">Save event</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Add admin -->
+<div class="modal-overlay" id="modal-admin">
+  <div class="modal">
+    <div class="modal-header"><h2>Add admin</h2><button class="modal-close" onclick="closeModal('modal-admin')">×</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Name *</label><input class="form-input" id="adm-name" type="text"></div>
+      <div class="form-group"><label class="form-label">Email *</label><input class="form-input" id="adm-email" type="email"></div>
+      <div class="form-group"><label class="form-label">Role</label>
+        <select class="form-select" id="adm-role">
+          <option value="admin">Admin</option>
+          <option value="super_admin">Super Admin</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-admin')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitAddAdmin()">Add admin</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+var currentAdmin = null;
+
+// ── Init ─────────────────────────────────────────────────────────
+(async function init() {
+  try {
+    var res = await api('GET', '?action=stats');
+    // If we get here, user is an admin — render the UI
+    document.body.style.display = 'flex';
+    document.getElementById('access-denied').style.display = 'none';
+    loadStats(res);
+    // Load admin info
+    var admins = await api('GET', '?action=admins').catch(() => null);
+    // Figure out current user from sidebar
+    currentAdmin = { role: 'admin' }; // will be set from admins list
+    if (admins) {
+      // We don't have the current user's email directly, check via stats worked so we're admin
+    }
+    checkAdminRole();
+  } catch(e) {
+    document.body.style.display = 'flex';
+    document.getElementById('sidebar').style.display = 'none';
+    document.getElementById('main').style.display = 'none';
+    document.getElementById('access-denied').style.display = 'flex';
+  }
+})();
+
+async function checkAdminRole() {
+  // Try fetching admins — only works for super_admin
+  try {
+    var data = await api('GET', '?action=admins');
+    document.getElementById('settings-link').style.display = 'block';
+    // Find current user in admin list
+    currentAdmin = { role: 'super_admin' };
+    // Set sidebar info
+    if (data.admins && data.admins.length) {
+      // Try to identify current admin from the list
+      document.getElementById('admin-name').textContent = 'Admin';
+      document.getElementById('admin-role').textContent = 'Super Admin';
+    }
+  } catch(e) {
+    currentAdmin = { role: 'admin' };
+    document.getElementById('admin-name').textContent = 'Admin';
+    document.getElementById('admin-role').textContent = 'Admin';
+  }
+}
+
+// ── API helper ───────────────────────────────────────────────────
+async function api(method, path, body) {
+  var opts = { method, headers: { 'Content-Type': 'application/json' }, credentials: 'include' };
+  if (body) opts.body = JSON.stringify(body);
+  var res = await fetch('/api/admin' + path, opts);
+  if (res.status === 401) throw new Error('unauthorized');
+  var data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'request failed');
+  return data;
+}
+
+function toast(msg, isError) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show' + (isError ? ' error' : '');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.className = '', 3000);
+}
+
+function esc(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function fmtDate(s) {
+  if (!s) return '—';
+  try { return new Date(s).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'}); } catch(e) { return s; }
+}
+
+// ── Tabs ─────────────────────────────────────────────────────────
+var tabLoaders = { members: loadMembers, allowlist: loadAllowlist, events: loadEvents, proposed: loadProposed, offerings: loadOfferings, forum: loadForum, settings: loadAdmins };
+var tabTitles  = { dashboard:'Dashboard', members:'Members', allowlist:'Alumni Allowlist', events:'Events', proposed:'Proposed Events', offerings:'Offerings', forum:'Forum Moderation', settings:'Settings' };
+
+document.querySelectorAll('#sidebar nav a[data-tab]').forEach(function(a) {
+  a.addEventListener('click', function() {
+    var tab = this.dataset.tab;
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('#sidebar nav a').forEach(a => a.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    this.classList.add('active');
+    document.getElementById('topbar-title').textContent = tabTitles[tab] || tab;
+    document.getElementById('topbar-actions').innerHTML = '';
+    if (tabLoaders[tab]) tabLoaders[tab]();
+  });
+});
+
+// ── Dashboard ────────────────────────────────────────────────────
+function loadStats(data) {
+  document.getElementById('stat-members').textContent  = data.members;
+  document.getElementById('stat-allowlist').textContent = data.allowlist;
+  document.getElementById('stat-events').textContent   = data.events;
+  document.getElementById('stat-offerings').textContent = data.offerings;
+  document.getElementById('stat-proposed').textContent  = data.proposed;
+}
+
+// ── Members ──────────────────────────────────────────────────────
+async function loadMembers() {
+  var search = document.getElementById('members-search').value;
+  var tbody = document.getElementById('members-tbody');
+  tbody.innerHTML = '<tr><td colspan="7"><span class="spinner"></span></td></tr>';
+  try {
+    var data = await api('GET', '?action=members' + (search ? '&search=' + encodeURIComponent(search) : ''));
+    if (!data.members.length) { tbody.innerHTML = '<tr><td colspan="7" class="empty">No members found.</td></tr>'; return; }
+    tbody.innerHTML = data.members.map(m => `
+      <tr>
+        <td>${esc(m.first_name)} ${esc(m.last_name)}</td>
+        <td class="truncate">${esc(m.auth_email)}</td>
+        <td class="truncate">${esc(m.organisation)}</td>
+        <td>${esc(m.country)}</td>
+        <td class="truncate">${esc(m.cohort)}</td>
+        <td>${m.in_directory ? '✓' : ''}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="deleteMember('${esc(m.auth_email)}','${esc(m.first_name)} ${esc(m.last_name)}')">Delete</button></td>
+      </tr>`).join('');
+  } catch(e) { toast(e.message, true); }
+}
+
+document.getElementById('members-search').addEventListener('keydown', e => { if (e.key === 'Enter') loadMembers(); });
+
+async function deleteMember(email, name) {
+  if (!confirm('Permanently delete all data for ' + name + ' (' + email + ')?\n\nThis removes their profile, event RSVPs, forum posts, and offerings. This cannot be undone.')) return;
+  try {
+    await api('POST', '', { action: 'delete-member', email });
+    toast('Member deleted');
+    loadMembers();
+  } catch(e) { toast(e.message, true); }
+}
+
+// ── Allowlist ────────────────────────────────────────────────────
+async function loadAllowlist() {
+  var search = document.getElementById('allowlist-search').value;
+  var tbody = document.getElementById('allowlist-tbody');
+  tbody.innerHTML = '<tr><td colspan="4"><span class="spinner"></span></td></tr>';
+  try {
+    var data = await api('GET', '?action=allowlist' + (search ? '&search=' + encodeURIComponent(search) : ''));
+    if (!data.allowlist.length) { tbody.innerHTML = '<tr><td colspan="4" class="empty">No entries found.</td></tr>'; return; }
+    tbody.innerHTML = data.allowlist.map(r => `
+      <tr>
+        <td>${esc(r.first_name)}</td>
+        <td>${esc(r.last_name)}</td>
+        <td>${esc(r.email)}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="removeAllowlist('${esc(r.email)}')">Remove</button></td>
+      </tr>`).join('');
+  } catch(e) { toast(e.message, true); }
+}
+
+document.getElementById('allowlist-search').addEventListener('keydown', e => { if (e.key === 'Enter') loadAllowlist(); });
+
+function openAddAllowlist() {
+  document.getElementById('al-first').value = '';
+  document.getElementById('al-last').value = '';
+  document.getElementById('al-email').value = '';
+  openModal('modal-allowlist');
+}
+
+async function submitAddAllowlist() {
+  var email = document.getElementById('al-email').value.trim();
+  if (!email) { toast('Email required', true); return; }
+  try {
+    await api('POST', '', { action: 'add-allowlist', email, firstName: document.getElementById('al-first').value, lastName: document.getElementById('al-last').value });
+    closeModal('modal-allowlist');
+    toast('Added to allowlist');
+    loadAllowlist();
+  } catch(e) { toast(e.message, true); }
+}
+
+async function removeAllowlist(email) {
+  if (!confirm('Remove ' + email + ' from the allowlist? They will no longer be able to register.')) return;
+  try {
+    await api('POST', '', { action: 'remove-allowlist', email });
+    toast('Removed from allowlist');
+    loadAllowlist();
+  } catch(e) { toast(e.message, true); }
+}
+
+// ── Events ───────────────────────────────────────────────────────
+async function loadEvents() {
+  var tbody = document.getElementById('events-tbody');
+  tbody.innerHTML = '<tr><td colspan="5"><span class="spinner"></span></td></tr>';
+  try {
+    var data = await api('GET', '?action=events');
+    if (!data.events.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty">No events yet.</td></tr>'; return; }
+    tbody.innerHTML = data.events.map(e => `
+      <tr>
+        <td class="truncate">${esc(e.name)}</td>
+        <td>${esc(e.start_date)}</td>
+        <td>${esc(e.city)}</td>
+        <td><span class="badge badge-${e.status}">${esc(e.status)}</span></td>
+        <td style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick='openEditEvent(${JSON.stringify(e)})'>Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteEvent('${e.id}','${esc(e.name)}')">Delete</button>
+        </td>
+      </tr>`).join('');
+  } catch(e) { toast(e.message, true); }
+}
+
+function openAddEvent() {
+  document.getElementById('event-modal-title').textContent = 'Add event';
+  document.getElementById('ev-id').value = '';
+  ['ev-name','ev-start','ev-end','ev-city','ev-desc','ev-link'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('ev-status').value = 'approved';
+  openModal('modal-event');
+}
+
+function openEditEvent(ev) {
+  document.getElementById('event-modal-title').textContent = 'Edit event';
+  document.getElementById('ev-id').value = ev.id || '';
+  document.getElementById('ev-name').value = ev.name || '';
+  document.getElementById('ev-start').value = ev.start_date || '';
+  document.getElementById('ev-end').value = ev.end_date || '';
+  document.getElementById('ev-city').value = ev.city || '';
+  document.getElementById('ev-desc').value = ev.description || '';
+  document.getElementById('ev-link').value = ev.discussion_link || '';
+  document.getElementById('ev-status').value = ev.status || 'approved';
+  openModal('modal-event');
+}
+
+async function submitEvent() {
+  var id = document.getElementById('ev-id').value;
+  var name = document.getElementById('ev-name').value.trim();
+  if (!name) { toast('Name required', true); return; }
+  var payload = { name, startDate: document.getElementById('ev-start').value, endDate: document.getElementById('ev-end').value, city: document.getElementById('ev-city').value, description: document.getElementById('ev-desc').value, discussionLink: document.getElementById('ev-link').value, status: document.getElementById('ev-status').value };
+  try {
+    if (id) { await api('POST', '', { action: 'update-event', id, ...payload }); }
+    else { await api('POST', '', { action: 'add-event', ...payload }); }
+    closeModal('modal-event');
+    toast('Event saved');
+    loadEvents();
+  } catch(e) { toast(e.message, true); }
+}
+
+async function deleteEvent(id, name) {
+  if (!confirm('Delete event "' + name + '"? This cannot be undone.')) return;
+  try {
+    await api('POST', '', { action: 'delete-event', id });
+    toast('Event deleted');
+    loadEvents();
+  } catch(e) { toast(e.message, true); }
+}
+
+// ── Proposed events ──────────────────────────────────────────────
+async function loadProposed() {
+  var tbody = document.getElementById('proposed-tbody');
+  tbody.innerHTML = '<tr><td colspan="6"><span class="spinner"></span></td></tr>';
+  try {
+    var data = await api('GET', '?action=proposed');
+    if (!data.proposed.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty">No proposed events.</td></tr>'; return; }
+    tbody.innerHTML = data.proposed.map(p => `
+      <tr>
+        <td class="truncate">${esc(p.title)}</td>
+        <td>${esc(p.date)}</td>
+        <td>${esc(p.format)}</td>
+        <td class="truncate">${esc(p.location)}</td>
+        <td><span class="badge badge-${p.status}">${esc(p.status)}</span></td>
+        <td style="display:flex;gap:6px;flex-wrap:wrap">
+          ${p.status === 'pending' ? `
+          <button class="btn btn-success btn-sm" onclick="approveProposed('${p.id}')">Approve</button>
+          <button class="btn btn-warn btn-sm" onclick="rejectProposed('${p.id}')">Reject</button>` : ''}
+          <button class="btn btn-ghost btn-sm" onclick="viewProposed(${JSON.stringify(p).replace(/'/g,'&#39;')})">View</button>
+        </td>
+      </tr>`).join('');
+  } catch(e) { toast(e.message, true); }
+}
+
+function viewProposed(p) {
+  alert('Title: ' + p.title + '\nDate: ' + p.date + '\nFormat: ' + p.format + '\nDuration: ' + p.duration + '\nLocation: ' + p.location + '\nLink: ' + p.link + '\n\n' + p.description);
+}
+
+async function approveProposed(id) {
+  if (!confirm('Approve this event and add it to the events list?')) return;
+  try {
+    await api('POST', '', { action: 'approve-proposed', id });
+    toast('Event approved and added');
+    loadProposed();
+  } catch(e) { toast(e.message, true); }
+}
+
+async function rejectProposed(id) {
+  if (!confirm('Reject this proposed event?')) return;
+  try {
+    await api('POST', '', { action: 'reject-proposed', id });
+    toast('Event rejected');
+    loadProposed();
+  } catch(e) { toast(e.message, true); }
+}
+
+// ── Offerings ────────────────────────────────────────────────────
+async function loadOfferings() {
+  var tbody = document.getElementById('offerings-tbody');
+  tbody.innerHTML = '<tr><td colspan="6"><span class="spinner"></span></td></tr>';
+  try {
+    var data = await api('GET', '?action=offerings');
+    if (!data.offerings.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty">No offerings submitted.</td></tr>'; return; }
+    tbody.innerHTML = data.offerings.map(o => `
+      <tr>
+        <td>${esc(o.name)}</td>
+        <td class="truncate">${esc(o.email)}</td>
+        <td class="truncate">${esc(o.title)}</td>
+        <td>${esc(o.category)}</td>
+        <td><span class="badge badge-${o.status}">${esc(o.status)}</span></td>
+        <td style="display:flex;gap:6px;flex-wrap:wrap">
+          ${o.status === 'pending' ? `
+          <button class="btn btn-success btn-sm" onclick="approveOffering('${o.id}')">Approve</button>
+          <button class="btn btn-warn btn-sm" onclick="rejectOffering('${o.id}')">Reject</button>` : ''}
+          <button class="btn btn-ghost btn-sm" onclick="viewOffering(${JSON.stringify(o).replace(/'/g,'&#39;')})">View</button>
+        </td>
+      </tr>`).join('');
+  } catch(e) { toast(e.message, true); }
+}
+
+function viewOffering(o) {
+  alert('Name: ' + o.name + '\nEmail: ' + o.email + '\nTitle: ' + o.title + '\nCategory: ' + o.category + '\nFee: ' + o.fee_type + ' — ' + o.fee_info + '\nFormat: ' + o.format + '\nLocation: ' + o.location + '\nWebsite: ' + o.website + '\nLinkedIn: ' + o.linkedin + '\n\n' + o.description);
+}
+
+async function approveOffering(id) {
+  try {
+    await api('POST', '', { action: 'approve-offering', id });
+    toast('Offering approved');
+    loadOfferings();
+  } catch(e) { toast(e.message, true); }
+}
+
+async function rejectOffering(id) {
+  try {
+    await api('POST', '', { action: 'reject-offering', id });
+    toast('Offering rejected');
+    loadOfferings();
+  } catch(e) { toast(e.message, true); }
+}
+
+// ── Forum ────────────────────────────────────────────────────────
+async function loadForum() {
+  var tbody = document.getElementById('forum-tbody');
+  tbody.innerHTML = '<tr><td colspan="6"><span class="spinner"></span></td></tr>';
+  try {
+    var data = await api('GET', '?action=forum');
+    var rows = [];
+    (data.posts || []).forEach(p => rows.push({ type:'Post', forum: p.forum_name, author: p.author_name, content: p.title + ': ' + p.body, date: p.created_at, id: p.post_id, isPost: true }));
+    (data.replies || []).forEach(r => rows.push({ type:'Reply', forum: r.forum_name, author: r.author_name, content: r.body, date: r.created_at, id: r.reply_id, isPost: false }));
+    rows.sort((a,b) => new Date(b.date) - new Date(a.date));
+    if (!rows.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty">No forum activity yet.</td></tr>'; return; }
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td>${esc(r.type)}</td>
+        <td>${esc(r.forum)}</td>
+        <td>${esc(r.author)}</td>
+        <td class="truncate">${esc(r.content)}</td>
+        <td>${fmtDate(r.date)}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="deleteForumItem('${r.id}',${r.isPost})">Delete</button></td>
+      </tr>`).join('');
+  } catch(e) { toast(e.message, true); }
+}
+
+async function deleteForumItem(id, isPost) {
+  if (!confirm('Delete this ' + (isPost ? 'post (and all its replies)' : 'reply') + '?')) return;
+  try {
+    await api('POST', '', isPost ? { action: 'delete-post', postId: id } : { action: 'delete-reply', replyId: id });
+    toast('Deleted');
+    loadForum();
+  } catch(e) { toast(e.message, true); }
+}
+
+// ── Settings / Admins ────────────────────────────────────────────
+async function loadAdmins() {
+  var tbody = document.getElementById('admins-tbody');
+  tbody.innerHTML = '<tr><td colspan="5"><span class="spinner"></span></td></tr>';
+  try {
+    var data = await api('GET', '?action=admins');
+    tbody.innerHTML = data.admins.map(a => `
+      <tr>
+        <td>${esc(a.name)}</td>
+        <td>${esc(a.email)}</td>
+        <td>${a.role === 'super_admin' ? 'Super Admin' : 'Admin'}</td>
+        <td>${fmtDate(a.created_at)}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="removeAdmin('${esc(a.email)}','${esc(a.name)}')">Remove</button></td>
+      </tr>`).join('');
+  } catch(e) { toast(e.message, true); }
+}
+
+function openAddAdmin() { openModal('modal-admin'); }
+
+async function submitAddAdmin() {
+  var email = document.getElementById('adm-email').value.trim();
+  var name  = document.getElementById('adm-name').value.trim();
+  if (!email || !name) { toast('Name and email required', true); return; }
+  try {
+    await api('POST', '', { action: 'add-admin', email, name, role: document.getElementById('adm-role').value });
+    closeModal('modal-admin');
+    toast('Admin added');
+    loadAdmins();
+  } catch(e) { toast(e.message, true); }
+}
+
+async function removeAdmin(email, name) {
+  if (!confirm('Remove admin access for ' + name + '?')) return;
+  try {
+    await api('POST', '', { action: 'remove-admin', email });
+    toast('Admin removed');
+    loadAdmins();
+  } catch(e) { toast(e.message, true); }
+}
+
+// ── Modal helpers ────────────────────────────────────────────────
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+});
+</script>
+</body>
+</html>
