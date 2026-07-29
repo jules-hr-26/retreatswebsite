@@ -26,6 +26,10 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     const { action, search } = req.query || {};
 
+    if (action === 'me') {
+      return res.status(200).json({ email: admin.email, firstName: admin.firstName, lastName: admin.lastName, role: admin.role });
+    }
+
     if (action === 'stats') {
       const [members, allowlist, events, offerings, proposed] = await Promise.all([
         select('members').catch(() => []),
@@ -197,6 +201,31 @@ export default async function handler(req, res) {
     if (!replyId) return res.status(400).json({ error: 'replyId required' });
     await remove('forum_replies', { reply_id: replyId });
     return res.status(200).json({ ok: true });
+  }
+
+  // ── GDPR: export member data ─────────────────────────────────────
+  if (action === 'export-member') {
+    const { email } = body;
+    if (!email) return res.status(400).json({ error: 'email required' });
+    const e = email.trim().toLowerCase();
+    const [profile, allowlistEntry, rsvps, posts, replies, memberOfferings] = await Promise.all([
+      select('members',           { auth_email: e }).catch(() => []),
+      select('alumni_allowlist',  { email: e }).catch(() => []),
+      select('event_attendees',   { member_email: e }).catch(() => []),
+      select('forum_posts',       { author_email: e }).catch(() => []),
+      select('forum_replies',     { author_email: e }).catch(() => []),
+      select('offerings',         { email: e }).catch(() => []),
+    ]);
+    return res.status(200).json({
+      email: e,
+      exported_at: new Date().toISOString(),
+      profile: profile[0] || null,
+      allowlist: allowlistEntry[0] || null,
+      event_rsvps: rsvps,
+      forum_posts: posts,
+      forum_replies: replies,
+      offerings: memberOfferings,
+    });
   }
 
   // ── GDPR: delete member ──────────────────────────────────────────

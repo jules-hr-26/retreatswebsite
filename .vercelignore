@@ -21,3 +21,6 @@ cnlc_mockup_v3.html
 welcome page.docx
 
 .DS_Store
+
+# DB schema — run manually in Supabase SQL editor, not deployed
+supabase-schema.sql

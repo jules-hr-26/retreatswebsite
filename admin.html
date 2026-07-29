@@ -664,11 +664,12 @@ var currentAdmin = null;
     document.getElementById('access-denied').style.display = 'none';
     loadStats(res);
     // Load admin info
-    var admins = await api('GET', '?action=admins').catch(() => null);
-    // Figure out current user from sidebar
-    currentAdmin = { role: 'admin' }; // will be set from admins list
-    if (admins) {
-      // We don't have the current user's email directly, check via stats worked so we're admin
+    var me = await api('GET', '?action=me').catch(() => null);
+    if (me) {
+      currentAdmin = { role: me.role };
+      var displayName = [me.firstName, me.lastName].filter(Boolean).join(' ') || me.email;
+      document.getElementById('admin-name').textContent = displayName;
+      document.getElementById('admin-role').textContent = me.role === 'super_admin' ? 'Super Admin' : 'Admin';
     }
     checkAdminRole();
   } catch(e) {
@@ -769,12 +770,29 @@ async function loadMembers() {
         <td>${esc(m.country)}</td>
         <td class="truncate">${esc(m.cohort)}</td>
         <td>${m.in_directory ? '✓' : ''}</td>
-        <td><button class="btn btn-danger btn-sm" onclick="deleteMember('${esc(m.auth_email)}','${esc(m.first_name)} ${esc(m.last_name)}')">Delete</button></td>
+        <td style="display:flex;gap:6px">
+          <button class="btn btn-ghost btn-sm" onclick="exportMember('${esc(m.auth_email)}')">Export</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteMember('${esc(m.auth_email)}','${esc(m.first_name)} ${esc(m.last_name)}')">Delete</button>
+        </td>
       </tr>`).join('');
   } catch(e) { toast(e.message, true); }
 }
 
 document.getElementById('members-search').addEventListener('keydown', e => { if (e.key === 'Enter') loadMembers(); });
+
+async function exportMember(email) {
+  try {
+    var data = await api('POST', '', { action: 'export-member', email });
+    var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'member-data-' + email.replace(/[^a-z0-9]/gi, '_') + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('Data exported');
+  } catch(e) { toast(e.message, true); }
+}
 
 async function deleteMember(email, name) {
   if (!confirm('Permanently delete all data for ' + name + ' (' + email + ')?\n\nThis removes their profile, event RSVPs, forum posts, and offerings. This cannot be undone.')) return;

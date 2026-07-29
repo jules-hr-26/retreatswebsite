@@ -14,3 +14,4 @@ Website imagery/
 Website moodboard and references/
 *.xlsx
 *.docx
+.env*.local
