@@ -3576,7 +3576,7 @@ function renderClimateGrid(events) {
       : count === 1 ? '1 person going'
       : count + ' people going';
 
-    var going = myClimateRsvps.has(ev.name);
+    var going = myClimateRsvps.has(ev.name) || ev.currentUserAttending;
     var btnLabel = going ? 'Going ✓' : 'I\'m going';
     var btnClass = going ? 'btn-going going' : 'btn-going';
     var btnDisabled = going ? 'disabled' : '';
