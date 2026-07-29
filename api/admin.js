@@ -249,12 +249,50 @@ export default async function handler(req, res) {
     if (admin.role !== 'super_admin') return res.status(403).json({ error: 'super_admin required' });
     const { email, name, role } = body;
     if (!email) return res.status(400).json({ error: 'email required' });
-    await upsert('admins', {
-      email: email.trim().toLowerCase(),
-      name: (name || '').trim(),
-      role: role === 'super_admin' ? 'super_admin' : 'admin',
-      created_by: admin.email,
-    }, 'email');
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanName  = (name || '').trim();
+    const nameParts  = cleanName.split(' ');
+    const firstName  = nameParts[0] || '';
+    const lastName   = nameParts.slice(1).join(' ') || '';
+
+    await Promise.all([
+      upsert('admins', {
+        email: cleanEmail,
+        name: cleanName,
+        role: role === 'super_admin' ? 'super_admin' : 'admin',
+        created_by: admin.email,
+      }, 'email'),
+      upsert('alumni_allowlist', {
+        email: cleanEmail,
+        first_name: firstName,
+        last_name: lastName,
+      }, 'email'),
+    ]);
+
+    // Send invitation email (silently skipped if Resend is not yet configured)
+    const host = req.headers['x-forwarded-host'] || req.headers.host;
+    const loginUrl = `https://${host}/login.html`;
+    const inviterName = [admin.firstName, admin.lastName].filter(Boolean).join(' ') || 'The team';
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'CNLC Platform <onboarding@resend.dev>',
+        to: cleanEmail,
+        subject: 'You have been added as an admin — Climate & Nature Leaders Community',
+        html: `
+          <p>Hi${firstName ? ' ' + firstName : ''},</p>
+          <p>${inviterName} has given you admin access to the Climate &amp; Nature Leaders Community platform.</p>
+          <p>To sign in, go to the login page and enter your email address — you will receive a magic link:</p>
+          <p><a href="${loginUrl}">${loginUrl}</a></p>
+          <p>If you have any questions, reply to this email.</p>
+        `,
+      }),
+    }).catch(() => {}); // non-fatal
+
     return res.status(200).json({ ok: true });
   }
 
