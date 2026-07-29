@@ -86,6 +86,14 @@ export default async function handler(req, res) {
       return res.status(200).json({ posts, replies });
     }
 
+    if (action === 'export-allowlist') {
+      if (admin.role !== 'super_admin') return res.status(403).json({ error: 'super_admin required' });
+      const rows = await select('alumni_allowlist', {}, { order: 'first_name.asc' });
+      const header = 'First Name,Last Name,Email';
+      const lines = rows.map(r => [r.first_name, r.last_name, r.email].map(v => `"${String(v || '').replace(/"/g, '""')}"`).join(','));
+      return res.status(200).json({ csv: [header, ...lines].join('\n') });
+    }
+
     if (action === 'admins') {
       if (admin.role !== 'super_admin') return res.status(403).json({ error: 'super_admin required' });
       const rows = await select('admins', {}, { order: 'created_at.asc' }).catch(() => []);
