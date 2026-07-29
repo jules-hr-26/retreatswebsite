@@ -449,7 +449,7 @@
     <a data-tab="events">
       <span class="nav-icon">◷</span> Events
     </a>
-    <a data-tab="proposed">
+    <a data-tab="proposed" style="display:none">
       <span class="nav-icon">◌</span> Proposed Events
     </a>
     <a data-tab="offerings">
@@ -531,7 +531,7 @@
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Name</th><th>Date</th><th>City</th><th>Status</th><th></th></tr></thead>
+          <thead><tr><th>Name</th><th>Date</th><th>City</th><th></th></tr></thead>
           <tbody id="events-tbody"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
         </table>
       </div>
@@ -557,8 +557,8 @@
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Name</th><th>Email</th><th>Title</th><th>Category</th><th>Status</th><th></th></tr></thead>
-          <tbody id="offerings-tbody"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody>
+          <thead><tr><th>Name</th><th>Email</th><th>Title</th><th>Category</th><th></th></tr></thead>
+          <tbody id="offerings-tbody"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -628,13 +628,6 @@
       <div class="form-group"><label class="form-label">City</label><input class="form-input" id="ev-city" type="text"></div>
       <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="ev-desc"></textarea></div>
       <div class="form-group"><label class="form-label">Discussion link</label><input class="form-input" id="ev-link" type="text"></div>
-      <div class="form-group"><label class="form-label">Status</label>
-        <select class="form-select" id="ev-status">
-          <option value="approved">Approved</option>
-          <option value="pending">Pending</option>
-          <option value="rejected">Rejected</option>
-        </select>
-      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-event')">Cancel</button>
@@ -936,7 +929,6 @@ async function loadEvents() {
         <td class="truncate">${esc(e.name)}</td>
         <td>${esc(e.start_date)}</td>
         <td>${esc(e.city)}</td>
-        <td><span class="badge badge-${e.status}">${esc(e.status)}</span></td>
         <td style="display:flex;gap:6px;flex-wrap:wrap">
           <button class="btn btn-ghost btn-sm" onclick='openEditEvent(${JSON.stringify(e)})'>Edit</button>
           <button class="btn btn-danger btn-sm" onclick="deleteEvent('${e.id}','${esc(e.name)}')">Delete</button>
@@ -949,7 +941,6 @@ function openAddEvent() {
   document.getElementById('event-modal-title').textContent = 'Add event';
   document.getElementById('ev-id').value = '';
   ['ev-name','ev-start','ev-end','ev-city','ev-desc','ev-link'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('ev-status').value = 'approved';
   openModal('modal-event');
 }
 
@@ -962,7 +953,6 @@ function openEditEvent(ev) {
   document.getElementById('ev-city').value = ev.city || '';
   document.getElementById('ev-desc').value = ev.description || '';
   document.getElementById('ev-link').value = ev.discussion_link || '';
-  document.getElementById('ev-status').value = ev.status || 'approved';
   openModal('modal-event');
 }
 
@@ -970,7 +960,7 @@ async function submitEvent() {
   var id = document.getElementById('ev-id').value;
   var name = document.getElementById('ev-name').value.trim();
   if (!name) { toast('Name required', true); return; }
-  var payload = { name, startDate: document.getElementById('ev-start').value, endDate: document.getElementById('ev-end').value, city: document.getElementById('ev-city').value, description: document.getElementById('ev-desc').value, discussionLink: document.getElementById('ev-link').value, status: document.getElementById('ev-status').value };
+  var payload = { name, startDate: document.getElementById('ev-start').value, endDate: document.getElementById('ev-end').value, city: document.getElementById('ev-city').value, description: document.getElementById('ev-desc').value, discussionLink: document.getElementById('ev-link').value, status: 'approved' };
   try {
     if (id) { await api('POST', '', { action: 'update-event', id, ...payload }); }
     else { await api('POST', '', { action: 'add-event', ...payload }); }
@@ -1044,19 +1034,16 @@ async function loadOfferings() {
   tbody.innerHTML = '<tr><td colspan="6"><span class="spinner"></span></td></tr>';
   try {
     var data = await api('GET', '?action=offerings');
-    if (!data.offerings.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty">No offerings submitted.</td></tr>'; return; }
+    if (!data.offerings.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty">No offerings submitted.</td></tr>'; return; }
     tbody.innerHTML = data.offerings.map(o => `
       <tr>
         <td>${esc(o.name)}</td>
         <td class="truncate">${esc(o.email)}</td>
         <td class="truncate">${esc(o.title)}</td>
         <td>${esc(o.category)}</td>
-        <td><span class="badge badge-${o.status}">${esc(o.status)}</span></td>
         <td style="display:flex;gap:6px;flex-wrap:wrap">
-          ${o.status === 'pending' ? `
-          <button class="btn btn-success btn-sm" onclick="approveOffering('${o.id}')">Approve</button>
-          <button class="btn btn-warn btn-sm" onclick="rejectOffering('${o.id}')">Reject</button>` : ''}
           <button class="btn btn-ghost btn-sm" onclick="viewOffering(${JSON.stringify(o).replace(/'/g,'&#39;')})">View</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteOffering('${o.id}','${esc(o.title)}')">Delete</button>
         </td>
       </tr>`).join('');
   } catch(e) { toast(e.message, true); }
@@ -1069,18 +1056,11 @@ function viewOffering(o) {
   openModal('modal-detail');
 }
 
-async function approveOffering(id) {
+async function deleteOffering(id, title) {
+  if (!confirm('Delete offering "' + title + '"? This cannot be undone.')) return;
   try {
-    await api('POST', '', { action: 'approve-offering', id });
-    toast('Offering approved');
-    loadOfferings();
-  } catch(e) { toast(e.message, true); }
-}
-
-async function rejectOffering(id) {
-  try {
-    await api('POST', '', { action: 'reject-offering', id });
-    toast('Offering rejected');
+    await api('POST', '', { action: 'delete-offering', id });
+    toast('Offering deleted');
     loadOfferings();
   } catch(e) { toast(e.message, true); }
 }

@@ -208,17 +208,10 @@ export default async function handler(req, res) {
   }
 
   // ── Offerings ────────────────────────────────────────────────────
-  if (action === 'approve-offering') {
+  if (action === 'delete-offering') {
     const { id } = body;
     if (!id) return res.status(400).json({ error: 'id required' });
-    await update('offerings', { id }, { status: 'published' });
-    return res.status(200).json({ ok: true });
-  }
-
-  if (action === 'reject-offering') {
-    const { id } = body;
-    if (!id) return res.status(400).json({ error: 'id required' });
-    await update('offerings', { id }, { status: 'rejected' });
+    await remove('offerings', { id });
     return res.status(200).json({ ok: true });
   }
 

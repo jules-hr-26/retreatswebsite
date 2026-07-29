@@ -28,10 +28,11 @@ export default async function handler(req, res) {
       description: String(description).trim(),
       website:     website || '',
       linkedin:    linkedin || '',
-      status:      'pending',
+      status:      'published',
     });
 
-    const emailRes = await fetch('https://api.resend.com/emails', {
+    // Notify Julia — non-fatal if Resend is not yet configured
+    fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -50,15 +51,11 @@ export default async function handler(req, res) {
           <p>${esc(description).replace(/\n/g, '<br>')}</p>
           ${website ? `<p><strong>Website:</strong> ${esc(website)}</p>` : ''}
           ${linkedin ? `<p><strong>LinkedIn:</strong> ${esc(linkedin)}</p>` : ''}
+          <p><em>This offering has been published automatically.</em></p>
         `,
       }),
-    });
+    }).catch(err => console.error('[submit-offer] email notification failed', err.message));
 
-    if (!emailRes.ok) {
-      const errBody = await emailRes.text();
-      console.error('[submit-offer] Resend error', emailRes.status, errBody);
-      return res.status(502).json({ error: 'email send failed' });
-    }
   } catch (err) {
     console.error('[submit-offer] failed', err.message);
     return res.status(502).json({ error: 'submission failed' });

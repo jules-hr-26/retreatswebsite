@@ -24,25 +24,25 @@ export default async function handler(req, res) {
   ].join('');
 
   try {
-    // Persist to DB — previously this was email-only and the data was lost
-    await insert('proposed_events', {
-      title:       String(title).trim(),
-      format:      format || '',
-      date,
-      duration:    duration || '',
-      location:    location || '',
-      link:        link || '',
-      description: String(description).trim(),
-      status:      'pending',
+    // Insert directly into events — no approval step needed
+    await insert('events', {
+      name:            String(title).trim(),
+      start_date:      date,
+      end_date:        '',
+      city:            location || '',
+      description:     [String(description).trim(), format ? `Format: ${format}` : '', duration ? `Duration: ${duration}` : ''].filter(Boolean).join('\n'),
+      discussion_link: link || '',
+      status:          'approved',
     });
 
-    const emailRes = await fetch('https://api.resend.com/emails', {
+    // Notify Julia — non-fatal if Resend is not yet configured
+    fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         from: 'CNLC Platform <onboarding@resend.dev>',
         to: 'julia@globaloptimism.com',
-        subject: `New event proposal: ${title}`,
+        subject: `New event added by member: ${title}`,
         html: `
           <h2>${esc(title)}</h2>
           <p><strong>Format:</strong> ${esc(format || 'Online')}</p>
@@ -51,15 +51,11 @@ export default async function handler(req, res) {
           ${extraRows}
           <p><strong>Idea:</strong></p>
           <p>${esc(description).replace(/\n/g, '<br>')}</p>
+          <p><em>This event has been added to the events list automatically.</em></p>
         `,
       }),
-    });
+    }).catch(err => console.error('[propose-event] email notification failed', err.message));
 
-    if (!emailRes.ok) {
-      const errBody = await emailRes.text();
-      console.error('[propose-event] Resend error', emailRes.status, errBody);
-      return res.status(502).json({ error: 'email send failed' });
-    }
   } catch (err) {
     console.error('[propose-event] failed', err.message);
     return res.status(502).json({ error: 'submission failed' });
