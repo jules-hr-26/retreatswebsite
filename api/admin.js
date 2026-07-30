@@ -86,6 +86,11 @@ export default async function handler(req, res) {
       return res.status(200).json({ posts, replies });
     }
 
+    if (action === 'forum-memberships') {
+      const rows = await select('forum_memberships', {}, { order: 'forum_name.asc,created_at.asc' }).catch(() => []);
+      return res.status(200).json({ memberships: rows });
+    }
+
     if (action === 'export-allowlist') {
       if (admin.role !== 'super_admin') return res.status(403).json({ error: 'super_admin required' });
       const rows = await select('alumni_allowlist', {}, { order: 'first_name.asc' });

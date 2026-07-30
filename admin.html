@@ -576,6 +576,16 @@
           <tbody id="forum-tbody"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody>
         </table>
       </div>
+      <div class="toolbar" style="margin-top:28px">
+        <h3 style="font-size:14px;font-weight:600;color:var(--ink);margin:0">Forum Memberships</h3>
+        <button class="btn btn-ghost" onclick="loadForumMemberships()">Refresh</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Forum</th><th>Member</th><th>Notifications</th><th>Joined</th></tr></thead>
+          <tbody id="memberships-tbody"><tr><td colspan="4" class="empty">Loading…</td></tr></tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Settings -->
@@ -752,7 +762,7 @@ function fmtDate(s) {
 }
 
 // ── Tabs ─────────────────────────────────────────────────────────
-var tabLoaders = { members: loadMembers, allowlist: loadAllowlist, events: loadEvents, proposed: loadProposed, offerings: loadOfferings, forum: loadForum, settings: loadAdmins };
+var tabLoaders = { members: loadMembers, allowlist: loadAllowlist, events: loadEvents, proposed: loadProposed, offerings: loadOfferings, forum: function() { loadForum(); loadForumMemberships(); }, settings: loadAdmins };
 var tabTitles  = { dashboard:'Dashboard', members:'Members', allowlist:'Members (Allowlist)', events:'Events', proposed:'Proposed Events', offerings:'Offerings', forum:'Forum Moderation', settings:'Settings' };
 
 function errRow(n) {
@@ -1184,6 +1194,26 @@ async function deleteForumItem(id, isPost) {
     toast('Deleted');
     loadForum();
   } catch(e) { toast(e.message, true); }
+}
+
+async function loadForumMemberships() {
+  var tbody = document.getElementById('memberships-tbody');
+  tbody.innerHTML = '<tr><td colspan="4"><span class="spinner"></span></td></tr>';
+  try {
+    var data = await api('GET', '?action=forum-memberships');
+    if (!data.memberships.length) {
+      tbody.innerHTML = '<tr><td colspan="4" class="empty">No forum memberships yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = data.memberships.map(function(r) {
+      return '<tr' + (r.notify === 'left' ? ' style="opacity:0.5"' : '') + '>' +
+        '<td>' + esc(r.forum_name) + '</td>' +
+        '<td>' + esc(r.member_email) + '</td>' +
+        '<td><span class="badge badge-' + (r.notify === 'yes' ? 'approved' : r.notify === 'left' ? 'rejected' : 'pending') + '">' + (r.notify === 'yes' ? 'On' : r.notify === 'left' ? 'Left' : 'Off') + '</span></td>' +
+        '<td>' + fmtDate(r.created_at) + '</td>' +
+        '</tr>';
+    }).join('');
+  } catch(e) { tbody.innerHTML = errRow(4); }
 }
 
 // ── Settings / Admins ────────────────────────────────────────────
