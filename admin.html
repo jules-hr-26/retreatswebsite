@@ -440,7 +440,7 @@
     </a>
     <div class="nav-section">Community</div>
     <a data-tab="members">
-      <span class="nav-icon">◈</span> Administrators
+      <span class="nav-icon">◈</span> Members
     </a>
     <a data-tab="allowlist">
       <span class="nav-icon">✦</span> Members (Allowlist)
@@ -751,7 +751,7 @@ function fmtDate(s) {
 
 // ── Tabs ─────────────────────────────────────────────────────────
 var tabLoaders = { members: loadMembers, allowlist: loadAllowlist, events: loadEvents, proposed: loadProposed, offerings: loadOfferings, forum: loadForum, settings: loadAdmins };
-var tabTitles  = { dashboard:'Dashboard', members:'Administrators', allowlist:'Members (Allowlist)', events:'Events', proposed:'Proposed Events', offerings:'Offerings', forum:'Forum Moderation', settings:'Settings' };
+var tabTitles  = { dashboard:'Dashboard', members:'Members', allowlist:'Members (Allowlist)', events:'Events', proposed:'Proposed Events', offerings:'Offerings', forum:'Forum Moderation', settings:'Settings' };
 
 function errRow(n) {
   return '<tr><td colspan="' + n + '" class="empty" style="line-height:1.8">Something went wrong.<br><em style="font-size:12px;color:var(--ink-light)">Please take a slow breath in… and out, then try again.</em></td></tr>';
@@ -808,6 +808,7 @@ async function loadMembers() {
         <td class="truncate">${esc(m.cohort)}</td>
         <td>${m.in_directory ? '✓' : ''}</td>
         <td>${me.role === 'super_admin' ? `<div style="display:flex;gap:6px">
+          <button class="btn btn-ghost btn-sm" onclick="exportMember('${esc(m.auth_email)}')">Export</button>
           <button class="btn btn-ghost btn-sm" onclick="deleteMember('${esc(m.auth_email)}','${esc(m.first_name)} ${esc(m.last_name)}')">Delete</button>
           <button class="btn btn-danger btn-sm" onclick="gdprEraseMember('${esc(m.auth_email)}','${esc(m.first_name)} ${esc(m.last_name)}')">GDPR Erase</button>
         </div>` : ''}</td>
@@ -863,10 +864,10 @@ async function loadAllowlist() {
         <td>${esc(r.first_name)}</td>
         <td>${esc(r.last_name)}</td>
         <td>${esc(r.email)}</td>
-        <td style="display:flex;gap:6px">
+        <td><div style="display:flex;gap:6px">
           <button class="btn btn-ghost btn-sm" onclick="openEditAllowlist('${esc(r.id)}','${esc(r.first_name)}','${esc(r.last_name)}','${esc(r.email)}')">Edit</button>
           <button class="btn btn-ghost btn-sm" onclick="removeAllowlist('${esc(r.email)}')">Remove</button>
-        </td>
+        </div></td>
       </tr>`).join('');
   } catch(e) { tbody.innerHTML = errRow(4); }
 }
@@ -948,10 +949,10 @@ async function loadEvents() {
         <td class="truncate">${esc(e.name)}</td>
         <td>${esc(e.start_date)}</td>
         <td>${esc(e.city)}</td>
-        <td style="display:flex;gap:6px;flex-wrap:wrap">
+        <td><div style="display:flex;gap:6px;flex-wrap:wrap">
           <button class="btn btn-ghost btn-sm" onclick='openEditEvent(${JSON.stringify(e)})'>Edit</button>
           <button class="btn btn-danger btn-sm" onclick="deleteEvent('${e.id}','${esc(e.name)}')">Delete</button>
-        </td>
+        </div></td>
       </tr>`).join('');
   } catch(e) { tbody.innerHTML = errRow(4); }
 }
@@ -1012,12 +1013,12 @@ async function loadProposed() {
         <td>${esc(p.format)}</td>
         <td class="truncate">${esc(p.location)}</td>
         <td><span class="badge badge-${p.status}">${esc(p.status)}</span></td>
-        <td style="display:flex;gap:6px;flex-wrap:wrap">
+        <td><div style="display:flex;gap:6px;flex-wrap:wrap">
           ${p.status === 'pending' ? `
           <button class="btn btn-success btn-sm" onclick="approveProposed('${p.id}')">Approve</button>
           <button class="btn btn-warn btn-sm" onclick="rejectProposed('${p.id}')">Reject</button>` : ''}
           <button class="btn btn-ghost btn-sm" onclick="viewProposed(${JSON.stringify(p).replace(/'/g,'&#39;')})">View</button>
-        </td>
+        </div></td>
       </tr>`).join('');
   } catch(e) { tbody.innerHTML = errRow(6); }
 }
@@ -1060,10 +1061,10 @@ async function loadOfferings() {
         <td class="truncate">${esc(o.email)}</td>
         <td class="truncate">${esc(o.title)}</td>
         <td>${esc(o.category)}</td>
-        <td style="display:flex;gap:6px;flex-wrap:wrap">
+        <td><div style="display:flex;gap:6px;flex-wrap:wrap">
           <button class="btn btn-ghost btn-sm" onclick="viewOffering(${JSON.stringify(o).replace(/'/g,'&#39;')})">View</button>
           <button class="btn btn-danger btn-sm" onclick="deleteOffering('${o.id}','${esc(o.title)}')">Delete</button>
-        </td>
+        </div></td>
       </tr>`).join('');
   } catch(e) { tbody.innerHTML = errRow(5); }
 }
@@ -1144,10 +1145,10 @@ async function loadAdmins() {
         <td>${esc(a.email)}</td>
         <td>${a.role === 'super_admin' ? 'Super Admin' : 'Admin'}</td>
         <td>${fmtDate(a.created_at)}</td>
-        <td style="display:flex;gap:6px">
+        <td><div style="display:flex;gap:6px">
           <button class="btn btn-ghost btn-sm" onclick="openEditAdmin('${esc(a.email)}','${esc(a.name)}','${a.role}')">Edit</button>
           <button class="btn btn-danger btn-sm" onclick="removeAdmin('${esc(a.email)}','${esc(a.name)}')">Remove</button>
-        </td>
+        </div></td>
       </tr>`).join('');
   } catch(e) { tbody.innerHTML = errRow(5); }
 }
