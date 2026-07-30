@@ -525,6 +525,7 @@
     <!-- Events -->
     <div class="tab-panel" id="tab-events">
       <div class="toolbar">
+        <input type="search" id="events-search" placeholder="Search by name or city…">
         <button class="btn btn-primary" onclick="openAddEvent()">+ Add event</button>
         <button class="btn btn-ghost" onclick="loadEvents()">Refresh</button>
       </div>
@@ -552,6 +553,7 @@
     <!-- Offerings -->
     <div class="tab-panel" id="tab-offerings">
       <div class="toolbar">
+        <input type="search" id="offerings-search" placeholder="Search by name, title, or category…">
         <button class="btn btn-ghost" onclick="loadOfferings()">Refresh</button>
       </div>
       <div class="table-wrap">
@@ -807,11 +809,12 @@ async function loadMembers() {
         <td>${esc(m.country)}</td>
         <td class="truncate">${esc(m.cohort)}</td>
         <td>${m.in_directory ? '✓' : ''}</td>
-        <td>${me.role === 'super_admin' ? `<div style="display:flex;gap:6px">
-          <button class="btn btn-ghost btn-sm" onclick="exportMember('${esc(m.auth_email)}')">Export</button>
+        <td><div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick="viewMember(${JSON.stringify(m).replace(/'/g,'&#39;')})">View</button>
+          ${currentAdmin?.role !== 'super_admin' ? '' : `<button class="btn btn-ghost btn-sm" onclick="exportMember('${esc(m.auth_email)}')">Export</button>
           <button class="btn btn-ghost btn-sm" onclick="deleteMember('${esc(m.auth_email)}','${esc(m.first_name)} ${esc(m.last_name)}')">Delete</button>
-          <button class="btn btn-danger btn-sm" onclick="gdprEraseMember('${esc(m.auth_email)}','${esc(m.first_name)} ${esc(m.last_name)}')">GDPR Erase</button>
-        </div>` : ''}</td>
+          <button class="btn btn-danger btn-sm" onclick="gdprEraseMember('${esc(m.auth_email)}','${esc(m.first_name)} ${esc(m.last_name)}')">GDPR Erase</button>`}
+        </div></td>
       </tr>`).join('');
   } catch(e) { tbody.innerHTML = errRow(7); }
 }
@@ -849,6 +852,26 @@ async function gdprEraseMember(email, name) {
     toast('Member fully erased');
     loadMembers(); refreshStats();
   } catch(e) { toast(e.message, true); }
+}
+
+function viewMember(m) {
+  var fields = [
+    ['Name',         [m.first_name, m.last_name].filter(Boolean).join(' ')],
+    ['Login email',  m.auth_email],
+    ['Display email',m.display_email],
+    ['Organisation', m.organisation],
+    ['Role / Title', m.role_title],
+    ['Sector',       m.sector],
+    ['City',         m.city],
+    ['Country',      m.country],
+    ['Cohort',       m.cohort],
+    ['In directory', m.in_directory ? 'Yes' : 'No'],
+    ['Registered',   m.created_at ? fmtDate(m.created_at) : ''],
+    ['GDPR consent', m.gdpr_consent_at ? fmtDate(m.gdpr_consent_at) : ''],
+  ].filter(([, v]) => v);
+  document.getElementById('modal-detail-title').textContent = [m.first_name, m.last_name].filter(Boolean).join(' ') || m.auth_email;
+  document.getElementById('modal-detail-body').innerHTML = fields.map(([k, v]) => `<div class="detail-row"><div class="detail-label">${esc(k)}</div><div class="detail-value">${esc(String(v))}</div></div>`).join('');
+  openModal('modal-detail');
 }
 
 // ── Allowlist ────────────────────────────────────────────────────
@@ -938,24 +961,39 @@ async function removeAllowlist(email) {
 }
 
 // ── Events ───────────────────────────────────────────────────────
+var _eventsRows = [];
+
 async function loadEvents() {
   var tbody = document.getElementById('events-tbody');
   tbody.innerHTML = '<tr><td colspan="4"><span class="spinner"></span></td></tr>';
   try {
     var data = await api('GET', '?action=events');
-    if (!data.events.length) { tbody.innerHTML = '<tr><td colspan="4" class="empty">No events yet.</td></tr>'; return; }
-    tbody.innerHTML = data.events.map(e => `
-      <tr>
-        <td class="truncate">${esc(e.name)}</td>
-        <td>${esc(e.start_date)}</td>
-        <td>${esc(e.city)}</td>
-        <td><div style="display:flex;gap:6px;flex-wrap:wrap">
-          <button class="btn btn-ghost btn-sm" onclick='openEditEvent(${JSON.stringify(e)})'>Edit</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteEvent('${e.id}','${esc(e.name)}')">Delete</button>
-        </div></td>
-      </tr>`).join('');
+    _eventsRows = data.events;
+    renderEventsRows();
   } catch(e) { tbody.innerHTML = errRow(4); }
 }
+
+function renderEventsRows() {
+  var tbody = document.getElementById('events-tbody');
+  var q = (document.getElementById('events-search').value || '').toLowerCase().trim();
+  var rows = q ? _eventsRows.filter(e => (e.name + ' ' + e.city).toLowerCase().includes(q)) : _eventsRows;
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="4" class="empty">' + (q ? 'No events match your search.' : 'No events yet.') + '</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(e => `
+    <tr>
+      <td class="truncate">${esc(e.name)}</td>
+      <td>${esc(e.start_date)}</td>
+      <td>${esc(e.city)}</td>
+      <td><div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick='openEditEvent(${JSON.stringify(e)})'>Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteEvent('${e.id}','${esc(e.name)}')">Delete</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+document.getElementById('events-search').addEventListener('input', debounce(renderEventsRows, 250));
 
 function openAddEvent() {
   document.getElementById('event-modal-title').textContent = 'Add event';
@@ -1049,25 +1087,40 @@ async function rejectProposed(id) {
 }
 
 // ── Offerings ────────────────────────────────────────────────────
+var _offeringsRows = [];
+
 async function loadOfferings() {
   var tbody = document.getElementById('offerings-tbody');
   tbody.innerHTML = '<tr><td colspan="5"><span class="spinner"></span></td></tr>';
   try {
     var data = await api('GET', '?action=offerings');
-    if (!data.offerings.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty">No offerings submitted.</td></tr>'; return; }
-    tbody.innerHTML = data.offerings.map(o => `
-      <tr>
-        <td>${esc(o.name)}</td>
-        <td class="truncate">${esc(o.email)}</td>
-        <td class="truncate">${esc(o.title)}</td>
-        <td>${esc(o.category)}</td>
-        <td><div style="display:flex;gap:6px;flex-wrap:wrap">
-          <button class="btn btn-ghost btn-sm" onclick="viewOffering(${JSON.stringify(o).replace(/'/g,'&#39;')})">View</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteOffering('${o.id}','${esc(o.title)}')">Delete</button>
-        </div></td>
-      </tr>`).join('');
+    _offeringsRows = data.offerings;
+    renderOfferingsRows();
   } catch(e) { tbody.innerHTML = errRow(5); }
 }
+
+function renderOfferingsRows() {
+  var tbody = document.getElementById('offerings-tbody');
+  var q = (document.getElementById('offerings-search').value || '').toLowerCase().trim();
+  var rows = q ? _offeringsRows.filter(o => (o.name + ' ' + o.title + ' ' + o.category).toLowerCase().includes(q)) : _offeringsRows;
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="empty">' + (q ? 'No offerings match your search.' : 'No offerings submitted.') + '</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(o => `
+    <tr>
+      <td>${esc(o.name)}</td>
+      <td class="truncate">${esc(o.email)}</td>
+      <td class="truncate">${esc(o.title)}</td>
+      <td>${esc(o.category)}</td>
+      <td><div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="viewOffering(${JSON.stringify(o).replace(/'/g,'&#39;')})">View</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteOffering('${o.id}','${esc(o.title)}')">Delete</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+document.getElementById('offerings-search').addEventListener('input', debounce(renderOfferingsRows, 250));
 
 function viewOffering(o) {
   var fields = [['Name',o.name],['Email',o.email],['Title',o.title],['Category',o.category],['Fee type',o.fee_type],['Fee details',o.fee_info],['Format',o.format],['Location',o.location],['Website',o.website],['LinkedIn',o.linkedin],['Description',o.description]].filter(([,v])=>v);
