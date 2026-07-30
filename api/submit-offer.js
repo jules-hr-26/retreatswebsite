@@ -1,7 +1,14 @@
 import { insert } from './_lib/supabase.js';
+import { readCookie, verifyToken } from '../lib/session.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST required' });
+
+  const session = await verifyToken(
+    readCookie(req.headers.cookie, 'cnlc_session'),
+    process.env.SESSION_SECRET
+  ).catch(() => null);
+  if (!session?.email) return res.status(401).json({ error: 'not signed in' });
 
   const { name, email, retreat, category, fee, feeInfo, location, format, title, description, website, linkedin } = req.body || {};
 
