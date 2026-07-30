@@ -754,6 +754,10 @@ function fmtDate(s) {
 var tabLoaders = { members: loadMembers, allowlist: loadAllowlist, events: loadEvents, proposed: loadProposed, offerings: loadOfferings, forum: loadForum, settings: loadAdmins };
 var tabTitles  = { dashboard:'Dashboard', members:'Administrators', allowlist:'Members (Allowlist)', events:'Events', proposed:'Proposed Events', offerings:'Offerings', forum:'Forum Moderation', settings:'Settings' };
 
+function errRow(n) {
+  return '<tr><td colspan="' + n + '" class="empty" style="line-height:1.8">Something went wrong.<br><em style="font-size:12px;color:var(--ink-light)">Please take a slow breath in… and out, then try again.</em></td></tr>';
+}
+
 function switchTab(tab) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('#sidebar nav a').forEach(a => a.classList.remove('active'));
@@ -803,7 +807,7 @@ async function loadMembers() {
         <td>${m.in_directory ? '✓' : ''}</td>
         <td><button class="btn btn-danger btn-sm" onclick="deleteMember('${esc(m.auth_email)}','${esc(m.first_name)} ${esc(m.last_name)}')">Delete</button></td>
       </tr>`).join('');
-  } catch(e) { toast(e.message, true); }
+  } catch(e) { tbody.innerHTML = errRow(7); }
 }
 
 document.getElementById('members-search').addEventListener('keydown', e => { if (e.key === 'Enter') loadMembers(); });
@@ -850,7 +854,7 @@ async function loadAllowlist() {
           <button class="btn btn-ghost btn-sm" onclick="removeAllowlist('${esc(r.email)}')">Remove</button>
         </td>
       </tr>`).join('');
-  } catch(e) { toast(e.message, true); }
+  } catch(e) { tbody.innerHTML = errRow(4); }
 }
 
 document.getElementById('allowlist-search').addEventListener('keydown', e => { if (e.key === 'Enter') loadAllowlist(); });
@@ -921,10 +925,10 @@ async function removeAllowlist(email) {
 // ── Events ───────────────────────────────────────────────────────
 async function loadEvents() {
   var tbody = document.getElementById('events-tbody');
-  tbody.innerHTML = '<tr><td colspan="5"><span class="spinner"></span></td></tr>';
+  tbody.innerHTML = '<tr><td colspan="4"><span class="spinner"></span></td></tr>';
   try {
     var data = await api('GET', '?action=events');
-    if (!data.events.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty">No events yet.</td></tr>'; return; }
+    if (!data.events.length) { tbody.innerHTML = '<tr><td colspan="4" class="empty">No events yet.</td></tr>'; return; }
     tbody.innerHTML = data.events.map(e => `
       <tr>
         <td class="truncate">${esc(e.name)}</td>
@@ -935,7 +939,7 @@ async function loadEvents() {
           <button class="btn btn-danger btn-sm" onclick="deleteEvent('${e.id}','${esc(e.name)}')">Delete</button>
         </td>
       </tr>`).join('');
-  } catch(e) { toast(e.message, true); }
+  } catch(e) { tbody.innerHTML = errRow(4); }
 }
 
 function openAddEvent() {
@@ -1001,7 +1005,7 @@ async function loadProposed() {
           <button class="btn btn-ghost btn-sm" onclick="viewProposed(${JSON.stringify(p).replace(/'/g,'&#39;')})">View</button>
         </td>
       </tr>`).join('');
-  } catch(e) { toast(e.message, true); }
+  } catch(e) { tbody.innerHTML = errRow(6); }
 }
 
 function viewProposed(p) {
@@ -1032,7 +1036,7 @@ async function rejectProposed(id) {
 // ── Offerings ────────────────────────────────────────────────────
 async function loadOfferings() {
   var tbody = document.getElementById('offerings-tbody');
-  tbody.innerHTML = '<tr><td colspan="6"><span class="spinner"></span></td></tr>';
+  tbody.innerHTML = '<tr><td colspan="5"><span class="spinner"></span></td></tr>';
   try {
     var data = await api('GET', '?action=offerings');
     if (!data.offerings.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty">No offerings submitted.</td></tr>'; return; }
@@ -1047,7 +1051,7 @@ async function loadOfferings() {
           <button class="btn btn-danger btn-sm" onclick="deleteOffering('${o.id}','${esc(o.title)}')">Delete</button>
         </td>
       </tr>`).join('');
-  } catch(e) { toast(e.message, true); }
+  } catch(e) { tbody.innerHTML = errRow(5); }
 }
 
 function viewOffering(o) {
@@ -1079,7 +1083,7 @@ async function loadForum() {
     (data.replies || []).forEach(r => _forumRows.push({ type:'Reply', forum: r.forum_name, author: r.author_name || '', content: r.body || '', date: r.created_at, id: r.reply_id, isPost: false }));
     _forumRows.sort((a,b) => new Date(b.date) - new Date(a.date));
     renderForumRows();
-  } catch(e) { toast(e.message, true); }
+  } catch(e) { tbody.innerHTML = errRow(6); }
 }
 
 function renderForumRows() {
@@ -1131,7 +1135,7 @@ async function loadAdmins() {
           <button class="btn btn-danger btn-sm" onclick="removeAdmin('${esc(a.email)}','${esc(a.name)}')">Remove</button>
         </td>
       </tr>`).join('');
-  } catch(e) { toast(e.message, true); }
+  } catch(e) { tbody.innerHTML = errRow(5); }
 }
 
 var _editingAdminEmail = null;
