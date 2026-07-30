@@ -256,7 +256,7 @@ export default async function handler(req, res) {
     });
   }
 
-  // ── GDPR: delete member ──────────────────────────────────────────
+  // ── GDPR: delete member (admin-initiated — keeps allowlist) ─────
   if (action === 'delete-member') {
     const { email } = body;
     if (!email) return res.status(400).json({ error: 'email required' });
@@ -268,6 +268,23 @@ export default async function handler(req, res) {
       remove('forum_replies',     { author_email: e }),
       remove('offerings',         { email: e }),
       remove('members',           { auth_email:   e }),
+    ]);
+    return res.status(200).json({ ok: true });
+  }
+
+  // ── GDPR: full erasure (member-requested — removes allowlist too) ─
+  if (action === 'gdpr-erase-member') {
+    const { email } = body;
+    if (!email) return res.status(400).json({ error: 'email required' });
+    const e = email.trim().toLowerCase();
+    await Promise.all([
+      remove('event_attendees',   { member_email: e }),
+      remove('forum_memberships', { member_email: e }),
+      remove('forum_posts',       { author_email: e }),
+      remove('forum_replies',     { author_email: e }),
+      remove('offerings',         { email: e }),
+      remove('members',           { auth_email:   e }),
+      remove('alumni_allowlist',  { email: e }),
     ]);
     return res.status(200).json({ ok: true });
   }

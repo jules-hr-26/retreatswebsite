@@ -805,7 +805,10 @@ async function loadMembers() {
         <td>${esc(m.country)}</td>
         <td class="truncate">${esc(m.cohort)}</td>
         <td>${m.in_directory ? '✓' : ''}</td>
-        <td><button class="btn btn-danger btn-sm" onclick="deleteMember('${esc(m.auth_email)}','${esc(m.first_name)} ${esc(m.last_name)}')">Delete</button></td>
+        <td>${me.role === 'super_admin' ? `<div style="display:flex;gap:6px">
+          <button class="btn btn-ghost btn-sm" onclick="deleteMember('${esc(m.auth_email)}','${esc(m.first_name)} ${esc(m.last_name)}')">Delete</button>
+          <button class="btn btn-danger btn-sm" onclick="gdprEraseMember('${esc(m.auth_email)}','${esc(m.first_name)} ${esc(m.last_name)}')">GDPR Erase</button>
+        </div>` : ''}</td>
       </tr>`).join('');
   } catch(e) { tbody.innerHTML = errRow(7); }
 }
@@ -828,10 +831,19 @@ async function exportMember(email) {
 }
 
 async function deleteMember(email, name) {
-  if (!confirm('Permanently delete all data for ' + name + ' (' + email + ')?\n\nThis removes their profile, event RSVPs, forum posts, and offerings. This cannot be undone.')) return;
+  if (!confirm('Delete ' + name + ' (' + email + ')?\n\nThis removes their profile, event RSVPs, forum posts, and offerings. Their allowlist entry is kept — they can re-register.\n\nThis cannot be undone.')) return;
   try {
     await api('POST', '', { action: 'delete-member', email });
     toast('Member deleted');
+    loadMembers();
+  } catch(e) { toast(e.message, true); }
+}
+
+async function gdprEraseMember(email, name) {
+  if (!confirm('GDPR Right to Erasure — fully erase ' + name + ' (' + email + ')?\n\nThis removes their profile, event RSVPs, forum posts, offerings, AND their allowlist entry. They will not be able to re-register.\n\nThis cannot be undone.')) return;
+  try {
+    await api('POST', '', { action: 'gdpr-erase-member', email });
+    toast('Member fully erased');
     loadMembers();
   } catch(e) { toast(e.message, true); }
 }
