@@ -487,7 +487,6 @@
         <div class="stat-card" data-type="allowlist" style="cursor:pointer" onclick="switchTab('allowlist')"><div class="num" id="stat-allowlist">—</div><div class="label">Allowlist</div></div>
         <div class="stat-card" data-type="events"    style="cursor:pointer" onclick="switchTab('events')"><div class="num" id="stat-events">—</div><div class="label">Events</div></div>
         <div class="stat-card" data-type="offerings" style="cursor:pointer" onclick="switchTab('offerings')"><div class="num" id="stat-offerings">—</div><div class="label">Offerings</div></div>
-        <div class="stat-card" data-type="proposed"  style="cursor:pointer" onclick="switchTab('proposed')"><div class="num" id="stat-proposed">—</div><div class="label">Proposed</div></div>
       </div>
     </div>
 
@@ -786,7 +785,6 @@ function loadStats(data) {
   document.getElementById('stat-allowlist').textContent = data.allowlist;
   document.getElementById('stat-events').textContent   = data.events;
   document.getElementById('stat-offerings').textContent = data.offerings;
-  document.getElementById('stat-proposed').textContent  = data.proposed;
 }
 
 // ── Members ──────────────────────────────────────────────────────
