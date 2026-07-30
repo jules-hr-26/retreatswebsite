@@ -566,6 +566,7 @@
     <!-- Forum -->
     <div class="tab-panel" id="tab-forum">
       <div class="toolbar">
+        <input type="search" id="forum-search" placeholder="Search by author, forum, or content…">
         <button class="btn btn-ghost" onclick="loadForum()">Refresh</button>
       </div>
       <div class="table-wrap">
@@ -1066,27 +1067,43 @@ async function deleteOffering(id, title) {
 }
 
 // ── Forum ────────────────────────────────────────────────────────
+var _forumRows = [];
+
 async function loadForum() {
   var tbody = document.getElementById('forum-tbody');
   tbody.innerHTML = '<tr><td colspan="6"><span class="spinner"></span></td></tr>';
   try {
     var data = await api('GET', '?action=forum');
-    var rows = [];
-    (data.posts || []).forEach(p => rows.push({ type:'Post', forum: p.forum_name, author: p.author_name, content: p.title + ': ' + p.body, date: p.created_at, id: p.post_id, isPost: true }));
-    (data.replies || []).forEach(r => rows.push({ type:'Reply', forum: r.forum_name, author: r.author_name, content: r.body, date: r.created_at, id: r.reply_id, isPost: false }));
-    rows.sort((a,b) => new Date(b.date) - new Date(a.date));
-    if (!rows.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty">No forum activity yet.</td></tr>'; return; }
-    tbody.innerHTML = rows.map(r => `
-      <tr>
-        <td>${esc(r.type)}</td>
-        <td>${esc(r.forum)}</td>
-        <td>${esc(r.author)}</td>
-        <td class="truncate">${esc(r.content)}</td>
-        <td>${fmtDate(r.date)}</td>
-        <td><button class="btn btn-danger btn-sm" onclick="deleteForumItem('${r.id}',${r.isPost})">Delete</button></td>
-      </tr>`).join('');
+    _forumRows = [];
+    (data.posts || []).forEach(p => _forumRows.push({ type:'Post', forum: p.forum_name, author: p.author_name || '', content: (p.title ? p.title + ': ' : '') + (p.body || ''), date: p.created_at, id: p.post_id, isPost: true }));
+    (data.replies || []).forEach(r => _forumRows.push({ type:'Reply', forum: r.forum_name, author: r.author_name || '', content: r.body || '', date: r.created_at, id: r.reply_id, isPost: false }));
+    _forumRows.sort((a,b) => new Date(b.date) - new Date(a.date));
+    renderForumRows();
   } catch(e) { toast(e.message, true); }
 }
+
+function renderForumRows() {
+  var tbody = document.getElementById('forum-tbody');
+  var q = (document.getElementById('forum-search').value || '').toLowerCase().trim();
+  var rows = q
+    ? _forumRows.filter(r => (r.author + ' ' + r.forum + ' ' + r.content).toLowerCase().includes(q))
+    : _forumRows;
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="empty">' + (q ? 'No results for "' + esc(q) + '".' : 'No forum activity yet.') + '</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td>${esc(r.type)}</td>
+      <td>${esc(r.forum)}</td>
+      <td>${esc(r.author)}</td>
+      <td class="truncate">${esc(r.content)}</td>
+      <td>${fmtDate(r.date)}</td>
+      <td><button class="btn btn-danger btn-sm" onclick="deleteForumItem('${esc(r.id)}',${r.isPost})">Delete</button></td>
+    </tr>`).join('');
+}
+
+document.getElementById('forum-search').addEventListener('input', debounce(renderForumRows, 250));
 
 async function deleteForumItem(id, isPost) {
   if (!confirm('Delete this ' + (isPost ? 'post (and all its replies)' : 'reply') + '?')) return;
