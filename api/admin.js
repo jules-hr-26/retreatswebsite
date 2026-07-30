@@ -156,7 +156,10 @@ export default async function handler(req, res) {
   if (action === 'remove-allowlist') {
     const { email } = body;
     if (!email) return res.status(400).json({ error: 'email required' });
-    await remove('alumni_allowlist', { email: email.trim().toLowerCase() });
+    const e = email.trim().toLowerCase();
+    const adminRows = await select('admins', { email: e }).catch(() => []);
+    if (adminRows.length) return res.status(409).json({ error: 'admin_block', message: 'This person is an admin — remove their admin access in the Admins tab first.' });
+    await remove('alumni_allowlist', { email: e });
     return res.status(200).json({ ok: true });
   }
 

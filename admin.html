@@ -740,7 +740,7 @@ async function api(method, path, body) {
   var res = await fetch('/api/admin' + path, opts);
   if (res.status === 401) throw new Error('unauthorized');
   var data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'request failed');
+  if (!res.ok) throw new Error(data.message || data.error || 'request failed');
   return data;
 }
 
