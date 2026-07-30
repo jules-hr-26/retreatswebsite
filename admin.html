@@ -459,9 +459,9 @@
     <a data-tab="forum">
       <span class="nav-icon">◫</span> Moderation
     </a>
-    <div class="nav-section">System</div>
+    <div class="nav-section">Admin Access</div>
     <a data-tab="settings" id="settings-link" style="display:none">
-      <span class="nav-icon">◎</span> Settings
+      <span class="nav-icon">◎</span> Admins
     </a>
   </nav>
   <div class="admin-footer">
@@ -763,7 +763,7 @@ function fmtDate(s) {
 
 // ── Tabs ─────────────────────────────────────────────────────────
 var tabLoaders = { members: loadMembers, allowlist: loadAllowlist, events: loadEvents, proposed: loadProposed, offerings: loadOfferings, forum: function() { loadForum(); loadForumMemberships(); }, settings: loadAdmins };
-var tabTitles  = { dashboard:'Dashboard', members:'Members', allowlist:'Members (Allowlist)', events:'Events', proposed:'Proposed Events', offerings:'Offerings', forum:'Forum Moderation', settings:'Settings' };
+var tabTitles  = { dashboard:'Dashboard', members:'Members', allowlist:'Members (Allowlist)', events:'Events', proposed:'Proposed Events', offerings:'Offerings', forum:'Forum Moderation', settings:'Admins' };
 
 function errRow(n) {
   return '<tr><td colspan="' + n + '" class="empty" style="line-height:1.8">Something went wrong.<br><em style="font-size:12px;color:var(--ink-light)">Please take a slow breath in… and out, then try again.</em></td></tr>';
