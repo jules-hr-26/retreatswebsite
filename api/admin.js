@@ -315,8 +315,7 @@ export default async function handler(req, res) {
     ]);
 
     // Send invitation email (silently skipped if Resend is not yet configured)
-    const host = req.headers['x-forwarded-host'] || req.headers.host;
-    const loginUrl = `https://${host}/login.html`;
+    const loginUrl = 'https://retreatswebsite.vercel.app/login.html';
     const inviterName = [admin.firstName, admin.lastName].filter(Boolean).join(' ') || 'The team';
     await fetch('https://api.resend.com/emails', {
       method: 'POST',
