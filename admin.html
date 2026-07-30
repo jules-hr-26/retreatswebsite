@@ -787,6 +787,10 @@ function loadStats(data) {
   document.getElementById('stat-offerings').textContent = data.offerings;
 }
 
+async function refreshStats() {
+  try { var d = await api('GET', '?action=stats'); loadStats(d); } catch(e) {}
+}
+
 // ── Members ──────────────────────────────────────────────────────
 async function loadMembers() {
   var search = document.getElementById('members-search').value;
@@ -833,7 +837,7 @@ async function deleteMember(email, name) {
   try {
     await api('POST', '', { action: 'delete-member', email });
     toast('Member deleted');
-    loadMembers();
+    loadMembers(); refreshStats();
   } catch(e) { toast(e.message, true); }
 }
 
@@ -842,7 +846,7 @@ async function gdprEraseMember(email, name) {
   try {
     await api('POST', '', { action: 'gdpr-erase-member', email });
     toast('Member fully erased');
-    loadMembers();
+    loadMembers(); refreshStats();
   } catch(e) { toast(e.message, true); }
 }
 
@@ -906,7 +910,7 @@ async function submitAddAllowlist() {
       toast('Added to allowlist');
     }
     closeModal('modal-allowlist');
-    loadAllowlist();
+    loadAllowlist(); refreshStats();
   } catch(e) { toast(e.message, true); }
 }
 
@@ -928,7 +932,7 @@ async function removeAllowlist(email) {
   try {
     await api('POST', '', { action: 'remove-allowlist', email });
     toast('Removed from allowlist');
-    loadAllowlist();
+    loadAllowlist(); refreshStats();
   } catch(e) { toast(e.message, true); }
 }
 
@@ -981,7 +985,7 @@ async function submitEvent() {
     else { await api('POST', '', { action: 'add-event', ...payload }); }
     closeModal('modal-event');
     toast('Event saved');
-    loadEvents();
+    loadEvents(); refreshStats();
   } catch(e) { toast(e.message, true); }
 }
 
@@ -990,7 +994,7 @@ async function deleteEvent(id, name) {
   try {
     await api('POST', '', { action: 'delete-event', id });
     toast('Event deleted');
-    loadEvents();
+    loadEvents(); refreshStats();
   } catch(e) { toast(e.message, true); }
 }
 
@@ -1076,7 +1080,7 @@ async function deleteOffering(id, title) {
   try {
     await api('POST', '', { action: 'delete-offering', id });
     toast('Offering deleted');
-    loadOfferings();
+    loadOfferings(); refreshStats();
   } catch(e) { toast(e.message, true); }
 }
 
@@ -1301,7 +1305,7 @@ async function submitImport() {
     var data = await api('POST', '', { action: 'bulk-add-allowlist', rows });
     closeModal('modal-import');
     toast(data.added + ' people added to allowlist');
-    loadAllowlist();
+    loadAllowlist(); refreshStats();
   } catch(e) {
     toast(e.message, true);
     btn.disabled = false;
