@@ -769,6 +769,101 @@
   @media (max-width: 640px) {
     .ev-jump-nav { padding-left:16px; padding-right:16px; }
   }
+
+  /* ═══════════════════════════════════════
+     LIBRARY — reading journey (Resources)
+  ═══════════════════════════════════════ */
+  .lib-header { background:var(--warm-white); padding:72px 28px 56px; }
+  .lib-header-inner { max-width:960px; margin:0 auto; }
+  .lib-eyebrow { font-size:10px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:var(--ink-light); opacity:0.75; margin-bottom:14px; }
+  .lib-heading { font-family:Georgia,serif; font-size:32px; font-weight:400; color:var(--soil-dark); margin-bottom:12px; line-height:1.2; }
+  .lib-intro { font-size:14px; color:var(--ink-light); line-height:1.8; max-width:420px; }
+
+  .lib-section { border-left:5px solid var(--soil); padding:60px 52px 72px 56px; }
+  .lib-inner { max-width:980px; margin:0 auto; }
+  .lib-s1 { background:var(--warm-white); border-color:var(--soil); }
+  .lib-s2 { background:var(--soil); border-color:var(--accent); color:var(--warm-white); }
+  .lib-s3 { background:var(--warm-white); border-color:var(--accent); }
+
+  .lib-num { font-family:Georgia,serif; font-size:100px; font-weight:400; line-height:0.9; margin-bottom:8px; user-select:none; }
+  .lib-s1 .lib-num, .lib-s3 .lib-num { color:var(--soil); opacity:0.1; }
+  .lib-s2 .lib-num { color:var(--warm-white); opacity:0.08; }
+  .lib-stage-name { font-family:Georgia,serif; font-size:24px; font-weight:400; margin-bottom:10px; }
+  .lib-s1 .lib-stage-name, .lib-s3 .lib-stage-name { color:var(--soil-dark); }
+  .lib-s2 .lib-stage-name { color:var(--warm-white); }
+  .lib-guide { font-size:13px; line-height:1.78; margin-bottom:44px; max-width:420px; padding-left:14px; border-left:2px solid; }
+  .lib-s1 .lib-guide { color:var(--ink-light); border-color:var(--border); }
+  .lib-s2 .lib-guide { color:rgba(247,243,236,0.55); border-color:rgba(247,243,236,0.18); }
+  .lib-s3 .lib-guide { color:var(--ink-light); border-color:var(--accent); }
+
+  /* Shelf grid — stage 01 */
+  .shelf-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .shelf-card { background:var(--soil); display:flex; flex-direction:column; }
+  .shelf-cover { aspect-ratio:3/4; overflow:hidden; flex-shrink:0; }
+  .shelf-cover svg { width:100%; height:100%; display:block; }
+  .shelf-body { padding:16px 16px 20px; flex:1; }
+  .shelf-body .bk-title { font-family:Georgia,serif; font-size:14.5px; line-height:1.3; color:var(--warm-white); margin-bottom:6px; }
+  .shelf-body .bk-author { font-size:9.5px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent); margin-bottom:10px; }
+  .shelf-body .bk-desc { font-size:12px; line-height:1.65; color:rgba(247,243,236,0.55); }
+
+  /* Feature cards — stage 02 */
+  .feature-stack { display:flex; flex-direction:column; gap:14px; }
+  .feature-card { background:var(--warm-white); display:flex; min-height:240px; }
+  .feature-card.reverse { flex-direction:row-reverse; }
+  .feature-cover { width:200px; flex-shrink:0; overflow:hidden; }
+  .feature-cover svg { width:100%; height:100%; display:block; }
+  .feature-body { flex:1; padding:36px 40px; display:flex; flex-direction:column; justify-content:center; }
+  .feature-body .bk-title { font-family:Georgia,serif; font-size:20px; line-height:1.2; color:var(--soil-dark); margin-bottom:8px; }
+  .feature-body .bk-author { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-light); margin-bottom:16px; }
+  .feature-body .bk-desc { font-size:13.5px; line-height:1.72; color:var(--ink-light); max-width:380px; }
+
+  /* Editorial strips — stage 03 */
+  .editorial-stack { display:flex; flex-direction:column; }
+  .editorial-card { display:flex; min-height:320px; }
+  .ed-strip-dark { background:var(--soil); }
+  .ed-strip-light { background:var(--warm-white); border:1px solid var(--border); border-left:none; }
+  .ed-cover { width:44%; flex-shrink:0; overflow:hidden; }
+  .ed-cover svg { width:100%; height:100%; display:block; }
+  .ed-body { flex:1; padding:56px 48px; display:flex; flex-direction:column; justify-content:center; }
+  .ed-strip-dark .bk-title { font-family:Georgia,serif; font-size:22px; line-height:1.2; color:var(--warm-white); margin-bottom:10px; }
+  .ed-strip-dark .bk-author { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent); margin-bottom:20px; }
+  .ed-strip-dark .bk-desc { font-size:13.5px; line-height:1.72; color:rgba(247,243,236,0.62); max-width:340px; }
+  .ed-strip-light .bk-title { font-family:Georgia,serif; font-size:22px; line-height:1.2; color:var(--soil-dark); margin-bottom:10px; }
+  .ed-strip-light .bk-author { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-light); margin-bottom:20px; }
+  .ed-strip-light .bk-desc { font-size:13.5px; line-height:1.72; color:var(--ink-light); max-width:340px; }
+
+  /* Newsletter — dark override for resources page */
+  #page-resources .nl-stripe { background:var(--soil); padding:72px 28px 80px; }
+  #page-resources #newsletter-archive { padding:0; max-width:960px; }
+  #page-resources .nl-stripe .label { color:var(--accent); opacity:0.85; }
+  #page-resources .nl-stripe h2 { color:var(--warm-white); margin-bottom:40px; }
+  #page-resources .nl-stripe .nl-list { max-width:100%; }
+  #page-resources .nl-stripe .nl-entry { border-bottom-color:rgba(247,243,236,0.1); padding:22px 0; align-items:center; }
+  #page-resources .nl-stripe .nl-entry:last-child { border-bottom:1px solid rgba(247,243,236,0.1); }
+  #page-resources .nl-stripe .nl-date { color:rgba(247,243,236,0.35); font-weight:700; letter-spacing:0.1em; text-transform:uppercase; }
+  #page-resources .nl-stripe .nl-title { color:var(--warm-white); font-family:Georgia,serif; font-size:16px; }
+  #page-resources .nl-stripe .nl-arrow { color:rgba(247,243,236,0.25); }
+
+  /* Library responsive */
+  @media (max-width: 780px) {
+    .shelf-grid { grid-template-columns:repeat(2,1fr); }
+    .feature-card, .feature-card.reverse { flex-direction:column; }
+    .feature-cover { width:100%; height:200px; }
+    .editorial-card { flex-direction:column; }
+    .ed-cover { width:100%; min-height:200px; }
+    .ed-body { padding:32px 24px; }
+    .feature-body { padding:24px; }
+  }
+  @media (max-width: 640px) {
+    .lib-section { padding:40px 16px 52px; border-left:none; border-top:4px solid; }
+    .lib-s1 { border-top-color:var(--soil); }
+    .lib-s2 { border-top-color:var(--accent); }
+    .lib-s3 { border-top-color:var(--accent); }
+    .lib-num { font-size:60px; }
+    .lib-heading { font-size:24px; }
+    .lib-header { padding:48px 16px 40px; }
+    .shelf-grid { grid-template-columns:1fr; }
+  }
 </style>
 </head>
 <body>
@@ -2120,7 +2215,6 @@
         </div>
       </div>
     </div>
-    <hr style="margin:0 0 56px">
     <div class="resource-section">
       <div class="label">Community &amp; sangha</div>
       <h2>Ideas and tools for gatherings</h2>
@@ -2189,32 +2283,86 @@
         </div>
       </div>
     </div>
-    <hr style="margin:0 0 56px">
-    <div class="resource-section">
-      <div class="label">Book recommendations</div>
-      <h2>A reading list for the road</h2>
-      <p class="resource-intro">Organized by where you are in your practice — start wherever feels honest, not necessarily at the top.</p>
+  </div><!-- /container -->
 
-      <div class="stage-block">
-        <div class="stage-name">New to practice</div>
-        <details class="book-toggle"><summary><span class="bullet">&bull;</span><span class="book-title">The Miracle of Mindfulness</span><span class="book-by">by Thich Nhat Hanh</span><span class="chevron">&#9656;</span></summary><p class="book-summary">A gentle, practical introduction to bringing awareness into ordinary daily activities — washing dishes, walking, breathing.</p></details>
-        <details class="book-toggle"><summary><span class="bullet">&bull;</span><span class="book-title">Peace Is Every Step</span><span class="book-by">by Thich Nhat Hanh</span><span class="chevron">&#9656;</span></summary><p class="book-summary">Short reflections and simple exercises for meeting everyday life — the kitchen, the car, the office — with more presence.</p></details>
-        <details class="book-toggle"><summary><span class="bullet">&bull;</span><span class="book-title">Wherever You Go, There You Are</span><span class="book-by">by Jon Kabat-Zinn</span><span class="chevron">&#9656;</span></summary><p class="book-summary">A secular, widely-read entry point into mindfulness meditation, from the founder of MBSR.</p></details>
-        <details class="book-toggle"><summary><span class="bullet">&bull;</span><span class="book-title">Interbeing</span><span class="book-by">by Thich Nhat Hanh</span><span class="chevron">&#9656;</span></summary><p class="book-summary">The fourteen guidelines behind the Order of Interbeing — traditional Buddhist ethics translated for contemporary social life.</p></details>
-        <details class="book-toggle"><summary><span class="bullet">&bull;</span><span class="book-title">No Mud, No Lotus</span><span class="book-by">by Thich Nhat Hanh</span><span class="chevron">&#9656;</span></summary><p class="book-summary">On being with suffering without being overwhelmed by it — transformation, not avoidance.</p></details>
-        <details class="book-toggle"><summary><span class="bullet">&bull;</span><span class="book-title">Love Letter to the Earth</span><span class="book-by">by Thich Nhat Hanh</span><span class="chevron">&#9656;</span></summary><p class="book-summary">A call for a "spiritual revolution" grounded in love — treating the earth as relationship, not abstraction.</p></details>
+  <!-- ── LIBRARY ── -->
+  <div class="lib-header">
+    <div class="lib-header-inner">
+      <div class="lib-eyebrow">Library</div>
+      <h2 class="lib-heading">A reading journey</h2>
+      <p class="lib-intro">Recommendations shaped by where you are in your practice. Not a curriculum to complete — a path to wander.</p>
+    </div>
+  </div>
+
+  <!-- Stage 01: New to practice — shelf grid -->
+  <div class="lib-section lib-s1">
+    <div class="lib-inner">
+      <div class="lib-num">01</div>
+      <div class="lib-stage-name">New to practice</div>
+      <p class="lib-guide">Start here if you've just returned from retreat, or you're curious and want somewhere honest to begin.</p>
+      <div class="shelf-grid">
+        <div class="shelf-card">
+          <div class="shelf-cover"><svg viewBox="0 0 3 4" xmlns="http://www.w3.org/2000/svg"><rect width="3" height="4" fill="#2D5A42"/><circle cx="1.5" cy="1.6" r="0.8" fill="none" stroke="rgba(247,243,236,0.25)" stroke-width="0.06"/><circle cx="1.5" cy="1.6" r="0.45" fill="none" stroke="rgba(247,243,236,0.18)" stroke-width="0.04"/><line x1="0.3" y1="3.1" x2="2.7" y2="3.1" stroke="rgba(247,243,236,0.2)" stroke-width="0.035"/><line x1="0.3" y1="3.3" x2="2.7" y2="3.3" stroke="rgba(247,243,236,0.2)" stroke-width="0.035"/><line x1="0.3" y1="3.55" x2="1.8" y2="3.55" stroke="rgba(247,243,236,0.2)" stroke-width="0.035"/></svg></div>
+          <div class="shelf-body"><div class="bk-title">The Miracle of Mindfulness</div><div class="bk-author">Thich Nhat Hanh</div><div class="bk-desc">Bringing awareness into ordinary daily activities — washing dishes, walking, breathing.</div></div>
+        </div>
+        <div class="shelf-card">
+          <div class="shelf-cover"><svg viewBox="0 0 3 4" xmlns="http://www.w3.org/2000/svg"><rect width="3" height="4" fill="#1E4A34"/><g opacity="0.22"><rect x="0.35" y="0.4" width="2.3" height="0.06" fill="#F7F3EC"/><rect x="0.35" y="0.62" width="1.9" height="0.06" fill="#F7F3EC"/><rect x="0.35" y="0.84" width="2.1" height="0.06" fill="#F7F3EC"/><rect x="0.35" y="1.06" width="1.7" height="0.06" fill="#F7F3EC"/><rect x="0.35" y="1.28" width="2.2" height="0.06" fill="#F7F3EC"/><rect x="0.35" y="1.5" width="1.8" height="0.06" fill="#F7F3EC"/></g><rect x="0.35" y="3.0" width="2.3" height="0.05" fill="rgba(232,168,48,0.5)"/><rect x="0.35" y="3.18" width="1.6" height="0.05" fill="rgba(232,168,48,0.5)"/></svg></div>
+          <div class="shelf-body"><div class="bk-title">Peace Is Every Step</div><div class="bk-author">Thich Nhat Hanh</div><div class="bk-desc">Short reflections for meeting everyday life — the kitchen, the car — with more presence.</div></div>
+        </div>
+        <div class="shelf-card">
+          <div class="shelf-cover"><svg viewBox="0 0 3 4" xmlns="http://www.w3.org/2000/svg"><rect width="3" height="4" fill="#6B4E3D"/><g opacity="0.18"><line x1="0" y1="0.8" x2="3" y2="0.8" stroke="#F7F3EC" stroke-width="0.05"/><line x1="0" y1="1.4" x2="3" y2="1.4" stroke="#F7F3EC" stroke-width="0.05"/><line x1="0" y1="2.0" x2="3" y2="2.0" stroke="#F7F3EC" stroke-width="0.05"/><line x1="0" y1="2.6" x2="3" y2="2.6" stroke="#F7F3EC" stroke-width="0.05"/><line x1="0.8" y1="0" x2="0.8" y2="4" stroke="#F7F3EC" stroke-width="0.05"/><line x1="1.6" y1="0" x2="1.6" y2="4" stroke="#F7F3EC" stroke-width="0.05"/><line x1="2.4" y1="0" x2="2.4" y2="4" stroke="#F7F3EC" stroke-width="0.05"/></g><circle cx="1.5" cy="2" r="0.5" fill="none" stroke="rgba(247,243,236,0.35)" stroke-width="0.07"/></svg></div>
+          <div class="shelf-body"><div class="bk-title">Wherever You Go, There You Are</div><div class="bk-author">Jon Kabat-Zinn</div><div class="bk-desc">A secular, widely-read entry point into mindfulness meditation.</div></div>
+        </div>
+        <div class="shelf-card">
+          <div class="shelf-cover"><svg viewBox="0 0 3 4" xmlns="http://www.w3.org/2000/svg"><rect width="3" height="4" fill="#2A5C48"/><g opacity="0.2"><rect x="0.4" y="0.4" width="2.2" height="3.2" fill="none" stroke="#F7F3EC" stroke-width="0.07"/><rect x="0.65" y="0.65" width="1.7" height="2.7" fill="none" stroke="#F7F3EC" stroke-width="0.04"/></g><g opacity="0.3"><circle cx="0.8" cy="2.1" r="0.1" fill="#E8A830"/><circle cx="1.2" cy="2.1" r="0.1" fill="#E8A830"/><circle cx="1.6" cy="2.1" r="0.1" fill="#E8A830"/><circle cx="2.0" cy="2.1" r="0.1" fill="#E8A830"/><circle cx="2.4" cy="2.1" r="0.1" fill="#E8A830"/></g></svg></div>
+          <div class="shelf-body"><div class="bk-title">Interbeing</div><div class="bk-author">Thich Nhat Hanh</div><div class="bk-desc">The fourteen guidelines of the Order of Interbeing — traditional ethics for contemporary life.</div></div>
+        </div>
+        <div class="shelf-card">
+          <div class="shelf-cover"><svg viewBox="0 0 3 4" xmlns="http://www.w3.org/2000/svg"><rect width="3" height="4" fill="#0F2419"/><ellipse cx="1.5" cy="1.9" rx="0.28" ry="0.62" fill="none" stroke="rgba(247,243,236,0.3)" stroke-width="0.05"/><ellipse cx="1.5" cy="1.9" rx="0.28" ry="0.62" fill="none" stroke="rgba(247,243,236,0.3)" stroke-width="0.05" transform="rotate(60 1.5 1.9)"/><ellipse cx="1.5" cy="1.9" rx="0.28" ry="0.62" fill="none" stroke="rgba(247,243,236,0.3)" stroke-width="0.05" transform="rotate(-60 1.5 1.9)"/><circle cx="1.5" cy="1.9" r="0.12" fill="rgba(232,168,48,0.4)"/><line x1="0.4" y1="3.2" x2="2.6" y2="3.2" stroke="rgba(247,243,236,0.15)" stroke-width="0.04"/><line x1="0.4" y1="3.45" x2="1.8" y2="3.45" stroke="rgba(247,243,236,0.15)" stroke-width="0.04"/></svg></div>
+          <div class="shelf-body"><div class="bk-title">No Mud, No Lotus</div><div class="bk-author">Thich Nhat Hanh</div><div class="bk-desc">On being with suffering without being overwhelmed — transformation, not avoidance.</div></div>
+        </div>
+        <div class="shelf-card">
+          <div class="shelf-cover"><svg viewBox="0 0 3 4" xmlns="http://www.w3.org/2000/svg"><rect width="3" height="4" fill="#4A7A62"/><path d="M 1.5 0.6 C 2.2 1.0 2.4 1.8 1.5 2.8 C 0.6 1.8 0.8 1.0 1.5 0.6 Z" fill="none" stroke="rgba(247,243,236,0.3)" stroke-width="0.06"/><line x1="1.5" y1="0.6" x2="1.5" y2="2.8" stroke="rgba(247,243,236,0.2)" stroke-width="0.04"/><line x1="1.5" y1="3.1" x2="1.5" y2="3.6" stroke="rgba(247,243,236,0.2)" stroke-width="0.04"/></svg></div>
+          <div class="shelf-body"><div class="bk-title">Love Letter to the Earth</div><div class="bk-author">Thich Nhat Hanh</div><div class="bk-desc">A call for a spiritual revolution grounded in love — treating the earth as relationship.</div></div>
+        </div>
       </div>
+    </div>
+  </div>
 
-      <div class="stage-block">
-        <div class="stage-name">Deepening your practice</div>
-        <details class="book-toggle"><summary><span class="bullet">&bull;</span><span class="book-title">The Heart of the Buddha's Teaching</span><span class="book-by">by Thich Nhat Hanh</span><span class="chevron">&#9656;</span></summary><p class="book-summary">A clear grounding in the Four Noble Truths and the Eightfold Path, for readers ready to go beneath the techniques.</p></details>
-        <details class="book-toggle"><summary><span class="bullet">&bull;</span><span class="book-title">True Love</span><span class="book-by">by Thich Nhat Hanh</span><span class="chevron">&#9656;</span></summary><p class="book-summary">On the four elements of real love: loving-kindness, compassion, joy, and freedom.</p></details>
+  <!-- Stage 02: Deepening — feature cards -->
+  <div class="lib-section lib-s2">
+    <div class="lib-inner">
+      <div class="lib-num">02</div>
+      <div class="lib-stage-name">Deepening your practice</div>
+      <p class="lib-guide">For you if you've been sitting regularly and feel ready to go beneath the techniques.</p>
+      <div class="feature-stack">
+        <div class="feature-card">
+          <div class="feature-cover"><svg viewBox="0 0 3 4" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect width="3" height="4" fill="#E8A830"/><g opacity="0.25"><polygon points="1.5,0.5 2.4,1.2 2.1,2.3 0.9,2.3 0.6,1.2" fill="none" stroke="#1A3A2A" stroke-width="0.07"/><polygon points="1.5,0.9 2.1,1.4 1.9,2.1 1.1,2.1 0.9,1.4" fill="none" stroke="#1A3A2A" stroke-width="0.04"/></g><line x1="0.4" y1="2.9" x2="2.6" y2="2.9" stroke="rgba(26,58,42,0.25)" stroke-width="0.045"/><line x1="0.4" y1="3.15" x2="2.0" y2="3.15" stroke="rgba(26,58,42,0.25)" stroke-width="0.045"/><line x1="0.4" y1="3.4" x2="2.4" y2="3.4" stroke="rgba(26,58,42,0.25)" stroke-width="0.045"/></svg></div>
+          <div class="feature-body"><div class="bk-title">The Heart of the Buddha's Teaching</div><div class="bk-author">Thich Nhat Hanh</div><div class="bk-desc">A clear grounding in the Four Noble Truths and the Eightfold Path. For readers ready to understand where the practice comes from.</div></div>
+        </div>
+        <div class="feature-card reverse">
+          <div class="feature-cover"><svg viewBox="0 0 3 4" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect width="3" height="4" fill="#2A4A3A"/><circle cx="1.2" cy="1.8" r="0.65" fill="none" stroke="rgba(247,243,236,0.28)" stroke-width="0.07"/><circle cx="1.8" cy="1.8" r="0.65" fill="none" stroke="rgba(247,243,236,0.28)" stroke-width="0.07"/><line x1="0.35" y1="3.1" x2="2.65" y2="3.1" stroke="rgba(247,243,236,0.18)" stroke-width="0.04"/><line x1="0.35" y1="3.35" x2="1.9" y2="3.35" stroke="rgba(247,243,236,0.18)" stroke-width="0.04"/></svg></div>
+          <div class="feature-body"><div class="bk-title">True Love</div><div class="bk-author">Thich Nhat Hanh</div><div class="bk-desc">On the four elements of real love — loving-kindness, compassion, joy, and freedom — and how they deepen through consistent practice.</div></div>
+        </div>
       </div>
+    </div>
+  </div>
 
-      <div class="stage-block">
-        <div class="stage-name">Practice in the world</div>
-        <details class="book-toggle"><summary><span class="bullet">&bull;</span><span class="book-title">Zen and the Art of Saving the Planet</span><span class="book-by">by Thich Nhat Hanh</span><span class="chevron">&#9656;</span></summary><p class="book-summary">Mindfulness applied directly to the climate crisis — clarity, compassion, and the courage to act.</p></details>
-        <details class="book-toggle"><summary><span class="bullet">&bull;</span><span class="book-title">Active Hope</span><span class="book-by">by Joanna Macy &amp; Chris Johnstone</span><span class="chevron">&#9656;</span></summary><p class="book-summary">A four-stage practice for facing the crisis without collapsing into despair or denial.</p></details>
+  <!-- Stage 03: Practice in the world — editorial strips -->
+  <div class="lib-section lib-s3">
+    <div class="lib-inner">
+      <div class="lib-num">03</div>
+      <div class="lib-stage-name">Practice in the world</div>
+      <p class="lib-guide">For you if sitting on a cushion no longer feels like enough — when the crisis outside calls for something.</p>
+    </div>
+    <div class="editorial-stack">
+      <div class="editorial-card ed-strip-dark">
+        <div class="ed-cover"><svg viewBox="0 0 4 3" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect width="4" height="3" fill="#D4C8A0"/><g opacity="0.4"><path d="M 0 0.7 C 0.7 0.5 1.3 0.9 2 0.7 C 2.7 0.5 3.3 0.9 4 0.7" fill="none" stroke="#1A3A2A" stroke-width="0.06"/><path d="M 0 1.0 C 0.7 0.8 1.3 1.2 2 1.0 C 2.7 0.8 3.3 1.2 4 1.0" fill="none" stroke="#1A3A2A" stroke-width="0.06"/><path d="M 0 1.3 C 0.7 1.1 1.3 1.5 2 1.3 C 2.7 1.1 3.3 1.5 4 1.3" fill="none" stroke="#1A3A2A" stroke-width="0.06"/><path d="M 0 1.6 C 0.7 1.4 1.3 1.8 2 1.6 C 2.7 1.4 3.3 1.8 4 1.6" fill="none" stroke="#1A3A2A" stroke-width="0.05"/><path d="M 0 1.9 C 0.7 1.7 1.3 2.1 2 1.9 C 2.7 1.7 3.3 2.1 4 1.9" fill="none" stroke="#1A3A2A" stroke-width="0.05"/></g></svg></div>
+        <div class="ed-body"><div class="bk-title">Zen and the Art of Saving the Planet</div><div class="bk-author">Thich Nhat Hanh</div><div class="bk-desc">Mindfulness applied directly to the climate crisis — clarity, compassion, and the courage to act without burning out.</div></div>
+      </div>
+      <div class="editorial-card ed-strip-light" style="flex-direction:row-reverse">
+        <div class="ed-cover"><svg viewBox="0 0 4 3" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect width="4" height="3" fill="#1A3A2A"/><g opacity="0.35"><line x1="1.0" y1="2.5" x2="1.0" y2="0.6" stroke="#E8A830" stroke-width="0.07"/><line x1="1.6" y1="2.5" x2="1.6" y2="0.9" stroke="#E8A830" stroke-width="0.07"/><line x1="2.2" y1="2.5" x2="2.2" y2="0.5" stroke="#E8A830" stroke-width="0.07"/><line x1="2.8" y1="2.5" x2="2.8" y2="1.0" stroke="#E8A830" stroke-width="0.07"/><line x1="3.4" y1="2.5" x2="3.4" y2="0.7" stroke="#E8A830" stroke-width="0.07"/><polyline points="0.85,0.78 1.0,0.6 1.15,0.78" fill="none" stroke="#E8A830" stroke-width="0.07"/><polyline points="1.45,1.08 1.6,0.9 1.75,1.08" fill="none" stroke="#E8A830" stroke-width="0.07"/><polyline points="2.05,0.68 2.2,0.5 2.35,0.68" fill="none" stroke="#E8A830" stroke-width="0.07"/><polyline points="2.65,1.18 2.8,1.0 2.95,1.18" fill="none" stroke="#E8A830" stroke-width="0.07"/><polyline points="3.25,0.88 3.4,0.7 3.55,0.88" fill="none" stroke="#E8A830" stroke-width="0.07"/></g></svg></div>
+        <div class="ed-body"><div class="bk-title">Active Hope</div><div class="bk-author">Joanna Macy &amp; Chris Johnstone</div><div class="bk-desc">A four-stage practice for facing the crisis without collapsing into despair or denial. Best read together.</div></div>
       </div>
     </div>
   </div>
