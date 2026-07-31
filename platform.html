@@ -771,6 +771,48 @@
   }
 
   /* ═══════════════════════════════════════
+     PRACTICES — pathway structure (Resources)
+  ═══════════════════════════════════════ */
+  .pathway-wrap { max-width:960px; margin:0 auto; padding:60px 28px 64px; }
+  .pathway-wrap + .pathway-wrap { padding-top:0; }
+  .pathway-head { display:flex; align-items:flex-start; gap:28px; margin-bottom:52px; }
+  .pathway-numeral { font-family:Georgia,serif; font-size:80px; line-height:0.9; color:var(--border); flex-shrink:0; user-select:none; margin-top:4px; }
+  .pathway-name { font-family:Georgia,serif; font-size:24px; font-weight:400; color:var(--soil-dark); margin-bottom:10px; line-height:1.2; }
+  .pstage { margin-bottom:44px; }
+  .pstage:last-child { margin-bottom:0; }
+  .pstage-head { display:flex; align-items:flex-start; gap:18px; margin-bottom:18px; }
+  .pstage-n { width:22px; height:22px; border-radius:50%; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:var(--ink-light); flex-shrink:0; margin-top:3px; }
+  .pstage-dash { width:24px; height:1px; background:var(--border); margin-top:14px; flex-shrink:0; }
+  .pstage-tag { font-size:10px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:var(--soil-mid); margin-bottom:3px; }
+  .pstage-name { font-family:Georgia,serif; font-size:18px; font-weight:400; color:var(--soil-dark); margin-bottom:3px; line-height:1.25; }
+  .pstage-for { font-size:12px; color:var(--ink-light); font-style:italic; line-height:1.5; }
+  .pcard-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(192px,1fr)); gap:12px; margin-left:64px; }
+  .pcard { background:#fff; border:1px solid var(--border); border-radius:2px; padding:18px 20px 20px; cursor:pointer; transition:border-color 0.14s, box-shadow 0.14s; }
+  .pcard:hover { border-color:rgba(160,82,40,0.45); box-shadow:0 2px 10px rgba(26,58,42,0.07); }
+  .pcard-cat { font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--soil-mid); margin-bottom:9px; }
+  .pcard-title { font-family:Georgia,serif; font-size:14.5px; font-weight:400; color:var(--soil-dark); line-height:1.35; margin-bottom:8px; }
+  .pcard-desc { font-size:12px; color:var(--ink-light); line-height:1.68; }
+  .pcard.ph { background:transparent; border:1.5px dashed #C8BA96; cursor:default; box-shadow:none !important; }
+  .pcard.ph:hover { border-color:#C8BA96; }
+  .pcard.ph .pcard-title { color:var(--ink-light); }
+  .ph-badge { display:inline-flex; align-items:center; gap:5px; font-size:10px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-light); background:var(--off-white); border-radius:100px; padding:3px 9px; margin-bottom:10px; }
+  .ph-dot { width:5px; height:5px; border-radius:50%; background:var(--accent); opacity:0.7; }
+  .popen-list { margin-left:64px; border:1px solid var(--border); border-radius:2px; overflow:hidden; }
+  .popen-entry { display:flex; align-items:flex-start; gap:16px; padding:20px 22px; background:#fff; cursor:pointer; transition:background 0.12s; }
+  .popen-entry + .popen-entry { border-top:1px solid var(--border); }
+  .popen-entry:hover { background:#FDFAF5; }
+  .popen-icon { width:36px; height:36px; border:1px solid var(--border); border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--soil-mid); }
+  .popen-icon svg { width:17px; height:17px; }
+  .popen-entry h4 { font-family:Georgia,serif; font-size:14.5px; font-weight:400; color:var(--soil-dark); margin-bottom:4px; line-height:1.3; }
+  .popen-entry p { font-size:12px; color:var(--ink-light); line-height:1.65; }
+  @media (max-width:640px) {
+    .pcard-grid, .popen-list { margin-left:0; }
+    .pcard-grid { grid-template-columns:1fr 1fr; }
+    .pstage-dash { display:none; }
+    .pathway-numeral { font-size:52px; }
+  }
+
+  /* ═══════════════════════════════════════
      LIBRARY — reading journey (Resources)
   ═══════════════════════════════════════ */
   .lib-header { background:var(--warm-white); padding:72px 28px 56px; }
@@ -2164,126 +2206,96 @@
     <h1>Resources</h1>
     <p>Practices and tools to support your practice in your daily life.</p>
   </div>
-  <div class="container">
-    <div class="resource-section">
-     <!-- Featured story -->
-     <div class="label" style="margin-bottom:20px">From our community</div>
-     <div class="featured" style="padding-bottom:64px; border-bottom:1px solid var(--border);">
-       <div>
-         <h2>I exist, I am alive, I am here.</h2>
-         <p>I came home from the Global Gathering at Plum Village with three simple lines: <em>One step: I exist. One step: I am alive. One step: I am here.</em> I chose one block between my home and the gym to walk them. One year on, they have found their way into everything.</p>
-         <a class="read-link" href="" onclick="document.getElementById('story-modal').classList.add('open')">Read her reflection →</a>
-       </div>
-       <img class="story-img" src="/images/story.webp" alt="" onclick="document.getElementById('story-modal').classList.add('open')">
-     </div>
+  <!-- Pathway 1: Personal Practice -->
+  <div class="pathway-wrap">
+    <div class="pathway-head">
+      <div class="pathway-numeral">1</div>
+      <div>
+        <h2 class="pathway-name">Personal Practice</h2>
+      </div>
+    </div>
 
-      <div class="label">Foundational practices</div>
-      <h2>Practices for the road home</h2>
-      <p class="resource-intro">These recordings are available to all cohorts — not retreat-specific, but the bedrock practices of the Plum Village tradition, here for whenever you need them.</p>
-      <div class="tile-grid">
-        <div class="tile" tabindex="0" role="button" onclick="openResource('five-mindfulness-trainings')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('five-mindfulness-trainings')}">
-          <div class="tile-photo"><img src="/images/tile-01.webp" alt=""></div>
-          <div class="tile-body">
-            <div class="tile-cat">Teaching</div>
-            <h4>The Five Mindfulness Trainings</h4>
-            <p>An introduction to the ethical guidelines that form the foundation of engaged Buddhist practice.</p>
-          </div>
+    <div class="pstage">
+      <div class="pstage-head">
+        <div class="pstage-n">1</div><div class="pstage-dash"></div>
+        <div><div class="pstage-tag">Integration</div><div class="pstage-name">Returning Home</div><div class="pstage-for">For people who have recently returned from retreat</div></div>
+      </div>
+      <div class="pcard-grid">
+        <div class="pcard ph"><div class="ph-badge"><span class="ph-dot"></span>In progress</div><div class="pcard-title">Airport Meditation</div></div>
+        <div class="pcard ph"><div class="ph-badge"><span class="ph-dot"></span>In progress</div><div class="pcard-title">Setting Up a Breathing Corner</div></div>
+      </div>
+    </div>
+
+    <div class="pstage">
+      <div class="pstage-head">
+        <div class="pstage-n">2</div><div class="pstage-dash"></div>
+        <div><div class="pstage-tag">Cultivation</div><div class="pstage-name">Building a Practice</div><div class="pstage-for">For people who want to practise more consistently</div></div>
+      </div>
+      <div class="pcard-grid">
+        <div class="pcard" tabindex="0" role="button" onclick="openResource('inviting-the-bell')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('inviting-the-bell')}"><div class="pcard-cat">Practice</div><div class="pcard-title">Inviting the Bell</div><div class="pcard-desc">Why we "invite" rather than strike the bell, and the verse recited before it sounds.</div></div>
+        <div class="pcard ph"><div class="ph-badge"><span class="ph-dot"></span>In progress</div><div class="pcard-title">Mindful Eating</div></div>
+      </div>
+    </div>
+
+    <div class="pstage">
+      <div class="pstage-head">
+        <div class="pstage-n">3</div><div class="pstage-dash"></div>
+        <div><div class="pstage-tag">Deepening</div><div class="pstage-name">Deepening the Practice</div><div class="pstage-for">For more experienced practitioners</div></div>
+      </div>
+      <div class="pcard-grid">
+        <div class="pcard" tabindex="0" role="button" onclick="openResource('five-mindfulness-trainings')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('five-mindfulness-trainings')}"><div class="pcard-cat">Teaching</div><div class="pcard-title">The Five Mindfulness Trainings</div><div class="pcard-desc">The ethical guidelines that form the foundation of engaged Buddhist practice.</div></div>
+        <div class="pcard" tabindex="0" role="button" onclick="openResource('fourteen-mindfulness-trainings')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('fourteen-mindfulness-trainings')}"><div class="pcard-cat">Teaching</div><div class="pcard-title">The Fourteen Mindfulness Trainings</div><div class="pcard-desc">The fuller set of trainings observed by members of the Order of Interbeing.</div></div>
+        <div class="pcard" tabindex="0" role="button" onclick="openResource('beginning-anew')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('beginning-anew')}"><div class="pcard-cat">Practice</div><div class="pcard-title">Beginning Anew</div><div class="pcard-desc">The four-part practice for restoring harmony with those we work and live alongside.</div></div>
+        <div class="pcard" tabindex="0" role="button" onclick="openResource('contemplations-before-eating')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('contemplations-before-eating')}"><div class="pcard-cat">Practice</div><div class="pcard-title">Contemplations Before Eating</div><div class="pcard-desc">Five lines recited before meals, to eat with awareness of where our food comes from.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pathway 2: Collective Practice -->
+  <div class="pathway-wrap">
+    <div class="pathway-head">
+      <div class="pathway-numeral">2</div>
+      <div>
+        <h2 class="pathway-name">Collective Practice</h2>
+      </div>
+    </div>
+
+    <div class="pstage">
+      <div class="pstage-head">
+        <div class="pstage-n">1</div><div class="pstage-dash"></div>
+        <div><div class="pstage-tag">Gathering</div><div class="pstage-name">Creating Moments of Practice</div><div class="pstage-for">For people who want to bring mindfulness into gatherings</div></div>
+      </div>
+      <div class="pcard-grid">
+        <div class="pcard" tabindex="0" role="button" onclick="openResource('gathering-tea')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('gathering-tea')}"><div class="pcard-cat">Format · 30–60 min</div><div class="pcard-title">Tea Meditation</div><div class="pcard-desc">Slow down around a shared pot. No agenda — just presence, warmth, and silence between sips.</div></div>
+        <div class="pcard" tabindex="0" role="button" onclick="openResource('gathering-walk')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('gathering-walk')}"><div class="pcard-cat">Format · 45–90 min</div><div class="pcard-title">Walking Meditation</div><div class="pcard-desc">Move together in silence or with soft spoken guidance — a park, a garden, or a city block.</div></div>
+        <div class="pcard" tabindex="0" role="button" onclick="openResource('gathering-hike')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('gathering-hike')}"><div class="pcard-cat">Format · 2–4 hrs</div><div class="pcard-title">Mindful Hike</div><div class="pcard-desc">Slower than a regular hike — pausing to notice, breathe, and arrive at each step.</div></div>
+        <div class="pcard" tabindex="0" role="button" onclick="openResource('gathering-forest')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('gathering-forest')}"><div class="pcard-cat">Format · 2–4 hrs</div><div class="pcard-title">Forest Bathing</div><div class="pcard-desc">A sensory slow walk guided by the Japanese practice of <em>shinrin-yoku</em>.</div></div>
+        <div class="pcard" tabindex="0" role="button" onclick="openResource('gathering-meal')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('gathering-meal')}"><div class="pcard-cat">Format · 45–60 min</div><div class="pcard-title">Silent Meal</div><div class="pcard-desc">Eat together in silence with the five contemplations, then close with a brief sharing.</div></div>
+        <div class="pcard" tabindex="0" role="button" onclick="openResource('gathering-day')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('gathering-day')}"><div class="pcard-cat">Format · Full day</div><div class="pcard-title">Day of Mindfulness</div><div class="pcard-desc">The full Plum Village format — sitting, walking, eating, sharing, and noble silence woven through the day.</div></div>
+      </div>
+    </div>
+
+    <div class="pstage">
+      <div class="pstage-head">
+        <div class="pstage-n">2</div><div class="pstage-dash"></div>
+        <div><div class="pstage-tag">Sangha</div><div class="pstage-name">Starting and Sustaining a Practice Group</div><div class="pstage-for">For people who want to form a regular sitting group</div></div>
+      </div>
+      <div class="popen-list">
+        <div class="popen-entry" tabindex="0" role="button" onclick="openResource('start-a-sangha')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('start-a-sangha')}">
+          <div class="popen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="9" r="3"/><circle cx="17" cy="9" r="3"/><path d="M3 20c0-2.8 2.2-5 5-5s5 2.2 5 5M11 20c0-2.8 2.2-5 5-5s5 2.2 5 5"/></svg></div>
+          <div><h4>How to Start Your Own Sangha</h4><p>A step-by-step guide for establishing a regular sitting group — space, format, frequency, and how to hold it lightly.</p></div>
         </div>
-        <div class="tile" tabindex="0" role="button" onclick="openResource('fourteen-mindfulness-trainings')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('fourteen-mindfulness-trainings')}">
-          <div class="tile-photo"><img src="/images/tile-02.webp" alt=""></div>
-          <div class="tile-body">
-            <div class="tile-cat">Teaching</div>
-            <h4>The Fourteen Mindfulness Trainings</h4>
-            <p>The fuller set of trainings observed by members of the Order of Interbeing.</p>
-          </div>
+        <div class="popen-entry" tabindex="0" role="button" onclick="openResource('facilitate-a-circle')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('facilitate-a-circle')}">
+          <div class="popen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="17" cy="10" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="16" r="1.4" fill="currentColor" stroke="none"/><circle cx="9" cy="16" r="1.4" fill="currentColor" stroke="none"/><circle cx="7" cy="10" r="1.4" fill="currentColor" stroke="none"/></svg></div>
+          <div><h4>How to Facilitate a Circle</h4><p>Guidelines for holding a dharma sharing circle — no cross-talk, confidentiality, and making room for everyone.</p></div>
         </div>
-        <div class="tile" tabindex="0" role="button" onclick="openResource('beginning-anew')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('beginning-anew')}">
-          <div class="tile-photo"><img src="/images/tile-03.webp" alt=""></div>
-          <div class="tile-body">
-            <div class="tile-cat">Practice</div>
-            <h4>Beginning Anew</h4>
-            <p>The four-part practice for restoring harmony and freshness with those we work and live alongside.</p>
-          </div>
-        </div>
-        <div class="tile" tabindex="0" role="button" onclick="openResource('contemplations-before-eating')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('contemplations-before-eating')}">
-          <div class="tile-photo"><img src="/images/tile-04.webp" alt=""></div>
-          <div class="tile-body">
-            <div class="tile-cat">Practice</div>
-            <h4>Contemplations Before Eating</h4>
-            <p>Five lines traditionally recited before meals, to eat with more awareness of where our food comes from.</p>
-          </div>
+        <div class="popen-entry" tabindex="0" role="button" onclick="openResource('songs-and-chants')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('songs-and-chants')}">
+          <div class="popen-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg></div>
+          <div><h4>Songs and Chants</h4><p>Twenty-two Plum Village songs and gathas for community gatherings, with full lyrics.</p></div>
         </div>
       </div>
     </div>
-    <div class="resource-section">
-      <div class="label">Community &amp; sangha</div>
-      <h2>Ideas and tools for gatherings</h2>
-      <p class="resource-intro">Whether you're planning an afternoon with a few friends or a full day of practice — formats, guides, and tools for bringing the community together.</p>
-      <div class="gather-carousel">
-        <div class="gc-card" tabindex="0" role="button" onclick="openResource('gathering-tea')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('gathering-tea')}">
-          <div class="gc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1.5 8H7.5L6 8z"/><path d="M16 12h2a1.5 1.5 0 010 3h-2"/><path d="M9.5 5v2M12 4.5v2"/></svg></div>
-          <div class="gc-title">Tea meditation</div>
-          <div class="gc-dur">30–60 min · any size</div>
-          <div class="gc-desc">Slow down around a shared pot. No agenda — just presence, warmth, and silence between sips.</div>
-        </div>
-        <div class="gc-card" tabindex="0" role="button" onclick="openResource('gathering-walk')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('gathering-walk')}">
-          <div class="gc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/><path d="M9.5 10l2.5 3 2.5-2"/><path d="M7.5 20l2.5-5.5 2.5 3 2-5.5 2.5 4"/></svg></div>
-          <div class="gc-title">Walking meditation</div>
-          <div class="gc-dur">45–90 min · any size</div>
-          <div class="gc-desc">Move together in silence or with soft spoken guidance — a park, a garden, or a city block.</div>
-        </div>
-        <div class="gc-card" tabindex="0" role="button" onclick="openResource('gathering-hike')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('gathering-hike')}">
-          <div class="gc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20l5-9 4 5 3-4 6 8"/><path d="M17 8a2 2 0 100-4 2 2 0 000 4z"/></svg></div>
-          <div class="gc-title">Mindful hike</div>
-          <div class="gc-dur">2–4 hrs · up to 20</div>
-          <div class="gc-desc">Slower than a regular hike — pausing to notice, breathe, and arrive at each step.</div>
-        </div>
-        <div class="gc-card" tabindex="0" role="button" onclick="openResource('gathering-forest')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('gathering-forest')}">
-          <div class="gc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l4 7h-3l3 6H8l3-6H8z"/><path d="M10 20h4M12 16v4"/></svg></div>
-          <div class="gc-title">Forest bathing</div>
-          <div class="gc-dur">2–4 hrs · up to 20</div>
-          <div class="gc-desc">A sensory slow walk guided by the Japanese practice of <em>shinrin-yoku</em>.</div>
-        </div>
-        <div class="gc-card" tabindex="0" role="button" onclick="openResource('gathering-meal')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('gathering-meal')}">
-          <div class="gc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0016 0"/><path d="M12 2v4"/><path d="M8 6c1 1.5 2 2 4 2s3-.5 4-2"/></svg></div>
-          <div class="gc-title">Silent meal</div>
-          <div class="gc-dur">45–60 min · any size</div>
-          <div class="gc-desc">Eat together in silence with the five contemplations, then close with a brief sharing.</div>
-        </div>
-        <div class="gc-card" tabindex="0" role="button" onclick="openResource('gathering-day')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('gathering-day')}">
-          <div class="gc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div>
-          <div class="gc-title">Day of mindfulness</div>
-          <div class="gc-dur">Full day · up to 30</div>
-          <div class="gc-desc">The full Plum Village format — sitting, walking, eating, sharing, and noble silence woven through the day.</div>
-        </div>
-      </div>
-      <p class="gather-hint">&#8594; Scroll to see all formats</p>
-      <div class="gather-sublabel">Guides &amp; resources</div>
-      <div class="open-list">
-        <div class="open-entry" tabindex="0" role="button" onclick="openResource('start-a-sangha')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('start-a-sangha')}">
-          <div class="open-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="9" r="3"/><circle cx="17" cy="9" r="3"/><path d="M3 20c0-2.8 2.2-5 5-5s5 2.2 5 5M11 20c0-2.8 2.2-5 5-5s5 2.2 5 5"/></svg></div>
-          <h4>How to Start Your Own Sangha</h4>
-          <p>A step-by-step guide for establishing a regular sitting group — space, format, frequency, and how to hold it lightly.</p>
-        </div>
-
-        <div class="open-entry" tabindex="0" role="button" onclick="openResource('inviting-the-bell')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('inviting-the-bell')}">
-          <div class="open-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3v2M7 20h10M6 20c0-5 1-7 1-11a5 5 0 0110 0c0 4 1 6 1 11"/><path d="M9 20a3 3 0 006 0"/></svg></div>
-          <h4>Inviting the Bell</h4>
-          <p>Why we "invite" rather than strike the bell, and the verse recited before it sounds.</p>
-        </div>
-        <div class="open-entry" tabindex="0" role="button" onclick="openResource('facilitate-a-circle')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('facilitate-a-circle')}">
-          <div class="open-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="17" cy="10" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="16" r="1.4" fill="currentColor" stroke="none"/><circle cx="9" cy="16" r="1.4" fill="currentColor" stroke="none"/><circle cx="7" cy="10" r="1.4" fill="currentColor" stroke="none"/></svg></div>
-          <h4>How to Facilitate a Circle</h4>
-          <p>Guidelines for holding a dharma sharing circle — no cross-talk, confidentiality, and making room for everyone.</p>
-        </div>
-        <div class="open-entry" tabindex="0" role="button" onclick="openResource('songs-and-chants')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('songs-and-chants')}">
-          <div class="open-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg></div>
-          <h4>Songs and Chants</h4>
-          <p>Twenty-two Plum Village songs and gathas for community gatherings, with full lyrics.</p>
-        </div>
-      </div>
-    </div>
-  </div><!-- /container -->
+  </div>
 
   <!-- ── LIBRARY ── -->
   <div class="lib-header">
