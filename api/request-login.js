@@ -60,9 +60,11 @@ export default async function handler(req, res) {
         }),
       });
 
+      const resendBody = await emailRes.text();
       if (!emailRes.ok) {
-        const errBody = await emailRes.text();
-        console.error('[request-login] Resend error', emailRes.status, errBody);
+        console.error('[request-login] Resend error', emailRes.status, resendBody);
+      } else {
+        console.log('[request-login] Resend sent ok', emailRes.status, resendBody);
       }
     }
 
