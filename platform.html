@@ -813,6 +813,76 @@
   }
 
   /* ═══════════════════════════════════════
+     CHAPTER BANNERS — Resources
+  ═══════════════════════════════════════ */
+  .chapter-banner {
+    position: relative;
+    width: 100%;
+    height: 56vh;
+    min-height: 340px;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+  }
+  .chapter-banner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(8,18,10,.87) 0%, rgba(8,18,10,.25) 52%, rgba(8,18,10,.02) 100%);
+    pointer-events: none;
+  }
+  /* Personal Practice — deep forest atmosphere
+     To add your photo: background-image: linear-gradient(to top, rgba(8,18,10,.87) 0%, transparent 60%), url('/images/resources/chapter-personal.webp'); */
+  .chapter-banner-personal {
+    background:
+      radial-gradient(ellipse 44% 58% at 41% 46%, rgba(155,95,45,.5) 0%, rgba(35,62,22,.75) 44%, transparent 78%),
+      linear-gradient(162deg, #1E3E1A 0%, #0D2110 100%);
+  }
+  /* Collective Practice — warm sunset atmosphere
+     To add your photo: background-image: linear-gradient(to top, rgba(8,18,10,.87) 0%, transparent 60%), url('/images/resources/chapter-collective.webp'); */
+  .chapter-banner-collective {
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 62%, rgba(75,18,6,.55) 0%, transparent 68%),
+      linear-gradient(180deg, #C26022 0%, #8C3012 42%, #260A04 100%);
+  }
+  .chapter-text {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 28px 40px 36px;
+    z-index: 2;
+  }
+  .chapter-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: rgba(232,168,48,.8);
+    margin-bottom: 10px;
+  }
+  .chapter-title {
+    font-family: Georgia, serif;
+    font-size: 38px;
+    font-weight: 400;
+    color: var(--warm-white);
+    line-height: 1.1;
+    margin-bottom: 9px;
+  }
+  .chapter-sub {
+    font-size: 13px;
+    color: rgba(247,243,236,.55);
+    max-width: 390px;
+    line-height: 1.7;
+  }
+  .chapter-banner + .pathway-wrap { padding-top: 48px; }
+  @media (max-width:640px) {
+    .chapter-banner { height: 44vh; min-height: 210px; }
+    .chapter-title { font-size: 26px; }
+    .chapter-text { padding: 18px 20px 24px; }
+  }
+
+  /* ═══════════════════════════════════════
      LIBRARY — reading journey (Resources)
   ═══════════════════════════════════════ */
   .lib-header { background:var(--warm-white); padding:72px 28px 56px; }
@@ -2201,19 +2271,18 @@
      RESOURCE LIBRARY
 ══════════════════════════════════════════════════════ -->
 <div id="page-resources" class="page">
-  <img class="page-hero-img" src="/images/hero-resources.webp" alt="" style="object-position:center 30%">
-  <div class="page-title-block">
-    <h1>Resources</h1>
-    <p>Practices and tools to support your practice in your daily life.</p>
+
+  <!-- Chapter 1: Personal Practice -->
+  <div class="chapter-banner chapter-banner-personal">
+    <div class="chapter-text">
+      <div class="chapter-eyebrow">Practices · 1 of 2</div>
+      <h2 class="chapter-title">Personal Practice</h2>
+      <p class="chapter-sub">Practices for the road home — to be done alone, at your own pace, in whatever moments are available to you.</p>
+    </div>
   </div>
+
   <!-- Pathway 1: Personal Practice -->
   <div class="pathway-wrap">
-    <div class="pathway-head">
-      <div class="pathway-numeral">1</div>
-      <div>
-        <h2 class="pathway-name">Personal Practice</h2>
-      </div>
-    </div>
 
     <div class="pstage">
       <div class="pstage-head">
@@ -2251,14 +2320,17 @@
     </div>
   </div>
 
+  <!-- Chapter 2: Collective Practice -->
+  <div class="chapter-banner chapter-banner-collective">
+    <div class="chapter-text">
+      <div class="chapter-eyebrow">Practices · 2 of 2</div>
+      <h2 class="chapter-title">Collective Practice</h2>
+      <p class="chapter-sub">Formats and tools for bringing the community together — whether for an afternoon or a full day of practice.</p>
+    </div>
+  </div>
+
   <!-- Pathway 2: Collective Practice -->
   <div class="pathway-wrap">
-    <div class="pathway-head">
-      <div class="pathway-numeral">2</div>
-      <div>
-        <h2 class="pathway-name">Collective Practice</h2>
-      </div>
-    </div>
 
     <div class="pstage">
       <div class="pstage-head">
