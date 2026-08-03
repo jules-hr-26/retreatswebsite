@@ -4490,7 +4490,7 @@ function submitOffer() {
 loadHomeClimateEvents();
 
 // Refresh session cookie on every visit so logged-in users stay logged in
-fetch('/api/refresh-session', { method: 'POST' }).catch(function() {});
+fetch('/api/logout', { method: 'POST' }).catch(function() {});
 </script>
 </body>
 </html>
