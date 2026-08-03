@@ -2953,51 +2953,13 @@
       <label class="form-label">Your name</label>
       <input type="text" class="form-input" id="of-name" placeholder="Full name">
     </div>
-    <div class="form-row">
-      <div class="form-field">
-        <label class="form-label">Email</label>
-        <input type="email" class="form-input" id="of-email" placeholder="For people to reach you">
-      </div>
-      <div class="form-field">
-        <label class="form-label">Your retreat</label>
-        <select class="form-select" id="of-retreat">
-          <option value="">Select retreat</option>
-          <option>Hollyhock 2023</option>
-          <option>Plum Village 2023</option>
-          <option>Bali 2024</option>
-          <option>Latin America 2024</option>
-          <option>Global Gathering 2024</option>
-          <option>Africa 2025</option>
-          <option>Oceania 2025</option>
-          <option>Global Gathering 2025</option>
-          <option>Asia Pacific 2026</option>
-          <option>Americas 2026</option>
-        </select>
-      </div>
+    <div class="form-field">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-input" id="of-email" placeholder="For people to reach you">
     </div>
-    <div class="form-row">
-      <div class="form-field">
-        <label class="form-label">Category</label>
-        <select class="form-select" id="of-cat">
-          <option value="">Select category</option>
-          <option>Coaching</option>
-          <option>Therapy</option>
-          <option>Teaching</option>
-          <option>Creative</option>
-          <option>Consulting</option>
-          <option>Other</option>
-        </select>
-      </div>
-      <div class="form-field">
-        <label class="form-label">Fee</label>
-        <div class="offer-fee-row">
-          <div class="offer-fee-opt selected" id="of-fee-free" onclick="selectOfferFee('free')">Free</div>
-          <div class="offer-fee-opt" id="of-fee-paid" onclick="selectOfferFee('paid')">Has a fee</div>
-        </div>
-        <div class="oc-fee-detail form-field" id="of-fee-detail" style="margin-bottom:0;margin-top:10px">
-          <input type="text" class="form-input" id="of-fee-info" placeholder="e.g. £80/session, sliding scale">
-        </div>
-      </div>
+    <div class="form-field">
+      <label class="form-label">Category</label>
+      <input type="text" class="form-input" id="of-cat" placeholder="e.g. Coaching, Consulting, Creative work">
     </div>
     <div class="form-row">
       <div class="form-field">
@@ -4438,14 +4400,7 @@ function closeOfferModal() {
   document.getElementById('offer-modal').classList.remove('open');
   document.body.style.overflow = '';
 }
-var offerFeeSelected = 'free';
-function selectOfferFee(type) {
-  offerFeeSelected = type;
-  document.getElementById('of-fee-free').classList.toggle('selected', type === 'free');
-  document.getElementById('of-fee-paid').classList.toggle('selected', type === 'paid');
-  var det = document.getElementById('of-fee-detail');
-  det.style.display = type === 'paid' ? 'block' : 'none';
-}
+
 var offerFmtSelected = 'remote';
 function selectOfferFormat(type) {
   offerFmtSelected = type;
@@ -4467,10 +4422,7 @@ function submitOffer() {
   var formatLabel = offerFmtSelected === 'remote' ? 'Remote' : offerFmtSelected === 'inperson' ? 'In person' : 'Both';
   var payload = {
     name: name, email: email,
-    retreat: document.getElementById('of-retreat').value,
     category: document.getElementById('of-cat').value,
-    fee: offerFeeSelected,
-    feeInfo: document.getElementById('of-fee-info').value,
     location: document.getElementById('of-location').value.trim(),
     format: formatLabel,
     title: title, description: desc,
