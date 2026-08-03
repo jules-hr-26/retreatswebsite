@@ -41,6 +41,9 @@ export default async function handler(req, res) {
       const host = req.headers['x-forwarded-host'] || req.headers.host;
       const link = `https://${host}/api/verify-login?token=${token}`;
 
+      // TEMP: log link so admin can retrieve it from Vercel logs while custom domain is pending
+      console.log('[request-login] LOGIN LINK for', match.email, '→', link);
+
       const emailRes = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {

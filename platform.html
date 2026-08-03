@@ -4488,6 +4488,9 @@ function submitOffer() {
 
 // Load climate events into home page on initial load
 loadHomeClimateEvents();
+
+// Refresh session cookie on every visit so logged-in users stay logged in
+fetch('/api/refresh-session', { method: 'POST' }).catch(function() {});
 </script>
 </body>
 </html>
