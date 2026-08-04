@@ -2914,24 +2914,8 @@
     <!-- Service Offerings panel -->
     <div class="dir-panel" id="dpanel-offerings">
       <p style="font-size:14px; color:var(--ink-light); line-height:1.65; margin:0 0 24px; max-width:600px;">Explore the professional services and expertise offered by members of the community.</p>
-      <div class="so-filters">
-        <div class="so-filter-row">
-          <span class="so-filter-label">Category</span>
-          <button class="so-chip active" data-type="cat" onclick="ocFilter(this,'all','cat')">All</button>
-          <button class="so-chip" data-type="cat" onclick="ocFilter(this,'coaching','cat')">Coaching</button>
-          <button class="so-chip" data-type="cat" onclick="ocFilter(this,'therapy','cat')">Therapy</button>
-          <button class="so-chip" data-type="cat" onclick="ocFilter(this,'teaching','cat')">Teaching</button>
-          <button class="so-chip" data-type="cat" onclick="ocFilter(this,'creative','cat')">Creative</button>
-          <button class="so-chip" data-type="cat" onclick="ocFilter(this,'consulting','cat')">Consulting</button>
-          <button class="so-chip" data-type="cat" onclick="ocFilter(this,'other','cat')">Other</button>
-        </div>
-        <div class="so-filter-row">
-          <span class="so-filter-label">Cost</span>
-          <button class="so-chip active" data-type="fee" onclick="ocFilter(this,'all','fee')">All</button>
-          <button class="so-chip" data-type="fee" onclick="ocFilter(this,'free','fee')">Free</button>
-          <button class="so-chip" data-type="fee" onclick="ocFilter(this,'paid','fee')">Paid</button>
-          <button class="so-share" onclick="openOfferModal()">Share an offering →</button>
-        </div>
+      <div style="margin-bottom:24px">
+        <button class="so-share" onclick="openOfferModal()">Share an offering →</button>
       </div>
 
       <div class="oc-grid" id="oc-grid">
