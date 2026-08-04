@@ -920,14 +920,14 @@
 
   /* Feature cards — stage 02 */
   .feature-stack { display:flex; flex-direction:column; gap:14px; }
-  .feature-card { background:var(--warm-white); display:flex; min-height:240px; }
+  .feature-card { background:var(--warm-white); display:flex; align-items:flex-start; }
   .feature-card.reverse { flex-direction:row-reverse; }
-  .feature-cover { width:40px; flex-shrink:0; overflow:hidden; }
+  .feature-cover { width:48px; height:64px; flex-shrink:0; overflow:hidden; }
   .feature-cover svg { width:100%; height:100%; display:block; }
-  .feature-body { flex:1; padding:36px 40px; display:flex; flex-direction:column; justify-content:center; }
-  .feature-body .bk-title { font-family:Georgia,serif; font-size:20px; line-height:1.2; color:var(--soil-dark); margin-bottom:8px; }
-  .feature-body .bk-author { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-light); margin-bottom:16px; }
-  .feature-body .bk-desc { font-size:13.5px; line-height:1.72; color:var(--ink-light); max-width:380px; }
+  .feature-body { flex:1; padding:20px 24px; }
+  .feature-body .bk-title { font-family:Georgia,serif; font-size:18px; line-height:1.2; color:var(--soil-dark); margin-bottom:6px; }
+  .feature-body .bk-author { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-light); margin-bottom:12px; }
+  .feature-body .bk-desc { font-size:13px; line-height:1.7; color:var(--ink-light); }
 
   /* Editorial strips — stage 03 */
   .editorial-stack { display:flex; flex-direction:column; }
