@@ -160,6 +160,8 @@
   .resource-modal-body ol { padding-left:22px; margin:0 0 16px; }
   .resource-modal-body li { font-size:14.5px; line-height:1.8; color:var(--ink-soft); margin-bottom:6px; }
   .resource-modal-source { margin-top:28px; padding-top:20px; border-top:1px solid var(--border); font-size:12.5px; color:var(--ink-light); line-height:1.6; }
+  .resource-modal-body img { width:100%; height:auto; display:block; border-radius:2px; margin:20px 0 6px; }
+  .resource-modal-body .photo-credit { font-size:11px; color:var(--ink-light); text-align:center; margin-bottom:20px; }
   .resource-modal-source a { color:var(--soil-mid); text-decoration:none; border-bottom:1px solid currentColor; }
   .resource-modal-source a:hover { color:var(--soil-dark); }
   .songs-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px 18px; margin-top:8px; }
@@ -1916,14 +1918,14 @@
       <p class="photos-note">These photographs offer a glimpse of the moments we shared. You are welcome to reflect on and write about your retreat experience. When sharing photographs publicly, please choose images without recognisable faces, or make sure that everyone pictured has given their consent.</p>
       <div class="ph-mosaic">
         <div class="ph-cell" onclick="openGallery(0, 'latam-gallery-data')">
-          <img src="/photos/latam-2024/go-meditation-4.jpg" alt="" loading="eager">
+          <img src="/photos/latam-2024/go-dharmatalk-24.jpg" alt="" loading="eager">
         </div>
         <div class="ph-side">
           <div class="ph-cell" onclick="openGallery(0, 'latam-gallery-data')">
-            <img src="/photos/latam-2024/go-dharmatalk-6.jpg" alt="" loading="eager">
+            <img src="/photos/latam-2024/go-meditation-28.jpg" alt="" loading="eager">
           </div>
           <div class="ph-cell" onclick="openGallery(0, 'latam-gallery-data')">
-            <img src="/photos/latam-2024/go-meditation-15.jpg" alt="" loading="eager">
+            <img src="/photos/latam-2024/go-sharingcircles-14.jpg" alt="" loading="eager">
           </div>
         </div>
       </div>
@@ -2384,7 +2386,7 @@
         <div><div class="pstage-tag">Integration</div><div class="pstage-name">Returning Home</div><div class="pstage-for">For people who have recently returned from retreat</div></div>
       </div>
       <div class="pcard-grid">
-        <div class="pcard ph"><div class="ph-badge"><span class="ph-dot"></span>In progress</div><div class="pcard-title">Airport Meditation</div></div>
+        <div class="pcard" tabindex="0" role="button" onclick="openResource('airport-meditation')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('airport-meditation')}"><div class="pcard-cat">Practice</div><div class="pcard-title">Walking Meditation in Transit</div><div class="pcard-desc">How to carry the retreat's peace through the airport, the shuttle, and every step of the journey home.</div></div>
         <div class="pcard ph"><div class="ph-badge"><span class="ph-dot"></span>In progress</div><div class="pcard-title">Setting Up a Breathing Corner</div></div>
       </div>
     </div>
@@ -3338,6 +3340,49 @@ const RESOURCE_CONTENT = {
     `,
     sourceUrl: 'https://plumvillage.app/a-short-guide-to-joining-or-starting-a-sangha/',
     sourceLabel: 'Plum Village',
+  },
+  'airport-meditation': {
+    kicker: 'Practice · For: The journey home from retreat · No extra time required',
+    title: 'Walking Meditation in Transit',
+    body: `
+      <img src="/images/resources/airport-meditation-1.jpg" alt="Airport terminal">
+      <p class="photo-credit">Photo: Jue Huang / Unsplash</p>
+      <p><em>The first time I left a retreat, I lost it in a security line. The second time, my suitcase came apart on the baggage carousel — and I was calm. That was the moment I understood what we had actually been doing.</em></p>
+      <h4>As you leave your room</h4>
+      <p>In sitting meditation, we know when we are breathing a long breath and when we are breathing a short one. We do not change the breath. We simply know it.</p>
+      <p>Bring that same knowing to the journey. One in-breath, one out-breath at the door. See yourself moving through the day ahead — the hallway, the terminal, the aisle of the plane. Peace is available in each of those steps.</p>
+      <blockquote><em>Breathing in, I have arrived.<br>Breathing out, I am home.</em></blockquote>
+      <p>Then open the door.</p>
+      <h4>Stage One — Room to shuttle</h4>
+      <p>This stretch looks like logistics. It is where the retreat is most quietly at risk.</p>
+      <p>Let your steps and your breath find each other — perhaps two or three steps breathing in, three or four breathing out. Don't manufacture a rhythm; let the body offer one. The suitcase comes too: the handle in the hand, the wheels on gravel. Nothing needs to be added.</p>
+      <p>The planning mind will arrive. Notice it. Smile at it. Come back to the step.</p>
+      <p><em>Sati</em> — the word we translate as mindfulness — means remembering. Coming back. This coming back isn't a sign the practice is failing. It is the practice.</p>
+      <h4>Stage Two — The seatbelt</h4>
+      <p>The shuttle, the taxi, the car. Thay taught that mindful breathing is the seatbelt of life. We fasten it because we're traveling in conditions we didn't make — the weather, the other drivers, our own distraction.</p>
+      <p>As the belt clicks, one conscious breath. Let the sound be your bell.</p>
+      <blockquote><em>Breathing in, I am safe.<br>Breathing out, I am here.</em></blockquote>
+      <h4>Stage Three — Waiting</h4>
+      <img src="/images/resources/airport-meditation-2.jpg" alt="Waiting at the gate">
+      <p class="photo-credit">Photo: Marco Lopez / Unsplash</p>
+      <p>Security. Boarding. Baggage claim. Takeoff.</p>
+      <p>When the line is moving: each shuffle forward, one full breath. When the line stops, it's standing meditation. When it moves, it's walking meditation. No gap between them — and no one can tell.</p>
+      <blockquote><em>This step, I have arrived.<br>This step, I am home.</em></blockquote>
+      <p>When nothing is moving — a delay, a carousel, a runway — sit and breathe. There is genuinely nowhere to go and nothing to do. We spend a great deal of money manufacturing that condition at retreat centers. It's being offered free at Gate 14.</p>
+      <h4>When you have to run</h4>
+      <p>Sometimes the gate changes and you sprint. This isn't a failure of practice. Walking meditation was never about walking slowly — it's about walking, or occasionally sprinting past duty-free with a bag on one shoulder, knowing that you are doing it. Your intention travels at whatever speed you do.</p>
+      <p><em>Peace is every step. Including the fast ones.</em></p>
+      <h4>Practice together</h4>
+      <p>Traveling with other alumni? Invite the bell from the Plum Village app — in the car, in the terminal, on the plane. Everyone stops talking and breathes for three breaths. Fifteen seconds. It turns a departure into a sangha.</p>
+      <p>Alone? The soles of your feet are the bell. The floor is always there.</p>
+      <h4>When it falls apart</h4>
+      <p>You'll reach the gate and realize you never walked once. The recovery is not guilt. The recovery is the next step — literally the next one. Practice carries no accumulated debt.</p>
+      <h4>Why this matters back at work</h4>
+      <p>What we rehearse in transit isn't calm. It's the capacity to be fully present in conditions we didn't choose — which is, more or less, the entire job description.</p>
+      <p>Every unremarkable step waters a seed. When the crisis comes, we don't reach for calm — the seed we've watered rises on its own, and carries us.</p>
+      <p><em>We don't summon our calm in a crisis. We discover what we've been growing.</em></p>
+    `,
+    sourceHtml: 'Leslie Hubbard (Sister Suchness) · OLEL Leadership',
   },
   'inviting-the-bell': {
     kicker: 'Community & sangha · Practice',
