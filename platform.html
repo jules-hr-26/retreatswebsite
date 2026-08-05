@@ -1138,15 +1138,15 @@
       <div>
         <h2>I exist, I am alive, I am here.</h2>
         <p>I came home from the Global Gathering at Plum Village with three simple lines: <em>One step: I exist. One step: I am alive. One step: I am here.</em> I chose one block between my home and the gym to walk them. One year on, they have found their way into everything.</p>
-        <a class="read-link" href="" onclick="document.getElementById('story-modal').classList.add('open')">Read her reflection →</a>
+        <a class="read-link" href="javascript:void(0)" onclick="openStoryModal()">Read her reflection →</a>
       </div>
-      <img class="story-img" src="/images/story.webp" alt="" onclick="document.getElementById('story-modal').classList.add('open')">
+      <img class="story-img" src="/images/story.webp" alt="" loading="lazy" onclick="openStoryModal()">
     </div>
 
     <!-- Story modal -->
-    <div id="story-modal" class="story-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div id="story-modal" class="story-modal" onclick="if(event.target===this)closeStoryModal()">
       <div class="story-modal-card" role="dialog" aria-modal="true" aria-labelledby="story-modal-title">
-        <button class="story-modal-close" onclick="document.getElementById('story-modal').classList.remove('open')">✕</button>
+        <button class="story-modal-close" onclick="closeStoryModal()" aria-label="Close">✕</button>
         <img class="story-modal-photo" src="/images/story.webp" alt="" loading="lazy">
         <div class="story-modal-body">
           <div class="story-modal-kicker">From our community · Global Gathering 2023</div>
@@ -1206,7 +1206,7 @@
           </div>
         </div>
         <div style="margin-top:20px">
-          <a class="read-link" href="" onclick="show('events')">See all events →</a>
+          <a class="read-link" href="javascript:void(0)" onclick="show('events')">See all events →</a>
         </div>
       </div>
 
@@ -1421,7 +1421,7 @@
           <div class="tl-group-inner">
             <div class="tl-item" onclick="selectRetreat(this,'pv2022','tl')">
               <div class="tl-card">
-                <img class="tl-photo" src="/images/tl-pv2022.webp" alt="">
+                <img class="tl-photo" src="/images/tl-pv2022.webp" alt="Pilot Retreat · Plum Village, France" loading="lazy">
                 <div class="tl-label"><h4>Pilot Retreat</h4><p>Plum Village, France</p></div>
               </div>
             </div>
@@ -1434,13 +1434,13 @@
           <div class="tl-group-inner">
             <div class="tl-item" onclick="selectRetreat(this,'na2023','tl')">
               <div class="tl-card">
-                <img class="tl-photo" src="/images/tl-na2023.jpg" alt="">
+                <img class="tl-photo" src="/images/tl-na2023.webp" alt="North America Retreat · Cortes Island, BC" loading="lazy">
                 <div class="tl-label"><h4>North America</h4><p>Cortes Island, BC</p></div>
               </div>
             </div>
             <div class="tl-item" onclick="selectRetreat(this,'eu2023','tl')">
               <div class="tl-card">
-                <img class="tl-photo" src="/images/tl-eu2023.jpg" alt="">
+                <img class="tl-photo" src="/images/tl-eu2023.webp" alt="Europe Retreat · Plum Village, France" loading="lazy">
                 <div class="tl-label"><h4>Europe</h4><p>Plum Village, France</p></div>
               </div>
             </div>
@@ -1453,19 +1453,19 @@
           <div class="tl-group-inner">
             <div class="tl-item" onclick="selectRetreat(this,'bali2024','tl')">
               <div class="tl-card">
-                <img class="tl-photo" style="object-position:center bottom" src="/images/tl-bali2024.jpg" alt="">
+                <img class="tl-photo" style="object-position:center bottom" src="/images/tl-bali2024.webp" alt="Asia Retreat · Bali, Indonesia" loading="lazy">
                 <div class="tl-label"><h4>Asia</h4><p>Bali, Indonesia</p></div>
               </div>
             </div>
             <div class="tl-item" onclick="selectRetreat(this,'cr2024','tl')">
               <div class="tl-card">
-                <img class="tl-photo" src="/images/tl-cr2024.jpg" alt="">
+                <img class="tl-photo" src="/images/tl-cr2024.webp" alt="Latin America Retreat · Costa Rica" loading="lazy">
                 <div class="tl-label"><h4>Latin America</h4><p>Costa Rica</p></div>
               </div>
             </div>
             <div class="tl-item" onclick="selectRetreat(this,'gg2024','tl')">
               <div class="tl-card">
-                <img class="tl-photo" src="/images/tl-gg2024.jpg" alt="">
+                <img class="tl-photo" src="/images/tl-gg2024.webp" alt="Global Gathering · Plum Village, France" loading="lazy">
                 <div class="tl-label"><h4>Global Gathering</h4><p>Plum Village, France</p></div>
               </div>
             </div>
@@ -1478,19 +1478,19 @@
           <div class="tl-group-inner">
             <div class="tl-item" onclick="selectRetreat(this,'tz2025','tl')">
               <div class="tl-card">
-                <img class="tl-photo" src="/images/tl-tz2025.jpg" alt="">
+                <img class="tl-photo" src="/images/tl-tz2025.webp" alt="Africa Retreat · Tanzania" loading="lazy">
                 <div class="tl-label"><h4>Africa</h4><p>Tanzania</p></div>
               </div>
             </div>
             <div class="tl-item" onclick="selectRetreat(this,'fiji2025','tl')">
               <div class="tl-card">
-                <img class="tl-photo" src="/images/tl-africa2025.jpg" alt="">
+                <img class="tl-photo" src="/images/tl-africa2025.webp" alt="Oceania Retreat · Fiji" loading="lazy">
                 <div class="tl-label"><h4>Oceania</h4><p>Fiji</p></div>
               </div>
             </div>
             <div class="tl-item" onclick="selectRetreat(this,'pv2025','tl')">
               <div class="tl-card">
-                <img class="tl-photo" src="/images/tl-pv2025.jpg" alt="">
+                <img class="tl-photo" src="/images/tl-pv2025.webp" alt="Global Gathering · Plum Village, France" loading="lazy">
                 <div class="tl-label"><h4>Global Gathering</h4><p>Plum Village, France</p></div>
               </div>
             </div>
@@ -1503,13 +1503,13 @@
           <div class="tl-group-inner">
             <div class="tl-item" onclick="selectRetreat(this,'mx2026','tl')">
               <div class="tl-card">
-                <img class="tl-photo" src="/images/tl-mx2026.jpg" alt="">
+                <img class="tl-photo" src="/images/tl-mx2026.webp" alt="Americas Retreat · Mexico" loading="lazy">
                 <div class="tl-label"><h4>Americas</h4><p>Mexico</p></div>
               </div>
             </div>
             <div class="tl-item" onclick="selectRetreat(this,'au2026','tl')">
               <div class="tl-card">
-                <img class="tl-photo" src="/images/tl-au2026.jpg" alt="">
+                <img class="tl-photo" src="/images/tl-au2026.webp" alt="Asia Pacific Retreat · Australia" loading="lazy">
                 <div class="tl-label"><h4>Asia Pacific</h4><p>Australia</p></div>
               </div>
             </div>
@@ -1729,10 +1729,10 @@
           <img src="/photos/eu-2023/climate-2023-29.jpg" alt="" loading="eager">
         </div>
         <div class="ph-side">
-          <div class="ph-cell" onclick="openGallery(0, 'eu-gallery-data')">
+          <div class="ph-cell" onclick="openGallery(1, 'eu-gallery-data')">
             <img src="/photos/eu-2023/climate-2023-125.jpg" alt="" loading="eager">
           </div>
-          <div class="ph-cell" onclick="openGallery(0, 'eu-gallery-data')">
+          <div class="ph-cell" onclick="openGallery(2, 'eu-gallery-data')">
             <img src="/photos/eu-2023/climate-2023-210.jpg" alt="" loading="eager">
           </div>
         </div>
@@ -1856,10 +1856,10 @@
           <img src="/photos/bali-2024/climate-feb2024-41.jpg" alt="" loading="eager">
         </div>
         <div class="ph-side">
-          <div class="ph-cell" onclick="openGallery(0, 'bali-gallery-data')">
+          <div class="ph-cell" onclick="openGallery(1, 'bali-gallery-data')">
             <img src="/photos/bali-2024/climate-feb2024-17.jpg" alt="" loading="eager">
           </div>
-          <div class="ph-cell" onclick="openGallery(0, 'bali-gallery-data')">
+          <div class="ph-cell" onclick="openGallery(2, 'bali-gallery-data')">
             <img src="/photos/bali-2024/climate-feb2024-155.jpg" alt="" loading="eager">
           </div>
         </div>
@@ -1921,10 +1921,10 @@
           <img src="/photos/latam-2024/go-dharmatalk-24.jpg" alt="" loading="eager">
         </div>
         <div class="ph-side">
-          <div class="ph-cell" onclick="openGallery(0, 'latam-gallery-data')">
+          <div class="ph-cell" onclick="openGallery(1, 'latam-gallery-data')">
             <img src="/photos/latam-2024/go-meditation-28.jpg" alt="" loading="eager">
           </div>
-          <div class="ph-cell" onclick="openGallery(0, 'latam-gallery-data')">
+          <div class="ph-cell" onclick="openGallery(2, 'latam-gallery-data')">
             <img src="/photos/latam-2024/go-sharingcircles-14.jpg" alt="" loading="eager">
           </div>
         </div>
@@ -3564,6 +3564,19 @@ function closeResource() {
   document.removeEventListener('keydown', handleResourceKeydown);
   if (resourceLastFocused) resourceLastFocused.focus();
 }
+function openStoryModal() {
+  document.getElementById('story-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.addEventListener('keydown', handleStoryKeydown);
+}
+function closeStoryModal() {
+  document.getElementById('story-modal').classList.remove('open');
+  document.body.style.overflow = '';
+  document.removeEventListener('keydown', handleStoryKeydown);
+}
+function handleStoryKeydown(e) {
+  if (e.key === 'Escape') closeStoryModal();
+}
 function handleResourceKeydown(e) {
   if (e.key === 'Escape') { closeResource(); return; }
   if (e.key !== 'Tab') return;
@@ -3913,7 +3926,7 @@ function renderClimateGrid(events) {
       var initials = a.name ? a.name.trim().split(' ').map(function(p){ return p[0]; }).slice(0,2).join('') : '?';
       return '<div class="climate-avatar" title="' + title + '">' + escHtml(initials.toUpperCase()) + '</div>';
     }).join('');
-    var count = ev.attendees.length;
+    var count = (ev.attendees || []).length;
     var countText = count === 0 ? 'No one yet — be the first'
       : count === 1 ? '1 person going'
       : count + ' people going';
@@ -4585,7 +4598,9 @@ function submitOffer() {
 loadHomeClimateEvents();
 
 // Refresh session cookie on every visit so logged-in users stay logged in
-fetch('/api/logout', { method: 'POST' }).catch(function() {});
+if (document.cookie.indexOf('cnlc_session') !== -1) {
+  fetch('/api/logout', { method: 'POST' }).catch(function() {});
+}
 </script>
 </body>
 </html>

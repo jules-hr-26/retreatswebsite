@@ -11,14 +11,18 @@ export default async function handler(req, res) {
   // ── Luma proxy (unchanged) ────────────────────────────────────
   if (calendarId) {
     try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
       const response = await fetch(
         `https://api.lu.ma/public/v1/calendar/list-events?calendar_api_id=${encodeURIComponent(calendarId)}`,
-        { headers: { 'x-luma-api-key': process.env.LUMA_API_KEY, accept: 'application/json' } }
+        { headers: { 'x-luma-api-key': process.env.LUMA_API_KEY, accept: 'application/json' }, signal: controller.signal }
       );
+      clearTimeout(timeout);
       const data = await response.json();
       res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
       return res.status(response.ok ? 200 : response.status).json(data);
     } catch (err) {
+      if (err.name === 'AbortError') return res.status(504).json({ error: 'upstream timeout' });
       return res.status(500).json({ error: err.message });
     }
   }
