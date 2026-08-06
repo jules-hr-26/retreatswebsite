@@ -117,6 +117,16 @@ export default async function handler(req, res) {
   const { action: bodyAction, eventName, name, startDate, endDate, city, description, discussionLink } = req.body || {};
   const host = req.headers['x-forwarded-host'] || req.headers.host;
 
+  // ── Cancel RSVP ───────────────────────────────────────────────
+  if (bodyAction === 'cancel-rsvp') {
+    if (!eventName) return res.status(400).json({ error: 'eventName required' });
+    const existing = await select('event_attendees', { event_name: eventName, member_email: session.email });
+    if (existing.length) {
+      await update('event_attendees', { event_name: eventName, member_email: session.email }, { status: 'no' });
+    }
+    return res.status(200).json({ ok: true });
+  }
+
   // ── RSVP ──────────────────────────────────────────────────────
   if (bodyAction === 'rsvp') {
     if (!eventName) return res.status(400).json({ error: 'eventName required' });

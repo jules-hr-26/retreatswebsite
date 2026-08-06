@@ -430,7 +430,11 @@
   .climate-card-actions { display:flex; gap:8px; flex-shrink:0; }
   .btn-going { font-size:12px; padding:7px 14px; border:1px solid var(--soil); border-radius:2px; background:transparent; color:var(--soil); cursor:pointer; font-family:inherit; transition:all 0.15s; white-space:nowrap; }
   .btn-going:hover { background:var(--soil); color:var(--warm-white); }
-  .btn-going.going { background:var(--soil); color:var(--warm-white); cursor:default; }
+  .btn-going.going { background:var(--soil); color:var(--warm-white); cursor:pointer; }
+  .btn-going.going:hover { background:#7a1f1f; border-color:#7a1f1f; }
+  .btn-going.going .label-hover { display:none; }
+  .btn-going.going:hover .label-default { display:none; }
+  .btn-going.going:hover .label-hover { display:inline; }
   .btn-discuss { font-size:12px; padding:7px 14px; border:1px solid var(--border); border-radius:2px; background:transparent; color:var(--ink-soft); text-decoration:none; display:inline-block; white-space:nowrap; transition:border-color 0.15s; }
   .btn-discuss:hover { border-color:var(--ink-soft); }
   .climate-empty { font-size:13.5px; color:var(--ink-light); padding:24px 0; }
@@ -3959,9 +3963,11 @@ function renderClimateGrid(events) {
       : count + ' people going';
 
     var going = myClimateRsvps.has(ev.name) || ev.currentUserAttending;
-    var btnLabel = going ? 'Going ✓' : 'I\'m going';
+    var btnLabel = going
+      ? '<span class="label-default">Going ✓</span><span class="label-hover">No longer going</span>'
+      : 'I\'m going';
     var btnClass = going ? 'btn-going going' : 'btn-going';
-    var btnDisabled = going ? 'disabled' : '';
+    var btnDisabled = '';
 
     var discussBtn = ev.discussionLink
       ? '<a class="btn-discuss" href="' + escHtml(ev.discussionLink) + '" target="_blank" rel="noopener">Discussion ↗</a>'
@@ -3974,7 +3980,7 @@ function renderClimateGrid(events) {
       '<div class="climate-card-footer">' +
         '<div class="climate-attendees">' + avatars + '<span class="climate-att-count">' + escHtml(countText) + '</span></div>' +
         '<div class="climate-card-actions">' + discussBtn +
-          '<button class="' + btnClass + '" onclick="rsvpClimateEvent(this, \'' + escHtml(ev.name).replace(/'/g, "\\'") + '\')" ' + btnDisabled + (going ? ' title="You\'ve already marked yourself as going"' : '') + '>' + btnLabel + '</button>' +
+          '<button class="' + btnClass + '" onclick="rsvpClimateEvent(this, \'' + escHtml(ev.name).replace(/'/g, "\\'") + '\')">' + btnLabel + '</button>' +
         '</div>' +
       '</div>' +
     '</div>';
@@ -3983,23 +3989,28 @@ function renderClimateGrid(events) {
 
 async function rsvpClimateEvent(btn, eventName) {
   if (btn.disabled) return;
+  var isCancelling = btn.classList.contains('going');
   btn.disabled = true;
-  btn.textContent = 'Saving…';
+  btn.textContent = isCancelling ? 'Removing…' : 'Saving…';
   try {
     var res = await fetch('/api/events', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'rsvp', eventName: eventName }),
+      body: JSON.stringify({ action: isCancelling ? 'cancel-rsvp' : 'rsvp', eventName: eventName }),
     });
     if (!res.ok) throw new Error('rsvp failed');
-    myClimateRsvps.add(eventName);
-    btn.textContent = 'Going ✓';
-    btn.classList.add('going');
+    if (isCancelling) {
+      myClimateRsvps.delete(eventName);
+    } else {
+      myClimateRsvps.add(eventName);
+    }
     climateEventsLoaded = false;
     loadClimateEvents();
   } catch (err) {
     btn.disabled = false;
-    btn.textContent = 'I\'m going';
+    btn.innerHTML = isCancelling
+      ? '<span class="label-default">Going ✓</span><span class="label-hover">No longer going</span>'
+      : 'I\'m going';
   }
 }
 
