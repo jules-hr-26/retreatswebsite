@@ -1002,9 +1002,9 @@
   </div>
 </nav>
 
-  <div id="profile-modal" class="propose-modal" onclick="if(event.target===this)closeProfile()">
+  <div id="profile-modal" class="propose-modal" onclick="if(!profileIsFirstRun&&event.target===this)closeProfile()">
     <div class="propose-modal-card" role="dialog" aria-modal="true" aria-labelledby="profile-modal-title">
-      <button class="propose-close" onclick="closeProfile()" aria-label="Close">✕</button>
+      <button class="propose-close" id="profile-close-btn" onclick="closeProfile()" aria-label="Close">✕</button>
       <div class="propose-modal-title" id="profile-modal-title">Complete your profile</div>
       <p class="propose-modal-sub">This is what the community sees about you. Only your name is required — everything else is optional, and nothing is shared unless you tick the box below.</p>
 
@@ -1036,11 +1036,14 @@
       <div class="form-row">
         <div class="form-field">
           <label class="form-label" for="rf-city">City</label>
-          <input id="rf-city" class="form-input" type="text" placeholder="e.g. Dakar" oninput="updateProfilePreview()">
+          <input id="rf-city" class="form-input" type="text" placeholder="e.g. Dakar" oninput="updateProfilePreview()" autocomplete="address-level2">
         </div>
         <div class="form-field">
           <label class="form-label" for="rf-country">Country</label>
-          <input id="rf-country" class="form-input" type="text" placeholder="e.g. Senegal" oninput="updateProfilePreview()">
+          <input id="rf-country" class="form-input" type="text" placeholder="e.g. Senegal" oninput="updateProfilePreview()" list="rf-country-list" autocomplete="country-name">
+          <datalist id="rf-country-list">
+            <option>Afghanistan</option><option>Albania</option><option>Algeria</option><option>Andorra</option><option>Angola</option><option>Antigua and Barbuda</option><option>Argentina</option><option>Armenia</option><option>Australia</option><option>Austria</option><option>Azerbaijan</option><option>Bahamas</option><option>Bahrain</option><option>Bangladesh</option><option>Barbados</option><option>Belarus</option><option>Belgium</option><option>Belize</option><option>Benin</option><option>Bhutan</option><option>Bolivia</option><option>Bosnia and Herzegovina</option><option>Botswana</option><option>Brazil</option><option>Brunei</option><option>Bulgaria</option><option>Burkina Faso</option><option>Burundi</option><option>Cabo Verde</option><option>Cambodia</option><option>Cameroon</option><option>Canada</option><option>Central African Republic</option><option>Chad</option><option>Chile</option><option>China</option><option>Colombia</option><option>Comoros</option><option>Congo</option><option>Costa Rica</option><option>Croatia</option><option>Cuba</option><option>Cyprus</option><option>Czech Republic</option><option>Denmark</option><option>Djibouti</option><option>Dominica</option><option>Dominican Republic</option><option>DR Congo</option><option>Ecuador</option><option>Egypt</option><option>El Salvador</option><option>Equatorial Guinea</option><option>Eritrea</option><option>Estonia</option><option>Eswatini</option><option>Ethiopia</option><option>Fiji</option><option>Finland</option><option>France</option><option>Gabon</option><option>Gambia</option><option>Georgia</option><option>Germany</option><option>Ghana</option><option>Greece</option><option>Grenada</option><option>Guatemala</option><option>Guinea</option><option>Guinea-Bissau</option><option>Guyana</option><option>Haiti</option><option>Honduras</option><option>Hungary</option><option>Iceland</option><option>India</option><option>Indonesia</option><option>Iran</option><option>Iraq</option><option>Ireland</option><option>Israel</option><option>Italy</option><option>Jamaica</option><option>Japan</option><option>Jordan</option><option>Kazakhstan</option><option>Kenya</option><option>Kiribati</option><option>Kuwait</option><option>Kyrgyzstan</option><option>Laos</option><option>Latvia</option><option>Lebanon</option><option>Lesotho</option><option>Liberia</option><option>Libya</option><option>Liechtenstein</option><option>Lithuania</option><option>Luxembourg</option><option>Madagascar</option><option>Malawi</option><option>Malaysia</option><option>Maldives</option><option>Mali</option><option>Malta</option><option>Marshall Islands</option><option>Mauritania</option><option>Mauritius</option><option>Mexico</option><option>Micronesia</option><option>Moldova</option><option>Monaco</option><option>Mongolia</option><option>Montenegro</option><option>Morocco</option><option>Mozambique</option><option>Myanmar</option><option>Namibia</option><option>Nauru</option><option>Nepal</option><option>Netherlands</option><option>New Zealand</option><option>Nicaragua</option><option>Niger</option><option>Nigeria</option><option>North Korea</option><option>North Macedonia</option><option>Norway</option><option>Oman</option><option>Pakistan</option><option>Palau</option><option>Palestine</option><option>Panama</option><option>Papua New Guinea</option><option>Paraguay</option><option>Peru</option><option>Philippines</option><option>Poland</option><option>Portugal</option><option>Qatar</option><option>Romania</option><option>Russia</option><option>Rwanda</option><option>Saint Kitts and Nevis</option><option>Saint Lucia</option><option>Saint Vincent and the Grenadines</option><option>Samoa</option><option>San Marino</option><option>Sao Tome and Principe</option><option>Saudi Arabia</option><option>Senegal</option><option>Serbia</option><option>Seychelles</option><option>Sierra Leone</option><option>Singapore</option><option>Slovakia</option><option>Slovenia</option><option>Solomon Islands</option><option>Somalia</option><option>South Africa</option><option>South Korea</option><option>South Sudan</option><option>Spain</option><option>Sri Lanka</option><option>Sudan</option><option>Suriname</option><option>Sweden</option><option>Switzerland</option><option>Syria</option><option>Taiwan</option><option>Tajikistan</option><option>Tanzania</option><option>Thailand</option><option>Timor-Leste</option><option>Togo</option><option>Tonga</option><option>Trinidad and Tobago</option><option>Tunisia</option><option>Turkey</option><option>Turkmenistan</option><option>Tuvalu</option><option>Uganda</option><option>Ukraine</option><option>United Arab Emirates</option><option>United Kingdom</option><option>United States</option><option>Uruguay</option><option>Uzbekistan</option><option>Vanuatu</option><option>Vatican City</option><option>Venezuela</option><option>Vietnam</option><option>Yemen</option><option>Zambia</option><option>Zimbabwe</option>
+          </datalist>
         </div>
       </div>
 
@@ -3114,6 +3117,7 @@ function show(page) {
   if (page === 'bulletin') loadForum();
   if (page === 'events') loadClimateEvents();
   if (page === 'home') loadHomeClimateEvents();
+  if (page === 'directory') loadDirectory();
 }
 function selectRetreat(el, id, type) {
   // Clear all cohort card actives
@@ -3590,6 +3594,7 @@ function handleResourceKeydown(e) {
 
 var profileLastFocused = null;
 var currentProfileData = null;
+var profileIsFirstRun = false;
 
 function fillProfileForm(data) {
   document.getElementById('rf-first').value = data.firstName || '';
@@ -3611,6 +3616,8 @@ function fillProfileForm(data) {
 function openProfile() {
   profileLastFocused = document.activeElement;
   if (currentProfileData && currentProfileData.hasProfile) fillProfileForm(currentProfileData);
+  var closeBtn = document.getElementById('profile-close-btn');
+  if (closeBtn) closeBtn.style.display = profileIsFirstRun ? 'none' : '';
   document.getElementById('profile-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
   document.addEventListener('keydown', handleProfileKeydown);
@@ -3618,13 +3625,14 @@ function openProfile() {
   if (firstInput) firstInput.focus();
 }
 function closeProfile() {
+  if (profileIsFirstRun) return;
   document.getElementById('profile-modal').classList.remove('open');
   document.body.style.overflow = '';
   document.removeEventListener('keydown', handleProfileKeydown);
   if (profileLastFocused) profileLastFocused.focus();
 }
 function handleProfileKeydown(e) {
-  if (e.key === 'Escape') { closeProfile(); return; }
+  if (e.key === 'Escape') { if (!profileIsFirstRun) closeProfile(); return; }
   if (e.key !== 'Tab') return;
   var modal = document.getElementById('profile-modal');
   var focusable = modal.querySelectorAll('button, input, select, textarea, a[href]');
@@ -3755,11 +3763,27 @@ async function submitProfile() {
     var greetingEl = document.getElementById('home-greeting-name');
     if (greetingEl && payload.firstName) greetingEl.textContent = payload.firstName.trim();
 
+    if (payload.shareWithCommunity) loadDirectory();
+
     btn.disabled = false;
     btn.textContent = 'Save profile';
-    status.textContent = 'Profile saved — you can reopen this anytime to review or update it.';
-    status.classList.remove('error');
-    status.classList.add('show');
+
+    if (profileIsFirstRun) {
+      profileIsFirstRun = false;
+      var closeBtn = document.getElementById('profile-close-btn');
+      if (closeBtn) closeBtn.style.display = '';
+      btn.textContent = 'Saved ✓';
+      setTimeout(function() {
+        document.getElementById('profile-modal').classList.remove('open');
+        document.body.style.overflow = '';
+        document.removeEventListener('keydown', handleProfileKeydown);
+        btn.textContent = 'Save profile';
+      }, 800);
+    } else {
+      status.textContent = 'Profile saved — you can reopen this anytime to review or update it.';
+      status.classList.remove('error');
+      status.classList.add('show');
+    }
   } catch (err) {
     btn.disabled = false;
     btn.textContent = 'Save profile';
@@ -4430,7 +4454,7 @@ function setNavAvatar(firstName, headshotData) {
     setNavAvatar(data.firstName, data.headshotData);
     var greetingEl = document.getElementById('home-greeting-name');
     if (greetingEl && data.firstName) greetingEl.textContent = data.firstName.trim();
-    if (!data.hasProfile) openProfile();
+    if (!data.hasProfile) { profileIsFirstRun = true; openProfile(); }
   } catch (err) {
     // Network hiccup — leave the page usable rather than forcing a redirect loop.
   }
