@@ -76,7 +76,8 @@
     .nav-tagline { font-size:11px; }
     .nav-links-row { padding:0 12px 0 16px; height:40px; overflow-x:auto; justify-content:flex-start; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
     .nav-links-row::-webkit-scrollbar { display:none; }
-    .nav-links { gap:20px; flex-shrink:0; padding-right:44px; }
+    .nav-links { gap:16px; flex-shrink:0; padding-right:44px; }
+    nav::after { content:''; position:absolute; bottom:0; right:40px; width:60px; height:40px; background:linear-gradient(to right,transparent,var(--soil)); pointer-events:none; z-index:1; }
     .nav-profile { right:8px !important; }
     .page { padding-top:108px; }
   }
@@ -422,19 +423,16 @@
   .climate-card-name { font-family:Georgia,serif; font-size:17px; font-weight:400; color:var(--soil-dark); line-height:1.3; }
   .climate-card-meta { font-size:12px; color:var(--ink-light); display:flex; gap:10px; flex-wrap:wrap; }
   .climate-card-desc { font-size:12.5px; color:var(--ink-soft); line-height:1.65; }
-  .climate-card-footer { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:4px; flex-wrap:wrap; }
-  .climate-attendees { display:flex; align-items:center; gap:6px; flex:1; min-width:0; }
+  .climate-card-footer { display:flex; flex-direction:column; gap:10px; margin-top:4px; }
+  .climate-attendees { display:flex; align-items:center; gap:6px; min-width:0; }
   .climate-avatar { width:26px; height:26px; border-radius:50%; background:var(--parchment); border:1.5px solid #fff; margin-right:-8px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; color:var(--ink-soft); flex-shrink:0; overflow:hidden; }
   .climate-avatar img { width:100%; height:100%; object-fit:cover; }
   .climate-att-count { font-size:12px; color:var(--ink-light); margin-left:14px; white-space:nowrap; }
   .climate-card-actions { display:flex; gap:8px; flex-shrink:0; }
   .btn-going { font-size:12px; padding:7px 14px; border:1px solid var(--soil); border-radius:2px; background:transparent; color:var(--soil); cursor:pointer; font-family:inherit; transition:all 0.15s; white-space:nowrap; }
   .btn-going:hover { background:var(--soil); color:var(--warm-white); }
-  .btn-going.going { background:var(--soil); color:var(--warm-white); cursor:pointer; }
-  .btn-going.going:hover { background:#7a1f1f; border-color:#7a1f1f; }
-  .btn-going.going .label-hover { display:none; }
-  .btn-going.going:hover .label-default { display:none; }
-  .btn-going.going:hover .label-hover { display:inline; }
+  .btn-going.going { border-color:#c0392b; color:#c0392b; background:transparent; cursor:pointer; }
+  .btn-going.going:hover { background:#c0392b; color:var(--warm-white); }
   .btn-discuss { font-size:12px; padding:7px 14px; border:1px solid var(--border); border-radius:2px; background:transparent; color:var(--ink-soft); text-decoration:none; display:inline-block; white-space:nowrap; transition:border-color 0.15s; }
   .btn-discuss:hover { border-color:var(--ink-soft); }
   .climate-empty { font-size:13.5px; color:var(--ink-light); padding:24px 0; }
@@ -485,14 +483,19 @@
   /* Lightbox */
   .gal-modal { display:none; position:fixed; inset:0; z-index:500; background:rgba(8,18,12,0.97); flex-direction:column; align-items:center; justify-content:center; }
   .gal-modal.open { display:flex; }
-  .gal-img { max-width:90vw; max-height:84vh; object-fit:contain; display:block; }
+  .gal-img { max-width:90vw; max-height:calc(100vh - 180px); object-fit:contain; display:block; }
   .gal-close { position:absolute; top:20px; right:24px; background:none; border:none; color:rgba(245,230,192,0.6); font-size:20px; cursor:pointer; line-height:1; padding:8px; }
   .gal-close:hover { color:#F5E6C0; }
-  .gal-prev, .gal-next { position:absolute; top:50%; transform:translateY(-50%); background:none; border:none; color:rgba(245,230,192,0.45); font-size:26px; cursor:pointer; padding:24px 20px; transition:color 0.18s; }
+  .gal-prev, .gal-next { position:absolute; top:calc(50% - 50px); transform:translateY(-50%); background:none; border:none; color:rgba(245,230,192,0.45); font-size:26px; cursor:pointer; padding:24px 20px; transition:color 0.18s; }
   .gal-prev:hover, .gal-next:hover { color:#F5E6C0; }
   .gal-prev { left:8px; }
   .gal-next { right:8px; }
-  .gal-counter { position:absolute; bottom:24px; left:50%; transform:translateX(-50%); color:rgba(245,230,192,0.38); font-size:10.5px; letter-spacing:0.18em; text-transform:uppercase; font-family:inherit; }
+  .gal-counter { position:absolute; bottom:102px; left:50%; transform:translateX(-50%); color:rgba(245,230,192,0.38); font-size:10.5px; letter-spacing:0.18em; text-transform:uppercase; font-family:inherit; white-space:nowrap; }
+  .gal-thumbs { position:absolute; bottom:0; left:0; right:0; height:88px; display:flex; align-items:center; gap:5px; padding:0 60px; overflow-x:auto; scrollbar-width:none; background:linear-gradient(to top, rgba(8,18,12,0.9) 60%, transparent); }
+  .gal-thumbs::-webkit-scrollbar { display:none; }
+  .gal-thumb { flex-shrink:0; width:108px; height:68px; object-fit:cover; cursor:pointer; opacity:0.38; transition:opacity 0.15s, box-shadow 0.15s; border-radius:2px; }
+  .gal-thumb:hover { opacity:0.7; }
+  .gal-thumb.active { opacity:1; box-shadow:0 0 0 2px #F5E6C0; }
   .month-label { font-size:10px; text-transform:uppercase; letter-spacing:0.14em; color:var(--ink-light); padding-bottom:10px; }
   .month-group { margin-bottom:44px; }
   .ev-row { display:grid; grid-template-columns:64px 1fr auto; gap:18px; padding:24px 0; align-items:start; }
@@ -917,9 +920,8 @@
 
   /* Shelf grid — stage 01 */
   .shelf-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
-  .shelf-card { background:var(--soil); display:flex; flex-direction:row; align-items:flex-start; }
-  .shelf-cover { width:48px; height:64px; flex-shrink:0; overflow:hidden; }
-  .shelf-cover svg { width:100%; height:100%; display:block; }
+  .shelf-card { background:var(--soil); display:flex; flex-direction:column; position:relative; text-decoration:none; color:inherit; }
+  .bk-arrow { position:absolute; top:12px; right:13px; font-size:11px; color:rgba(247,243,236,0.3); }
   .shelf-body { padding:14px 16px 18px; flex:1; }
   .shelf-body .bk-title { font-family:Georgia,serif; font-size:14.5px; line-height:1.3; color:var(--warm-white); margin-bottom:6px; }
   .shelf-body .bk-author { font-size:9.5px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent); margin-bottom:10px; }
@@ -1184,7 +1186,6 @@
         <div class="ev-filters" role="group" aria-label="Filter events by type">
           <button class="ev-filter active" aria-pressed="true" onclick="filterEvs(this,'all')">All</button>
           <button class="ev-filter" aria-pressed="false" onclick="filterEvs(this,'online')">Online</button>
-          <button class="ev-filter" aria-pressed="false" onclick="filterEvs(this,'in-person')">In person</button>
         </div>
         <div id="ev-home-items">
           <div class="ev-item" data-type="online" data-ts="2026-08-02">
@@ -1500,6 +1501,7 @@
             </div>
             <div class="tl-item" onclick="selectRetreat(this,'pv2025','tl')">
               <div class="tl-card">
+                <!-- SOURCE: Photos Global Gathering 2025/6A2A0235.JPG — Julia's selection, do not replace -->
                 <img class="tl-photo" src="/images/tl-pv2025.webp" alt="Global Gathering · Plum Village, France" loading="lazy">
                 <div class="tl-label"><h4>Global Gathering</h4><p>Plum Village, France</p></div>
               </div>
@@ -1513,12 +1515,14 @@
           <div class="tl-group-inner">
             <div class="tl-item" onclick="selectRetreat(this,'mx2026','tl')">
               <div class="tl-card">
+                <!-- SOURCE: Photos Americas 2026/IMG_6107.JPG — Julia's selection, do not replace -->
                 <img class="tl-photo" src="/images/tl-mx2026.webp" alt="Americas Retreat · Mexico" loading="lazy">
                 <div class="tl-label"><h4>Americas</h4><p>Mexico</p></div>
               </div>
             </div>
             <div class="tl-item" onclick="selectRetreat(this,'au2026','tl')">
               <div class="tl-card">
+                <!-- SOURCE: Photos Asia Pacific 2026/Climate retreat - Aus 2026 _75.jpg — Julia's selection, do not replace -->
                 <img class="tl-photo" src="/images/tl-au2026.webp" alt="Asia Pacific Retreat · Australia" loading="lazy">
                 <div class="tl-label"><h4>Asia Pacific</h4><p>Australia</p></div>
               </div>
@@ -2084,7 +2088,7 @@
       </div>
     </div>
     <div id="rc-tz2025" class="retreat-content" style="display:none">
-      <div class="label" style="margin-bottom:18px">Dharma talks · Tanzania 2024</div>
+      <div class="label" style="margin-bottom:18px">Dharma talks · Africa 2025</div>
       <p class="photos-note">Revisit the teachings offered during the retreat. You may listen from beginning to end, or return to a particular talk whenever you need its guidance.</p>
       <div class="practice-grid" style="margin-bottom:28px">
         <a class="p-card" href="https://youtu.be/mgRv9dLF-JA?si=lI4nl165u8kW3gtO" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;"><div class="p-play"><svg width="9" height="11" viewBox="0 0 9 11" fill="none"><path d="M1 1l7 4.5L1 10V1z" fill="#EFE9DF"/></svg></div><div class="p-info"><div class="p-type">Talk · 1</div><h4>The Power of Connection</h4><div class="p-dur">YouTube ↗</div></div></a>
@@ -2184,7 +2188,7 @@
       </div>
     </div>
     <div id="rc-pv2025" class="retreat-content" style="display:none">
-      <div class="label" style="margin-bottom:18px">Dharma talks · Plum Village 2025</div>
+      <div class="label" style="margin-bottom:18px">Dharma talks · Global Gathering 2025</div>
       <p class="photos-note">Revisit the teachings offered during the retreat. You may listen from beginning to end, or return to a particular talk whenever you need its guidance.</p>
       <div class="practice-grid" style="margin-bottom:28px">
         <a class="p-card" href="https://youtu.be/y70dDdErLEA?si=wnuecJ71iJ30U8qc" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;"><div class="p-play"><svg width="9" height="11" viewBox="0 0 9 11" fill="none"><path d="M1 1l7 4.5L1 10V1z" fill="#EFE9DF"/></svg></div><div class="p-info"><div class="p-type">Talk · 1</div><h4>The Journey Begins</h4><div class="p-dur">Br. Phap Huu &amp; Christiana Figueres &nbsp;·&nbsp; YouTube ↗</div></div></a>
@@ -2408,7 +2412,7 @@
       </div>
       <div class="pcard-grid">
         <div class="pcard" tabindex="0" role="button" onclick="openResource('inviting-the-bell')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('inviting-the-bell')}"><div class="pcard-cat">Practice</div><div class="pcard-title">Inviting the Bell</div><div class="pcard-desc">Why we "invite" rather than strike the bell, and the verse recited before it sounds.</div></div>
-        <div class="pcard ph"><div class="ph-badge"><span class="ph-dot"></span>In progress</div><div class="pcard-title">Mindful Eating</div></div>
+        <div class="pcard" tabindex="0" role="button" onclick="openResource('mindful-eating')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openResource('mindful-eating')}"><div class="pcard-cat">Practice</div><div class="pcard-title">Mindful Eating</div><div class="pcard-desc">Seven reasons to slow down at mealtimes, and a step-by-step guide to bringing awareness to every bite.</div></div>
       </div>
     </div>
 
@@ -2491,30 +2495,26 @@
       <div class="lib-stage-name">New to practice</div>
       <p class="lib-guide">For those who have recently returned from retreat, or are curious and looking for a place to begin.</p>
       <div class="shelf-grid">
-        <div class="shelf-card">
-          <div class="shelf-cover"><svg viewBox="0 0 3 4" xmlns="http://www.w3.org/2000/svg"><rect width="3" height="4" fill="#2D5A42"/><circle cx="1.5" cy="1.6" r="0.8" fill="none" stroke="rgba(247,243,236,0.25)" stroke-width="0.06"/><circle cx="1.5" cy="1.6" r="0.45" fill="none" stroke="rgba(247,243,236,0.18)" stroke-width="0.04"/><line x1="0.3" y1="3.1" x2="2.7" y2="3.1" stroke="rgba(247,243,236,0.2)" stroke-width="0.035"/><line x1="0.3" y1="3.3" x2="2.7" y2="3.3" stroke="rgba(247,243,236,0.2)" stroke-width="0.035"/><line x1="0.3" y1="3.55" x2="1.8" y2="3.55" stroke="rgba(247,243,236,0.2)" stroke-width="0.035"/></svg></div>
+        <a class="shelf-card" href="https://www.parallax.org/product/the-miracle-of-mindfulness/" target="_blank" rel="noopener">
+          <span class="bk-arrow">↗</span>
           <div class="shelf-body"><div class="bk-title">The Miracle of Mindfulness</div><div class="bk-author">Thich Nhat Hanh</div><div class="bk-desc">Bringing awareness into ordinary daily activities — washing dishes, walking, breathing.</div></div>
-        </div>
-        <div class="shelf-card">
-          <div class="shelf-cover"><svg viewBox="0 0 3 4" xmlns="http://www.w3.org/2000/svg"><rect width="3" height="4" fill="#1E4A34"/><g opacity="0.22"><rect x="0.35" y="0.4" width="2.3" height="0.06" fill="#F7F3EC"/><rect x="0.35" y="0.62" width="1.9" height="0.06" fill="#F7F3EC"/><rect x="0.35" y="0.84" width="2.1" height="0.06" fill="#F7F3EC"/><rect x="0.35" y="1.06" width="1.7" height="0.06" fill="#F7F3EC"/><rect x="0.35" y="1.28" width="2.2" height="0.06" fill="#F7F3EC"/><rect x="0.35" y="1.5" width="1.8" height="0.06" fill="#F7F3EC"/></g><rect x="0.35" y="3.0" width="2.3" height="0.05" fill="rgba(232,168,48,0.5)"/><rect x="0.35" y="3.18" width="1.6" height="0.05" fill="rgba(232,168,48,0.5)"/></svg></div>
+        </a>
+        <a class="shelf-card" href="https://www.parallax.org/product/peace-is-every-step/" target="_blank" rel="noopener">
+          <span class="bk-arrow">↗</span>
           <div class="shelf-body"><div class="bk-title">Peace Is Every Step</div><div class="bk-author">Thich Nhat Hanh</div><div class="bk-desc">Short reflections for meeting everyday life — the kitchen, the car — with more presence.</div></div>
-        </div>
-        <div class="shelf-card">
-          <div class="shelf-cover"><svg viewBox="0 0 3 4" xmlns="http://www.w3.org/2000/svg"><rect width="3" height="4" fill="#6B4E3D"/><g opacity="0.18"><line x1="0" y1="0.8" x2="3" y2="0.8" stroke="#F7F3EC" stroke-width="0.05"/><line x1="0" y1="1.4" x2="3" y2="1.4" stroke="#F7F3EC" stroke-width="0.05"/><line x1="0" y1="2.0" x2="3" y2="2.0" stroke="#F7F3EC" stroke-width="0.05"/><line x1="0" y1="2.6" x2="3" y2="2.6" stroke="#F7F3EC" stroke-width="0.05"/><line x1="0.8" y1="0" x2="0.8" y2="4" stroke="#F7F3EC" stroke-width="0.05"/><line x1="1.6" y1="0" x2="1.6" y2="4" stroke="#F7F3EC" stroke-width="0.05"/><line x1="2.4" y1="0" x2="2.4" y2="4" stroke="#F7F3EC" stroke-width="0.05"/></g><circle cx="1.5" cy="2" r="0.5" fill="none" stroke="rgba(247,243,236,0.35)" stroke-width="0.07"/></svg></div>
-          <div class="shelf-body"><div class="bk-title">Wherever You Go, There You Are</div><div class="bk-author">Jon Kabat-Zinn</div><div class="bk-desc">A secular, widely-read entry point into mindfulness meditation.</div></div>
-        </div>
-        <div class="shelf-card">
-          <div class="shelf-cover"><svg viewBox="0 0 3 4" xmlns="http://www.w3.org/2000/svg"><rect width="3" height="4" fill="#2A5C48"/><g opacity="0.2"><rect x="0.4" y="0.4" width="2.2" height="3.2" fill="none" stroke="#F7F3EC" stroke-width="0.07"/><rect x="0.65" y="0.65" width="1.7" height="2.7" fill="none" stroke="#F7F3EC" stroke-width="0.04"/></g><g opacity="0.3"><circle cx="0.8" cy="2.1" r="0.1" fill="#E8A830"/><circle cx="1.2" cy="2.1" r="0.1" fill="#E8A830"/><circle cx="1.6" cy="2.1" r="0.1" fill="#E8A830"/><circle cx="2.0" cy="2.1" r="0.1" fill="#E8A830"/><circle cx="2.4" cy="2.1" r="0.1" fill="#E8A830"/></g></svg></div>
+        </a>
+        <a class="shelf-card" href="https://www.parallax.org/product/interbeing-4th-edition/" target="_blank" rel="noopener">
+          <span class="bk-arrow">↗</span>
           <div class="shelf-body"><div class="bk-title">Interbeing</div><div class="bk-author">Thich Nhat Hanh</div><div class="bk-desc">The fourteen guidelines of the Order of Interbeing — traditional ethics for contemporary life.</div></div>
-        </div>
-        <div class="shelf-card">
-          <div class="shelf-cover"><svg viewBox="0 0 3 4" xmlns="http://www.w3.org/2000/svg"><rect width="3" height="4" fill="#0F2419"/><ellipse cx="1.5" cy="1.9" rx="0.28" ry="0.62" fill="none" stroke="rgba(247,243,236,0.3)" stroke-width="0.05"/><ellipse cx="1.5" cy="1.9" rx="0.28" ry="0.62" fill="none" stroke="rgba(247,243,236,0.3)" stroke-width="0.05" transform="rotate(60 1.5 1.9)"/><ellipse cx="1.5" cy="1.9" rx="0.28" ry="0.62" fill="none" stroke="rgba(247,243,236,0.3)" stroke-width="0.05" transform="rotate(-60 1.5 1.9)"/><circle cx="1.5" cy="1.9" r="0.12" fill="rgba(232,168,48,0.4)"/><line x1="0.4" y1="3.2" x2="2.6" y2="3.2" stroke="rgba(247,243,236,0.15)" stroke-width="0.04"/><line x1="0.4" y1="3.45" x2="1.8" y2="3.45" stroke="rgba(247,243,236,0.15)" stroke-width="0.04"/></svg></div>
+        </a>
+        <a class="shelf-card" href="https://www.parallax.org/product/no-mud-no-lotus/" target="_blank" rel="noopener">
+          <span class="bk-arrow">↗</span>
           <div class="shelf-body"><div class="bk-title">No Mud, No Lotus</div><div class="bk-author">Thich Nhat Hanh</div><div class="bk-desc">On being with suffering without being overwhelmed — transformation, not avoidance.</div></div>
-        </div>
-        <div class="shelf-card">
-          <div class="shelf-cover"><svg viewBox="0 0 3 4" xmlns="http://www.w3.org/2000/svg"><rect width="3" height="4" fill="#4A7A62"/><path d="M 1.5 0.6 C 2.2 1.0 2.4 1.8 1.5 2.8 C 0.6 1.8 0.8 1.0 1.5 0.6 Z" fill="none" stroke="rgba(247,243,236,0.3)" stroke-width="0.06"/><line x1="1.5" y1="0.6" x2="1.5" y2="2.8" stroke="rgba(247,243,236,0.2)" stroke-width="0.04"/><line x1="1.5" y1="3.1" x2="1.5" y2="3.6" stroke="rgba(247,243,236,0.2)" stroke-width="0.04"/></svg></div>
+        </a>
+        <a class="shelf-card" href="https://www.parallax.org/product/love-letter-to-the-earth/" target="_blank" rel="noopener">
+          <span class="bk-arrow">↗</span>
           <div class="shelf-body"><div class="bk-title">Love Letter to the Earth</div><div class="bk-author">Thich Nhat Hanh</div><div class="bk-desc">A call for a spiritual revolution grounded in love — treating the earth as relationship.</div></div>
-        </div>
+        </a>
       </div>
     </div>
   </div>
@@ -2526,14 +2526,14 @@
       <div class="lib-stage-name">Deepening your practice</div>
       <p class="lib-guide">For those who practise regularly and feel ready to explore the teachings beyond the techniques.</p>
       <div class="shelf-grid" style="grid-template-columns:repeat(2,1fr)">
-        <div class="shelf-card">
-          <div class="shelf-cover"><svg viewBox="0 0 3 4" xmlns="http://www.w3.org/2000/svg"><rect width="3" height="4" fill="#E8A830"/><g opacity="0.25"><polygon points="1.5,0.5 2.4,1.2 2.1,2.3 0.9,2.3 0.6,1.2" fill="none" stroke="#1A3A2A" stroke-width="0.07"/><polygon points="1.5,0.9 2.1,1.4 1.9,2.1 1.1,2.1 0.9,1.4" fill="none" stroke="#1A3A2A" stroke-width="0.04"/></g><line x1="0.4" y1="2.9" x2="2.6" y2="2.9" stroke="rgba(26,58,42,0.25)" stroke-width="0.045"/><line x1="0.4" y1="3.15" x2="2.0" y2="3.15" stroke="rgba(26,58,42,0.25)" stroke-width="0.045"/><line x1="0.4" y1="3.4" x2="2.4" y2="3.4" stroke="rgba(26,58,42,0.25)" stroke-width="0.045"/></svg></div>
+        <a class="shelf-card" href="https://www.parallax.org/product/heart-of-the-buddhas-teaching/" target="_blank" rel="noopener">
+          <span class="bk-arrow">↗</span>
           <div class="shelf-body"><div class="bk-title">The Heart of the Buddha's Teaching</div><div class="bk-author">Thich Nhat Hanh</div><div class="bk-desc">A clear grounding in the Four Noble Truths and the Eightfold Path. For readers ready to understand where the practice comes from.</div></div>
-        </div>
-        <div class="shelf-card">
-          <div class="shelf-cover"><svg viewBox="0 0 3 4" xmlns="http://www.w3.org/2000/svg"><rect width="3" height="4" fill="#2A4A3A"/><circle cx="1.2" cy="1.8" r="0.65" fill="none" stroke="rgba(247,243,236,0.28)" stroke-width="0.07"/><circle cx="1.8" cy="1.8" r="0.65" fill="none" stroke="rgba(247,243,236,0.28)" stroke-width="0.07"/><line x1="0.35" y1="3.1" x2="2.65" y2="3.1" stroke="rgba(247,243,236,0.18)" stroke-width="0.04"/><line x1="0.35" y1="3.35" x2="1.9" y2="3.35" stroke="rgba(247,243,236,0.18)" stroke-width="0.04"/></svg></div>
+        </a>
+        <a class="shelf-card" href="https://www.parallax.org/product/true-love/" target="_blank" rel="noopener">
+          <span class="bk-arrow">↗</span>
           <div class="shelf-body"><div class="bk-title">True Love</div><div class="bk-author">Thich Nhat Hanh</div><div class="bk-desc">On the four elements of real love — loving-kindness, compassion, joy, and freedom — and how they deepen through consistent practice.</div></div>
-        </div>
+        </a>
       </div>
     </div>
   </div>
@@ -2545,14 +2545,10 @@
       <div class="lib-stage-name">Practice in the world</div>
       <p class="lib-guide">For those exploring how practice can shape the way we respond to the challenges of our time.</p>
       <div class="shelf-grid" style="grid-template-columns:repeat(2,1fr)">
-        <div class="shelf-card">
-          <div class="shelf-cover"><svg viewBox="0 0 3 4" xmlns="http://www.w3.org/2000/svg"><rect width="3" height="4" fill="#D4C8A0"/><g opacity="0.4"><path d="M 0 0.7 C 0.7 0.5 1.3 0.9 2 0.7 C 2.7 0.5 3.3 0.9 4 0.7" fill="none" stroke="#1A3A2A" stroke-width="0.06"/><path d="M 0 1.0 C 0.7 0.8 1.3 1.2 2 1.0 C 2.7 0.8 3.3 1.2 4 1.0" fill="none" stroke="#1A3A2A" stroke-width="0.06"/><path d="M 0 1.3 C 0.7 1.1 1.3 1.5 2 1.3 C 2.7 1.1 3.3 1.5 4 1.3" fill="none" stroke="#1A3A2A" stroke-width="0.06"/><path d="M 0 1.6 C 0.7 1.4 1.3 1.8 2 1.6 C 2.7 1.4 3.3 1.8 4 1.6" fill="none" stroke="#1A3A2A" stroke-width="0.05"/><path d="M 0 1.9 C 0.7 1.7 1.3 2.1 2 1.9 C 2.7 1.7 3.3 2.1 4 1.9" fill="none" stroke="#1A3A2A" stroke-width="0.05"/></g></svg></div>
+        <a class="shelf-card" href="https://www.parallax.org/product/zen-and-the-art-of-saving-the-planet/" target="_blank" rel="noopener">
+          <span class="bk-arrow">↗</span>
           <div class="shelf-body"><div class="bk-title">Zen and the Art of Saving the Planet</div><div class="bk-author">Thich Nhat Hanh</div><div class="bk-desc">Mindfulness applied directly to the climate crisis — clarity, compassion, and the courage to act without burning out.</div></div>
-        </div>
-        <div class="shelf-card">
-          <div class="shelf-cover"><svg viewBox="0 0 3 4" xmlns="http://www.w3.org/2000/svg"><rect width="3" height="4" fill="#1A3A2A"/><g opacity="0.35"><line x1="1.0" y1="2.5" x2="1.0" y2="0.6" stroke="#E8A830" stroke-width="0.07"/><line x1="1.6" y1="2.5" x2="1.6" y2="0.9" stroke="#E8A830" stroke-width="0.07"/><line x1="2.2" y1="2.5" x2="2.2" y2="0.5" stroke="#E8A830" stroke-width="0.07"/><line x1="2.8" y1="2.5" x2="2.8" y2="1.0" stroke="#E8A830" stroke-width="0.07"/><line x1="3.4" y1="2.5" x2="3.4" y2="0.7" stroke="#E8A830" stroke-width="0.07"/><polyline points="0.85,0.78 1.0,0.6 1.15,0.78" fill="none" stroke="#E8A830" stroke-width="0.07"/><polyline points="1.45,1.08 1.6,0.9 1.75,1.08" fill="none" stroke="#E8A830" stroke-width="0.07"/><polyline points="2.05,0.68 2.2,0.5 2.35,0.68" fill="none" stroke="#E8A830" stroke-width="0.07"/><polyline points="2.65,1.18 2.8,1.0 2.95,1.18" fill="none" stroke="#E8A830" stroke-width="0.07"/><polyline points="3.25,0.88 3.4,0.7 3.55,0.88" fill="none" stroke="#E8A830" stroke-width="0.07"/></g></svg></div>
-          <div class="shelf-body"><div class="bk-title">Active Hope</div><div class="bk-author">Joanna Macy &amp; Chris Johnstone</div><div class="bk-desc">A four-stage practice for facing the crisis without collapsing into despair or denial. Best read together.</div></div>
-        </div>
+        </a>
       </div>
     </div>
   </div>
@@ -2752,7 +2748,7 @@
     <div class="propose-modal-card" role="dialog" aria-modal="true" aria-labelledby="propose-modal-title">
       <button class="propose-close" onclick="closePropose()" aria-label="Close">✕</button>
       <div class="propose-modal-title" id="propose-modal-title">Propose an event</div>
-      <p class="propose-modal-sub">Have an idea for the community? Share it here — the team reviews all submissions and will be in touch within a week.</p>
+      <p class="propose-modal-sub">Have an idea for the community? Share it here — it will appear in the events section directly.</p>
 
       <div class="form-field">
         <label class="form-label" for="pf-title">Event title</label>
@@ -2778,7 +2774,7 @@
       <div class="form-field" id="pf-link-field">
         <label class="form-label" for="pf-link">Link</label>
         <input id="pf-link" class="form-input" type="text" placeholder="e.g. Zoom link (can be added later if you don't have one yet)">
-        <div class="form-error" id="pf-link-err">Please add a link, or leave it for the team to set up.</div>
+        <div class="form-error" id="pf-link-err">Please add a link, or leave blank if you don't have one yet.</div>
       </div>
 
       <div class="form-row">
@@ -2799,7 +2795,7 @@
         <div class="form-error" id="pf-desc-err">Tell us a little about the idea.</div>
       </div>
 
-      <button class="btn-submit" id="pf-submit-btn" onclick="submitPropose()">Send to the team</button>
+      <button class="btn-submit" id="pf-submit-btn" onclick="submitPropose()">Send</button>
       <p class="form-status" id="pf-status"></p>
       <p class="form-note" style="display:none">Your event has been added and is now visible to the community.</p>
     </div>
@@ -2811,7 +2807,7 @@
   <div class="propose-modal-card" role="dialog" aria-modal="true" aria-labelledby="cp-modal-title">
     <button class="propose-close" onclick="closeClimatePropose()" aria-label="Close">✕</button>
     <div class="propose-modal-title" id="cp-modal-title">Suggest a climate event</div>
-    <p class="propose-modal-sub">Know of a conference or event the community should be aware of? Suggest it here — we will add it to the list once reviewed.</p>
+    <p class="propose-modal-sub">Know of a conference or event the community should be aware of? Suggest it here — it will appear in the events section directly.</p>
 
     <div class="form-field">
       <label class="form-label" for="cp-name">Event name</label>
@@ -2847,7 +2843,7 @@
       <input id="cp-link" class="form-input" type="text" placeholder="WhatsApp group, email thread, etc.">
     </div>
 
-    <button class="btn-submit" id="cp-submit-btn" onclick="submitClimatePropose()">Send suggestion</button>
+    <button class="btn-submit" id="cp-submit-btn" onclick="submitClimatePropose()">Send</button>
     <p class="form-status" id="cp-status"></p>
   </div>
 </div>
@@ -2859,6 +2855,7 @@
   <img id="gal-img" class="gal-img" src="" alt="">
   <button class="gal-next" onclick="galleryNav(1)" aria-label="Next photo">&#8594;</button>
   <div id="gal-counter" class="gal-counter"></div>
+  <div id="gal-thumbs" class="gal-thumbs"></div>
 </div>
 
 <!-- ══════════════════════════════════════════════════════
@@ -2966,9 +2963,13 @@
       <button class="forum-back" onclick="forumShowView('list')">← Forums</button>
       <div class="forum-posts-hdr">
         <span class="forum-posts-title" id="forum-posts-title"></span>
-        <button class="new-post" onclick="openForumPostModal()"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M5.5 1v9M1 5.5h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> New post</button>
+        <button class="new-post" id="forum-new-post-btn" onclick="openForumPostModal()" style="display:none"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M5.5 1v9M1 5.5h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> New post</button>
       </div>
       <p class="forum-posts-desc" id="forum-posts-desc"></p>
+      <div id="forum-join-strip" style="display:none;padding:12px 16px;background:var(--parchment);border:1px solid var(--border);border-radius:4px;margin-bottom:20px;font-size:13px;color:var(--ink-soft);align-items:center;justify-content:space-between;gap:16px">
+        <span>Join this forum to post and receive notifications about new conversations.</span>
+        <button class="btn-forum-join" onclick="joinFromPostsView()" style="white-space:nowrap">Join</button>
+      </div>
       <div id="forum-posts-feed"></div>
     </div>
 
@@ -3014,7 +3015,7 @@
   <div class="propose-modal-card" role="dialog" aria-modal="true" aria-labelledby="fpropose-modal-title">
     <button onclick="closeForumProposeModal()" style="position:absolute;top:16px;right:20px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--ink-light);line-height:1" aria-label="Close">×</button>
     <div class="propose-modal-title" id="fpropose-modal-title">Propose a forum</div>
-    <div class="propose-modal-sub">Your proposal will be shared with the team. If created, the forum will appear here.</div>
+    <div class="propose-modal-sub">Propose a new discussion forum for the community — we'll review your suggestion and add it.</div>
     <div class="form-field">
       <label class="form-label" for="fpropose-name">Forum name</label>
       <input type="text" class="form-input" id="fpropose-name" placeholder="e.g. Regenerative Finance">
@@ -3027,7 +3028,7 @@
       <label class="form-label" for="fpropose-desc">Description <span style="font-weight:400;color:var(--ink-light)">(optional)</span></label>
       <textarea class="form-input form-textarea" id="fpropose-desc" placeholder="Any additional context for the community?"></textarea>
     </div>
-    <button class="btn-submit" onclick="submitForumPropose()">Send proposal</button>
+    <button class="btn-submit" onclick="submitForumPropose()">Send</button>
     <div class="form-status" id="fpropose-status"></div>
   </div>
 </div>
@@ -3109,10 +3110,21 @@ function filterEvs(el, type) {
   document.querySelectorAll('.ev-filter').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
   el.classList.add('active');
   el.setAttribute('aria-pressed', 'true');
+  const todayStr = new Date().toISOString().slice(0, 10);
   document.querySelectorAll('.ev-item[data-type]').forEach(item => {
-    item.style.display = (type === 'all' || item.dataset.type === type) ? 'flex' : 'none';
+    const ts = item.dataset.ts;
+    const isUpcoming = !ts || ts >= todayStr;
+    item.style.display = (isUpcoming && (type === 'all' || item.dataset.type === type)) ? 'flex' : 'none';
   });
 }
+
+// Hide past events on initial page load
+(function() {
+  var d = new Date().toISOString().slice(0, 10);
+  document.querySelectorAll('.ev-item[data-type]').forEach(function(item) {
+    if (item.dataset.ts && item.dataset.ts < d) item.style.display = 'none';
+  });
+})();
 
 function show(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -3123,7 +3135,6 @@ function show(page) {
   window.scrollTo(0,0);
   if (page === 'bulletin') loadForum();
   if (page === 'events') loadClimateEvents();
-  if (page === 'home') loadHomeClimateEvents();
   if (page === 'directory') loadDirectory();
 }
 function selectRetreat(el, id, type) {
@@ -3397,6 +3408,38 @@ const RESOURCE_CONTENT = {
       <p>That is all.</p>
     `,
     sourceHtml: 'Deer Park Monastery · Based on <em>Happiness</em> by Thich Nhat Hanh · <a href="https://deerparkmonastery.org/journal/deepen-your-practice-the-breathing-room/" target="_blank" rel="noopener">deerparkmonastery.org</a>',
+  },
+  'mindful-eating': {
+    kicker: 'Personal practice · Cultivation',
+    title: 'Mindful Eating',
+    body: `
+      <p>Mindful eating means bringing our awareness to the food on our plate and in our mouth — paying full attention to the sensations of eating in the present moment. It can transform our relationship with food and is a great way to bring mindfulness into daily life.</p>
+
+      <h4>Why try mindful eating?</h4>
+      <ol>
+        <li><strong>It's really enjoyable.</strong> Food is an incredibly sensuous experience: colours, textures, smell, and taste. When we eat mindfully, even simple food can feel a lot more enjoyable.</li>
+        <li><strong>It helps us eat with moderation.</strong> Slowing down and savouring each mouthful gives the body time to signal fullness — we feel satisfied while eating less.</li>
+        <li><strong>It helps with digestion.</strong> Mindful eating naturally leads to chewing more, which makes it easier for the body to digest food.</li>
+        <li><strong>It's a great way to be mindful every day.</strong> We eat every day — making meals a practice brings mindfulness into ordinary life without extra time or equipment.</li>
+        <li><strong>It grows our gratitude.</strong> Noticing the food we eat makes it easier to feel appreciation for what we already have.</li>
+        <li><strong>It can be a cosmic experience.</strong> Thich Nhat Hanh taught that a piece of food is an "ambassador of the cosmos" — rain, sunshine, and a farmer's work are all present in the humble carrot on our plate.</li>
+        <li><strong>We can connect with our values.</strong> When we eat mindfully, we are more aware of what we are eating and it becomes easier to naturally align with our values — around animals, the climate, or the land.</li>
+      </ol>
+
+      <h4>A step-by-step guide</h4>
+      <ol>
+        <li><strong>Commit to just eating.</strong> Put away devices. Even a few minutes of undivided attention to the meal will make a huge difference.</li>
+        <li><strong>Stop and notice.</strong> Pause before eating. Become aware of your breathing for a breath or two, then see what you notice — the colours, shapes, and smells of the food.</li>
+        <li><strong>Look a little bit deeper.</strong> How did this food arrive on your plate? Can you see the sun and rain in it? Let any gratitude that arises be present.</li>
+        <li><strong>Take a mouthful, then put the fork down.</strong> Rather than preparing the next bite while chewing, rest the utensil and give full attention to the taste, texture, and sensation in your mouth. Chew a little longer than usual.</li>
+        <li><strong>Bring your mind back.</strong> When the mind wanders — to errands, the next meal, anything — gently return attention to eating in the present moment. This is normal and this returning is the practice.</li>
+        <li><strong>Ask: where has the food "gone"?</strong> After eating, consider how the food has literally become part of you, and will continue as energy for your future actions. Another way to see interbeing in action.</li>
+        <li><strong>Be kind to yourself.</strong> It won't always be possible to eat mindfully. Our habit to eat unmindfully is a collective one, built over many years. Each moment of mindful eating is a small victory.</li>
+        <li><strong>Get some support.</strong> Mindful eating is easier with others. When a group eats quietly in mindfulness, everyone acts as a reminder to everyone else — as in the silent meal at retreat.</li>
+      </ol>
+    `,
+    sourceUrl: 'https://plumvillage.app/mindful-eating-7-reasons-to-try-it-a-step-by-step-guide/',
+    sourceLabel: 'Plum Village',
   },
   'inviting-the-bell': {
     kicker: 'Community & sangha · Practice',
@@ -3770,27 +3813,21 @@ async function submitProfile() {
     var greetingEl = document.getElementById('home-greeting-name');
     if (greetingEl && payload.firstName) greetingEl.textContent = payload.firstName.trim();
 
-    if (payload.shareWithCommunity) loadDirectory();
+    loadDirectory();
 
     btn.disabled = false;
-    btn.textContent = 'Save profile';
-
+    btn.textContent = 'Saved ✓';
     if (profileIsFirstRun) {
       profileIsFirstRun = false;
       var closeBtn = document.getElementById('profile-close-btn');
       if (closeBtn) closeBtn.style.display = '';
-      btn.textContent = 'Saved ✓';
-      setTimeout(function() {
-        document.getElementById('profile-modal').classList.remove('open');
-        document.body.style.overflow = '';
-        document.removeEventListener('keydown', handleProfileKeydown);
-        btn.textContent = 'Save profile';
-      }, 800);
-    } else {
-      status.textContent = 'Profile saved — you can reopen this anytime to review or update it.';
-      status.classList.remove('error');
-      status.classList.add('show');
     }
+    setTimeout(function() {
+      document.getElementById('profile-modal').classList.remove('open');
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', handleProfileKeydown);
+      btn.textContent = 'Save profile';
+    }, 800);
   } catch (err) {
     btn.disabled = false;
     btn.textContent = 'Save profile';
@@ -3858,7 +3895,7 @@ function resetProposeForm() {
   var status = document.getElementById('pf-status');
   if (status) { status.classList.remove('show', 'error'); status.textContent = ''; }
   var btn = document.getElementById('pf-submit-btn');
-  if (btn) { btn.disabled = false; btn.textContent = 'Send to the team'; }
+  if (btn) { btn.disabled = false; btn.textContent = 'Send'; }
 }
 
 async function submitPropose() {
@@ -3904,10 +3941,10 @@ async function submitPropose() {
     if (!res.ok) throw new Error('request failed');
 
     var card = document.querySelector('.propose-modal-card');
-    card.innerHTML = '<div style="padding:60px 48px;text-align:center"><div style="font-size:32px;margin-bottom:20px">🌿</div><div style="font-family:Georgia,serif;font-size:20px;color:var(--soil-dark);margin-bottom:12px">Thank you</div><p style="font-size:14px;color:var(--ink-light);line-height:1.7;max-width:320px;margin:0 auto 32px">Your proposal has been sent. The team will review it and be in touch within a week.</p><button class="btn-outline" onclick="closePropose()" style="margin:0 auto;display:block">Close</button></div>';
+    card.innerHTML = '<div style="padding:60px 48px;text-align:center"><div style="font-size:32px;margin-bottom:20px">🌿</div><div style="font-family:Georgia,serif;font-size:20px;color:var(--soil-dark);margin-bottom:12px">Thank you</div><p style="font-size:14px;color:var(--ink-light);line-height:1.7;max-width:320px;margin:0 auto 32px">Your event has been sent and will appear in the community directly.</p><button class="btn-outline" onclick="closePropose()" style="margin:0 auto;display:block">Close</button></div>';
   } catch (err) {
     btn.disabled = false;
-    btn.textContent = 'Send to the team';
+    btn.textContent = 'Send';
     status.textContent = 'Something went wrong sending this — please try again in a moment.';
     status.classList.add('show', 'error');
   }
@@ -3963,9 +4000,7 @@ function renderClimateGrid(events) {
       : count + ' people going';
 
     var going = myClimateRsvps.has(ev.name) || ev.currentUserAttending;
-    var btnLabel = going
-      ? '<span class="label-default">Going ✓</span><span class="label-hover">No longer going</span>'
-      : 'I\'m going';
+    var btnLabel = going ? 'No longer attending' : 'I\'m going';
     var btnClass = going ? 'btn-going going' : 'btn-going';
     var btnDisabled = '';
 
@@ -4008,9 +4043,7 @@ async function rsvpClimateEvent(btn, eventName) {
     loadClimateEvents();
   } catch (err) {
     btn.disabled = false;
-    btn.innerHTML = isCancelling
-      ? '<span class="label-default">Going ✓</span><span class="label-hover">No longer going</span>'
-      : 'I\'m going';
+    btn.textContent = isCancelling ? 'No longer attending' : 'I\'m going';
   }
 }
 
@@ -4063,7 +4096,7 @@ async function submitClimatePropose() {
     document.querySelector('#climate-propose-modal .propose-modal-card').innerHTML =
       '<div style="padding:48px;text-align:center">' +
       '<div style="font-family:Georgia,serif;font-size:20px;color:var(--soil-dark);margin-bottom:12px">Thank you</div>' +
-      '<p style="font-size:14px;color:var(--ink-light);line-height:1.7;max-width:300px;margin:0 auto 28px">Your suggestion has been sent. The team will review it and add it to the list if it\'s a good fit.</p>' +
+      '<p style="font-size:14px;color:var(--ink-light);line-height:1.7;max-width:300px;margin:0 auto 28px">Your suggestion has been added and will appear in the events section directly.</p>' +
       '<button class="btn-outline" onclick="closeClimatePropose()" style="margin:0 auto;display:block">Close</button></div>';
   } catch (err) {
     btn.disabled = false;
@@ -4087,62 +4120,6 @@ function escHtml(s) {
 }
 // ── End climate events ─────────────────────────────────────────
 
-// Inject approved sheet events as in-person items in the home page events list
-var homeClimateLoaded = false;
-async function loadHomeClimateEvents() {
-  if (homeClimateLoaded) return;
-  var container = document.getElementById('ev-home-items');
-  if (!container) return;
-  try {
-    var res = await fetch('/api/events?source=sheet');
-    if (!res.ok) return;
-    var data = await res.json();
-    var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    (data.events || []).forEach(function(ev) {
-      if (!ev.startDate) return;
-      var d = new Date(ev.startDate);
-      if (isNaN(d.getTime())) return;
-      var today = new Date(); today.setHours(0,0,0,0);
-      if (d < today) return; // skip past events
-      var mon = MONTHS[d.getMonth()];
-      var day = d.getDate();
-      var ts  = d.getTime();
-      var loc = [ev.city, ev.description ? ev.description.slice(0,60) : ''].filter(Boolean).join(' · ');
-      var link = ev.discussionLink
-        ? '<a href="' + escHtml(ev.discussionLink) + '" target="_blank" rel="noopener" class="rsvp-btn" style="text-decoration:none;flex-shrink:0">View</a>'
-        : '<a class="rsvp-btn" onclick="show(\'events\')" style="cursor:pointer;flex-shrink:0">View</a>';
-      var el = document.createElement('div');
-      el.className = 'ev-item';
-      el.dataset.type = 'in-person';
-      el.dataset.ts = ts;
-      el.innerHTML =
-        '<div class="ev-date"><div class="m">' + escHtml(mon) + '</div><div class="d">' + day + '</div></div>' +
-        '<div class="ev-info">' +
-          '<h3>' + escHtml(ev.name) + '</h3>' +
-          (loc ? '<p>' + escHtml(loc) + '</p>' : '') +
-          '<span class="ev-tag in-person">In person</span>' +
-        '</div>' +
-        link;
-      container.appendChild(el);
-    });
-    // Sort all items (static + dynamic) chronologically, keep only next 5 upcoming
-    var items = Array.from(container.querySelectorAll('.ev-item[data-ts]'));
-    items.sort(function(a, b) { return new Date(+a.dataset.ts || a.dataset.ts) - new Date(+b.dataset.ts || b.dataset.ts); });
-    var today = new Date(); today.setHours(0, 0, 0, 0);
-    var kept = 0;
-    items.forEach(function(item) {
-      var ts = item.dataset.ts;
-      var itemDate = new Date(+ts || ts);
-      if (itemDate < today || kept >= 5) {
-        item.remove();
-      } else {
-        container.appendChild(item);
-        kept++;
-      }
-    });
-    homeClimateLoaded = true;
-  } catch (err) { /* silent — home page still works without sheet events */ }
-}
 
 // ── Forum ────────────────────────────────────────────────────────────────────
 function timeAgo(ts) {
@@ -4204,7 +4181,6 @@ function loadForumList() {
           '<div class="forum-card-actions">' +
           '<button class="btn-forum-join' + (joined ? ' member' : '') + '" onclick="toggleForumMember(\'' + escF(f.name) + '\',this)">' + (joined ? 'Joined ✓' : 'Join') + '</button>' +
           (!joined ? '<span class="forum-join-note">You\'ll be notified of new posts by email.</span>' : '') +
-          '<button class="btn-forum-enter" onclick="enterForum(\'' + escF(f.name) + '\')" aria-label="Open ' + escF(f.name) + ' forum">Open forum</button>' +
           '</div>' +
           '</div>';
       }).join('') || '<p style="font-size:13px;color:var(--ink-light)">No forums available yet.</p>';
@@ -4248,7 +4224,13 @@ function loadForumPosts(forum) {
   fetch('/api/bulletin?action=posts&forum=' + encodeURIComponent(forum))
     .then(function(r) { return r.json(); })
     .then(function(d) {
-      if (d.isMember !== undefined) forumMembership[forum] = d.isMember;
+      if (d.isMember !== undefined) {
+        forumMembership[forum] = d.isMember;
+        var _newBtn  = document.getElementById('forum-new-post-btn');
+        var _joinStr = document.getElementById('forum-join-strip');
+        if (_newBtn)  _newBtn.style.display  = d.isMember ? '' : 'none';
+        if (_joinStr) _joinStr.style.display  = d.isMember ? 'none' : 'flex';
+      }
       var posts = d.posts || [];
       forumPostsMap = {};
       posts.forEach(function(p) { forumPostsMap[p.postId] = p; });
@@ -4285,6 +4267,9 @@ function openForumThread(postId) {
   renderForumThread(post);
   document.getElementById('forum-reply-body').value = '';
   document.getElementById('forum-reply-status').textContent = '';
+  var isMember = !!forumMembership[forumCurrent];
+  document.getElementById('forum-reply-join-note').style.display = isMember ? 'none' : '';
+  document.getElementById('forum-reply-form').style.display = isMember ? '' : 'none';
   forumShowView('thread');
 }
 
@@ -4338,6 +4323,25 @@ function submitForumReply() {
       status.textContent = d.error || 'Something went wrong.';
     }
   }).catch(function() { status.textContent = 'Could not post reply.'; });
+}
+
+function joinFromPostsView() {
+  var joinBtn = document.querySelector('#forum-join-strip .btn-forum-join');
+  if (joinBtn) { joinBtn.disabled = true; joinBtn.textContent = 'Joining…'; }
+  fetch('/api/bulletin', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'join', forum: forumCurrent }),
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.ok) {
+      forumMembership[forumCurrent] = true;
+      loadForumPosts(forumCurrent);
+    } else {
+      if (joinBtn) { joinBtn.disabled = false; joinBtn.textContent = 'Join'; }
+    }
+  }).catch(function() {
+    if (joinBtn) { joinBtn.disabled = false; joinBtn.textContent = 'Join'; }
+  });
 }
 
 function openForumPostModal() {
@@ -4395,7 +4399,7 @@ function submitForumPropose() {
     body: JSON.stringify({ action: 'propose', name: name, purpose: purpose, description: desc }),
   }).then(function(r) { return r.json(); }).then(function(d) {
     if (d.ok) {
-      status.textContent = 'Proposal sent — the team will review it shortly.'; status.style.color = 'var(--soil)';
+      status.textContent = 'Proposal sent — thank you. We\'ll review it and add it.'; status.style.color = 'var(--soil)';
       document.getElementById('fpropose-name').value = '';
       document.getElementById('fpropose-purpose').value = '';
       document.getElementById('fpropose-desc').value = '';
@@ -4412,8 +4416,12 @@ var galIdx = 0;
 var galSrcs = [];
 function openGallery(startIdx, galleryId) {
   galleryId = galleryId || 'na-gallery-data';
-  galSrcs = Array.from(document.querySelectorAll('#' + galleryId + ' img')).map(i => i.dataset.src || i.src);
+  galSrcs = Array.from(document.querySelectorAll('#' + galleryId + ' img')).map(function(i) { return i.dataset.src || i.src; });
   galIdx = startIdx;
+  var thumbs = document.getElementById('gal-thumbs');
+  thumbs.innerHTML = galSrcs.map(function(src, i) {
+    return '<img class="gal-thumb" src="' + src + '" loading="lazy" alt="" onclick="galJump(' + i + ')">';
+  }).join('');
   galRender();
   document.getElementById('gal-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -4426,9 +4434,16 @@ function galleryNav(dir) {
   galIdx = (galIdx + dir + galSrcs.length) % galSrcs.length;
   galRender();
 }
+function galJump(idx) {
+  galIdx = idx;
+  galRender();
+}
 function galRender() {
   document.getElementById('gal-img').src = galSrcs[galIdx];
   document.getElementById('gal-counter').textContent = (galIdx + 1) + ' / ' + galSrcs.length;
+  var thumbEls = document.querySelectorAll('#gal-thumbs .gal-thumb');
+  thumbEls.forEach(function(t, i) { t.classList.toggle('active', i === galIdx); });
+  if (thumbEls[galIdx]) thumbEls[galIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 }
 document.addEventListener('keydown', function(e) {
   var modal = document.getElementById('gal-modal');
@@ -4492,7 +4507,6 @@ function renderDirectory() {
   var region = document.getElementById('dir-filter-region').value;
   var sector = document.getElementById('dir-filter-sector').value;
   var cohort = document.getElementById('dir-filter-cohort').value;
-
   var filtered = dirMembers.filter(function(m) {
     if (region && m.region !== region) return false;
     if (sector && m.sector !== sector) return false;
@@ -4560,33 +4574,53 @@ async function loadDirectory() {
 // City autocomplete via OpenStreetMap Nominatim
 (function() {
   var cityDebounce = null;
+  var lastResults = [];
   var cityInput = document.getElementById('rf-city');
   if (!cityInput) return;
+
   cityInput.addEventListener('input', function() {
     clearTimeout(cityDebounce);
     var q = this.value.trim();
     var dl = document.getElementById('rf-city-suggestions');
     if (!dl) return;
-    if (q.length < 2) { dl.innerHTML = ''; return; }
+    if (q.length < 2) { dl.innerHTML = ''; lastResults = []; return; }
     cityDebounce = setTimeout(function() {
-      fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(q) + '&featuretype=city&format=json&limit=8&addressdetails=1', {
-        headers: { 'Accept-Language': 'en', 'User-Agent': 'CNLC-Platform/1.0' }
-      })
+      fetch('https://photon.komoot.io/api/?q=' + encodeURIComponent(q) + '&limit=8&layer=city')
       .then(function(r) { return r.json(); })
-      .then(function(results) {
+      .then(function(data) {
+        lastResults = data.features || [];
+        var selectedCountry = ((document.getElementById('rf-country') || {}).value || '').trim().toLowerCase();
+        var toShow = selectedCountry
+          ? lastResults.filter(function(f) { return ((f.properties && f.properties.country) || '').toLowerCase() === selectedCountry; })
+          : lastResults;
+        if (selectedCountry && toShow.length === 0) toShow = lastResults;
         var seen = new Set();
-        dl.innerHTML = results.map(function(r) {
-          var city = (r.address && (r.address.city || r.address.town || r.address.village || r.address.municipality)) || r.name;
-          if (!city) return '';
-          var key = city.toLowerCase();
+        dl.innerHTML = toShow.map(function(f) {
+          var name = f.properties && f.properties.name;
+          if (!name) return '';
+          var key = name.toLowerCase();
           if (seen.has(key)) return '';
           seen.add(key);
-          var country = (r.address && r.address.country) || '';
-          return '<option value="' + city.replace(/"/g,'&quot;') + '">' + (country ? country : '') + '</option>';
+          var country = (f.properties && f.properties.country) || '';
+          return '<option value="' + name.replace(/"/g,'&quot;') + '">' + (country ? country : '') + '</option>';
         }).join('');
       })
       .catch(function() {});
-    }, 400);
+    }, 300);
+  });
+
+  // On blur, normalize capitalisation when user picked from the dropdown.
+  cityInput.addEventListener('blur', function() {
+    var q = this.value.trim();
+    if (q.length < 2) return;
+    for (var i = 0; i < lastResults.length; i++) {
+      var name = lastResults[i].properties && lastResults[i].properties.name;
+      if (name && name.toLowerCase() === q.toLowerCase() && name !== q) {
+        cityInput.value = name;
+        if (typeof updateProfilePreview === 'function') updateProfilePreview();
+        return;
+      }
+    }
   });
 })();
 
@@ -4665,12 +4699,10 @@ function submitOffer() {
     .catch(function(){ if (_offerBtn) _offerBtn.disabled = false; st.className = 'form-status error show'; st.textContent = 'Something went wrong — please try again.'; });
 }
 
-// Load climate events into home page on initial load
-loadHomeClimateEvents();
 
 // Refresh session cookie on every visit so logged-in users stay logged in
 if (document.cookie.indexOf('cnlc_session') !== -1) {
-  fetch('/api/logout', { method: 'POST' }).catch(function() {});
+  fetch('/api/refresh-session', { method: 'POST' }).catch(function() {});
 }
 </script>
 </body>

@@ -53,13 +53,8 @@
       <input id="login-email" class="form-input" type="email" placeholder="you@example.org" autocomplete="email">
       <div class="form-error" id="login-email-err">Please add a valid email address.</div>
     </div>
-    <div class="form-field" id="pin-field" style="display:none">
-      <label class="form-label" for="login-pin">Dev access PIN</label>
-      <input id="login-pin" class="form-input" type="password" placeholder="••••" autocomplete="off" maxlength="20">
-    </div>
     <button class="btn-submit" id="login-submit-btn" onclick="submitLogin()">Send me a sign-in link</button>
     <p class="form-status" id="login-status"></p>
-    <p style="margin-top:20px;font-size:11px;color:var(--ink-light)"><a href="#" onclick="document.getElementById('pin-field').style.display=document.getElementById('pin-field').style.display==='none'?'block':'none';return false;" style="color:var(--ink-light)">Development access ↓</a></p>
   </div>
 
   <a class="back-link" href="index.html">← Back to the welcome page</a>
@@ -88,18 +83,15 @@
 
     var btn = document.getElementById('login-submit-btn');
     var status = document.getElementById('login-status');
-    var devPin = document.getElementById('login-pin').value.trim();
     btn.disabled = true;
-    btn.textContent = devPin ? 'Signing in…' : 'Sending…';
+    btn.textContent = 'Sending…';
     status.classList.remove('show', 'error');
 
     try {
-      var body = { email: email };
-      if (devPin) body.devPin = devPin;
       var res = await fetch('/api/request-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ email: email }),
       });
       if (!res.ok) throw new Error('request failed');
 
@@ -109,20 +101,18 @@
         return;
       }
 
+      document.getElementById('intro-copy').style.display = 'none';
       document.getElementById('login-form').innerHTML =
         '<p style="font-size:14px;line-height:1.7;color:var(--ink-soft)">If <strong>' + email.replace(/</g,'&lt;') + '</strong> is on our alumni list, a sign-in link is on its way — check your inbox (and spam folder) over the next few minutes.</p>';
     } catch (e) {
       btn.disabled = false;
-      btn.textContent = devPin ? 'Sign in with PIN' : 'Send me a sign-in link';
-      status.textContent = devPin ? 'Incorrect PIN or email not recognized.' : 'Something went wrong sending this — please try again in a moment.';
+      btn.textContent = 'Send me a sign-in link';
+      status.textContent = 'Something went wrong sending this — please try again in a moment.';
       status.classList.add('show', 'error');
     }
   }
 
   document.getElementById('login-email').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') submitLogin();
-  });
-  document.getElementById('login-pin').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') submitLogin();
   });
 </script>

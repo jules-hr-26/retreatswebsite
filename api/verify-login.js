@@ -12,6 +12,13 @@ export default async function handler(req, res) {
     return res.end();
   }
 
+  // Reject any token whose purpose is not 'login'.
+  // Opt-out tokens, event tokens, etc. carry a different purpose and must not grant sessions.
+  if (payload.purpose && payload.purpose !== 'login') {
+    res.writeHead(302, { Location: '/login.html?error=expired' });
+    return res.end();
+  }
+
   const sessionToken = await createToken(
     { email: payload.email, firstName: payload.firstName, lastName: payload.lastName, exp: Date.now() + SESSION_TTL_MS },
     process.env.SESSION_SECRET

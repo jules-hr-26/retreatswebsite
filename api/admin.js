@@ -323,7 +323,7 @@ export default async function handler(req, res) {
     ]);
 
     // Send invitation email (silently skipped if Resend is not yet configured)
-    const loginUrl = 'https://retreatswebsite.vercel.app/login.html';
+    const loginUrl = `https://${req.headers['x-forwarded-host'] || req.headers.host}/login.html`;
     const inviterName = [admin.firstName, admin.lastName].filter(Boolean).join(' ') || 'The team';
     await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -332,7 +332,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'CNLC Platform <onboarding@resend.dev>',
+        from: 'Climate Plums <noreply@globaloptimism.com>',
         to: cleanEmail,
         subject: 'You have been added as an admin — Climate & Nature Leaders Community',
         html: `
