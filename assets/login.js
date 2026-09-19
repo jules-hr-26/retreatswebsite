@@ -33,11 +33,8 @@
       });
       if (!res.ok) throw new Error('request failed');
 
-      var data = await res.json();
-      if (data.redirect) {
-        window.location.href = data.redirect;
-        return;
-      }
+      // Sign-in links are delivered only by email, never through this response.
+      await res.json();
 
       document.getElementById('intro-copy').style.display = 'none';
       document.getElementById('login-form').innerHTML =
