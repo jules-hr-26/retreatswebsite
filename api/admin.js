@@ -111,6 +111,9 @@ export default async function handler(req, res) {
 
   const body = req.body || {};
   const { action } = body;
+  if (['export-member', 'delete-member', 'gdpr-erase-member'].includes(action) && admin.role !== 'super_admin') {
+    return res.status(403).json({ error: 'super_admin required' });
+  }
 
   // ── Allowlist ────────────────────────────────────────────────────
   if (action === 'add-allowlist') {

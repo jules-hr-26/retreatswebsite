@@ -15,3 +15,5 @@ Website moodboard and references/
 *.xlsx
 *.docx
 .env*.local
+
+supabase/.temp/
