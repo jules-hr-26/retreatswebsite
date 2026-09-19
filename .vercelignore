@@ -24,3 +24,7 @@ welcome page.docx
 
 # DB schema — run manually in Supabase SQL editor, not deployed
 supabase-schema.sql
+
+# Development and database migration sources
+tests
+supabase

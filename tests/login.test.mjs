@@ -10,6 +10,7 @@ test('test email configuration never bypasses inbox verification', async () => {
   const sent = [];
   globalThis.fetch = async (url, options) => {
     if (url.includes('/alumni_allowlist')) return new Response(JSON.stringify([{ email: 'admin@example.org', first_name: 'Admin' }]));
+    if (url.includes('/login_tokens')) return new Response('[]');
     sent.push(JSON.parse(options.body));
     return new Response('{}');
   };

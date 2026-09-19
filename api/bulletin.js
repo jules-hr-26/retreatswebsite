@@ -1,3 +1,4 @@
+import { getSession } from '../lib/auth.js';
 import { select, insert, update, upsert } from './_lib/supabase.js';
 import { readCookie, verifyToken, createToken } from '../lib/session.js';
 
@@ -13,7 +14,7 @@ export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   const { action } = req.query || {};
   if (action !== 'optout') {
-    const session = await verifyToken(readCookie(req.headers.cookie, 'cnlc_session'), process.env.SESSION_SECRET).catch(() => null);
+    const session = await getSession(req.headers.cookie);
     if (!session?.email) return res.status(401).json({ error: 'not signed in' });
   }
 
@@ -40,10 +41,7 @@ export default async function handler(req, res) {
     const forum = (req.query.forum || '').trim();
     if (!forum) return res.status(400).json({ error: 'forum required' });
 
-    const session = await verifyToken(
-      readCookie(req.headers.cookie, 'cnlc_session'),
-      process.env.SESSION_SECRET
-    ).catch(() => null);
+    const session = await getSession(req.headers.cookie);
     const myEmail = session?.email || null;
 
     try {
@@ -88,7 +86,7 @@ export default async function handler(req, res) {
   if (req.method === 'GET' && action === 'optout') {
     try {
       const payload = req.query.token
-        ? await verifyToken(req.query.token, process.env.SESSION_SECRET)
+        ? await verifyToken(req.query.token, process.env.SESSION_SECRET, 'forum-optout')
         : null;
       if (payload?.purpose === 'forum-optout') {
         await update('forum_memberships',
@@ -106,10 +104,7 @@ export default async function handler(req, res) {
   // ── All POST actions require auth ────────────────────────────────
   if (req.method !== 'POST') return res.status(405).json({ error: 'method not allowed' });
 
-  const session = await verifyToken(
-    readCookie(req.headers.cookie, 'cnlc_session'),
-    process.env.SESSION_SECRET
-  );
+  const session = await getSession(req.headers.cookie);
   if (!session?.email) return res.status(401).json({ error: 'not signed in' });
 
   const body = req.body || {};

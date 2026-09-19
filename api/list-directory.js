@@ -1,9 +1,10 @@
+import { getSession } from '../lib/auth.js';
 import { readCookie, verifyToken } from '../lib/session.js';
 import { select } from './_lib/supabase.js';
 import { regionForCountry } from './_lib/regions.js';
 
 export default async function handler(req, res) {
-  const session = await verifyToken(readCookie(req.headers.cookie, 'cnlc_session'), process.env.SESSION_SECRET);
+  const session = await getSession(req.headers.cookie);
   if (!session || !session.email) return res.status(401).json({ error: 'not signed in' });
 
   res.setHeader('Cache-Control', 'no-store');

@@ -1,11 +1,9 @@
+import { getSession, revokeMemberSessions } from '../lib/auth.js';
 import { select, insert, upsert, update, remove } from './_lib/supabase.js';
 import { readCookie, verifyToken } from '../lib/session.js';
 
 async function getAdmin(req) {
-  const session = await verifyToken(
-    readCookie(req.headers.cookie, 'cnlc_session'),
-    process.env.SESSION_SECRET
-  ).catch(() => null);
+  const session = await getSession(req.headers.cookie);
   if (!session?.email) return null;
   const rows = await select('admins', { email: session.email }).catch(() => []);
   if (!rows.length) return null;
@@ -159,6 +157,7 @@ export default async function handler(req, res) {
     const e = email.trim().toLowerCase();
     const adminRows = await select('admins', { email: e }).catch(() => []);
     if (adminRows.length) return res.status(409).json({ error: 'admin_block', message: 'This person is an admin — remove their admin access in the Admins tab first.' });
+    await revokeMemberSessions(e);
     await remove('alumni_allowlist', { email: e });
     return res.status(200).json({ ok: true });
   }
@@ -269,6 +268,7 @@ export default async function handler(req, res) {
     const { email } = body;
     if (!email) return res.status(400).json({ error: 'email required' });
     const e = email.trim().toLowerCase();
+    await revokeMemberSessions(e);
     await Promise.all([
       remove('event_attendees',   { member_email: e }),
       remove('forum_memberships', { member_email: e }),
@@ -285,6 +285,7 @@ export default async function handler(req, res) {
     const { email } = body;
     if (!email) return res.status(400).json({ error: 'email required' });
     const e = email.trim().toLowerCase();
+    await revokeMemberSessions(e);
     await Promise.all([
       remove('event_attendees',   { member_email: e }),
       remove('forum_memberships', { member_email: e }),

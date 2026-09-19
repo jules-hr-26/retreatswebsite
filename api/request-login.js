@@ -1,7 +1,6 @@
 import { findAlumni } from './_lib/allowlist.js';
-import { createToken } from '../lib/session.js';
+import { issueLogin } from '../lib/auth.js';
 
-const LOGIN_TOKEN_TTL_MS = 60 * 60 * 1000; // 60 minutes
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST required' });
@@ -13,11 +12,8 @@ export default async function handler(req, res) {
     const match = await findAlumni(email);
 
     if (match) {
-      const token = await createToken(
-        { email: match.email, firstName: match.firstName, lastName: match.lastName, purpose: 'login', exp: Date.now() + LOGIN_TOKEN_TTL_MS },
-        process.env.SESSION_SECRET
-      );
-      const host = req.headers['x-forwarded-host'] || req.headers.host;
+      const token = await issueLogin(match);
+      const host = process.env.VERCEL_PROJECT_PRODUCTION_URL || 'climateplums.com';
       const link = `https://${host}/api/verify-login?token=${token}`;
 
       const emailRes = await fetch('https://api.resend.com/emails', {
@@ -32,7 +28,7 @@ export default async function handler(req, res) {
           subject: 'Your sign-in link for Climate Plums',
           html: `
             <p>Hi ${match.firstName || 'there'},</p>
-            <p>Click the link below to sign in to Climate Plums. This link expires in 60 minutes.</p>
+            <p>Click the link below to sign in to Climate Plums. This link expires in 15 minutes and can only be used once.</p>
             <p><a href="${link}">${link}</a></p>
             <p>If you didn't request this, you can safely ignore this email.</p>
           `,

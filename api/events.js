@@ -1,3 +1,4 @@
+import { getSession } from '../lib/auth.js';
 import { select, insert, update } from './_lib/supabase.js';
 import { readCookie, verifyToken, createToken } from '../lib/session.js';
 
@@ -10,7 +11,7 @@ export default async function handler(req, res) {
   const { calendarId, source, action } = req.query || {};
   // Only signed opt-out links are public. All community reads require a session.
   if (action !== 'optout') {
-    const session = await verifyToken(readCookie(req.headers.cookie, 'cnlc_session'), process.env.SESSION_SECRET).catch(() => null);
+    const session = await getSession(req.headers.cookie);
     if (!session?.email) return res.status(401).json({ error: 'not signed in' });
   }
 
@@ -36,10 +37,7 @@ export default async function handler(req, res) {
   // ── List events from DB (with attendees + current-user flag) ──
   if (req.method === 'GET' && source === 'sheet') {
     try {
-      const session = await verifyToken(
-        readCookie(req.headers.cookie, 'cnlc_session'),
-        process.env.SESSION_SECRET
-      ).catch(() => null);
+      const session = await getSession(req.headers.cookie);
       const myEmail = session?.email || null;
 
       const [eventRows, attendeeRows, allowlistRows, memberRows] = await Promise.all([
@@ -95,7 +93,7 @@ export default async function handler(req, res) {
   if (req.method === 'GET' && action === 'optout') {
     try {
       const payload = req.query.token
-        ? await verifyToken(req.query.token, process.env.SESSION_SECRET)
+        ? await verifyToken(req.query.token, process.env.SESSION_SECRET, 'event-optout')
         : null;
 
       if (payload?.purpose === 'event-optout') {
@@ -114,10 +112,7 @@ export default async function handler(req, res) {
   // ── POST actions (auth required) ──────────────────────────────
   if (req.method !== 'POST') return res.status(405).json({ error: 'method not allowed' });
 
-  const session = await verifyToken(
-    readCookie(req.headers.cookie, 'cnlc_session'),
-    process.env.SESSION_SECRET
-  );
+  const session = await getSession(req.headers.cookie);
   if (!session?.email) return res.status(401).json({ error: 'not signed in' });
 
   const { action: bodyAction, eventName, name, startDate, endDate, city, description, discussionLink } = req.body || {};

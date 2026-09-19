@@ -1594,9 +1594,7 @@ function submitOffer() {
 
 
 // Refresh session cookie on every visit so logged-in users stay logged in
-if (document.cookie.indexOf('cnlc_session') !== -1) {
-  fetch('/api/refresh-session', { method: 'POST' }).catch(function() {});
-}
+fetch('/api/refresh-session', { method: 'POST' }).catch(function() {});
 
 SafeUI.bindActions({
   rsvpClimateEvent: function(name) { rsvpClimateEvent(this, name); },
