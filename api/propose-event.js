@@ -1,3 +1,4 @@
+import { eventDates } from './_lib/dates.js';
 import { getSession } from '../lib/auth.js';
 import { insert } from './_lib/supabase.js';
 import { readCookie, verifyToken } from '../lib/session.js';
@@ -17,6 +18,9 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'location required' });
   }
 
+  const dates = eventDates(date);
+  if (!dates) return res.status(400).json({ error: 'A valid date is required' });
+
   const esc = (s) => String(s || '').replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 
   const displayDate = /^\d{4}-\d{2}-\d{2}$/.test(date)
@@ -32,8 +36,7 @@ export default async function handler(req, res) {
     // Insert directly into events — no approval step needed
     await insert('events', {
       name:            String(title).trim(),
-      start_date:      date,
-      end_date:        '',
+      ...dates,
       city:            location || '',
       description:     [String(description).trim(), format ? `Format: ${format}` : '', duration ? `Duration: ${duration}` : ''].filter(Boolean).join('\n'),
       discussion_link: link || '',

@@ -1,3 +1,4 @@
+import { eventDates } from './_lib/dates.js';
 import { getSession, revokeMemberSessions } from '../lib/auth.js';
 import { select, insert, upsert, update, remove } from './_lib/supabase.js';
 import { readCookie, verifyToken } from '../lib/session.js';
@@ -169,8 +170,10 @@ export default async function handler(req, res) {
   if (action === 'add-event') {
     const { name, startDate, endDate, city, description, discussionLink, status } = body;
     if (!name) return res.status(400).json({ error: 'name required' });
+    const dates = eventDates(startDate, endDate);
+    if (!dates) return res.status(400).json({ error: 'Valid start date and end date on or after it required' });
     const row = await insert('events', {
-      name, start_date: startDate || '', end_date: endDate || '',
+      name, ...dates,
       city: city || '', description: description || '',
       discussion_link: discussionLink || '', status: status || 'approved',
     });
@@ -180,8 +183,10 @@ export default async function handler(req, res) {
   if (action === 'update-event') {
     const { id, name, startDate, endDate, city, description, discussionLink, status } = body;
     if (!id) return res.status(400).json({ error: 'id required' });
+    const dates = eventDates(startDate, endDate);
+    if (!dates) return res.status(400).json({ error: 'Valid start date and end date on or after it required' });
     await update('events', { id }, {
-      name, start_date: startDate, end_date: endDate,
+      name, ...dates,
       city, description, discussion_link: discussionLink, status,
     });
     return res.status(200).json({ ok: true });
@@ -200,9 +205,11 @@ export default async function handler(req, res) {
     const rows = await select('proposed_events', { id });
     if (!rows.length) return res.status(404).json({ error: 'not found' });
     const p = rows[0];
+    const dates = eventDates(p.date);
+    if (!dates) return res.status(400).json({ error: 'Correct the proposed date before approval' });
     const details = [p.description, p.format ? `Format: ${p.format}` : '', p.duration ? `Duration: ${p.duration}` : ''].filter(Boolean).join('\n');
     await insert('events', {
-      name: p.title, start_date: p.date || '', end_date: '',
+      name: p.title, ...dates,
       city: p.location || '', description: details,
       discussion_link: p.link || '', status: 'approved', proposed_by: '',
     });

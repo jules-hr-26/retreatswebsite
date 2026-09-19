@@ -1,3 +1,4 @@
+import { eventDates } from './_lib/dates.js';
 import { getSession } from '../lib/auth.js';
 import { select, insert, update } from './_lib/supabase.js';
 import { readCookie, verifyToken, createToken } from '../lib/session.js';
@@ -157,8 +158,10 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'name, startDate and city are required' });
     }
 
+    const dates = eventDates(startDate, endDate);
+    if (!dates) return res.status(400).json({ error: 'Valid start date and end date on or after it required' });
     await insert('events', {
-      name, start_date: startDate, end_date: endDate || '',
+      name, ...dates,
       city, description: description || '', discussion_link: discussionLink || '',
       status: 'approved', proposed_by: session.email,
     });
