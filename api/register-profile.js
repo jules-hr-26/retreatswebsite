@@ -1,3 +1,4 @@
+import { validHeadshot } from './_lib/images.js';
 import { readCookie, verifyToken } from '../lib/session.js';
 import { select, upsert } from './_lib/supabase.js';
 
@@ -14,6 +15,8 @@ export default async function handler(req, res) {
 
   if (!firstName || !String(firstName).trim()) return res.status(400).json({ error: 'firstName required' });
   if (!lastName || !String(lastName).trim())   return res.status(400).json({ error: 'lastName required' });
+
+  if (!validHeadshot(headshotData)) return res.status(400).json({ error: 'Use a JPEG headshot smaller than 135 KB and 1024 pixels.' });
 
   try {
     const existing = await select('members', { auth_email: session.email });

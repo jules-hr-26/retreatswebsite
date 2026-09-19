@@ -53,69 +53,15 @@
       <input id="login-email" class="form-input" type="email" placeholder="you@example.org" autocomplete="email">
       <div class="form-error" id="login-email-err">Please add a valid email address.</div>
     </div>
-    <button class="btn-submit" id="login-submit-btn" onclick="submitLogin()">Send me a sign-in link</button>
+    <button class="btn-submit" id="login-submit-btn" data-bind-click="0">Send me a sign-in link</button>
     <p class="form-status" id="login-status"></p>
   </div>
 
   <a class="back-link" href="index.html">← Back to the welcome page</a>
 </div>
 
-<script>
-  var params = new URLSearchParams(window.location.search);
-  if (params.get('error') === 'expired') {
-    var status = document.getElementById('login-status');
-    status.textContent = 'That link has expired or already been used. Request a new one below.';
-    status.classList.add('show', 'error');
-  }
-
-  function isValidEmail(value) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-  }
-
-  async function submitLogin() {
-    var input = document.getElementById('login-email');
-    var err = document.getElementById('login-email-err');
-    var email = input.value.trim();
-    var ok = isValidEmail(email);
-    input.classList.toggle('invalid', !ok);
-    err.classList.toggle('show', !ok);
-    if (!ok) { input.focus(); return; }
-
-    var btn = document.getElementById('login-submit-btn');
-    var status = document.getElementById('login-status');
-    btn.disabled = true;
-    btn.textContent = 'Sending…';
-    status.classList.remove('show', 'error');
-
-    try {
-      var res = await fetch('/api/request-login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email }),
-      });
-      if (!res.ok) throw new Error('request failed');
-
-      var data = await res.json();
-      if (data.redirect) {
-        window.location.href = data.redirect;
-        return;
-      }
-
-      document.getElementById('intro-copy').style.display = 'none';
-      document.getElementById('login-form').innerHTML =
-        '<p style="font-size:14px;line-height:1.7;color:var(--ink-soft)">If <strong>' + email.replace(/</g,'&lt;') + '</strong> is on our alumni list, a sign-in link is on its way — check your inbox (and spam folder) over the next few minutes.</p>';
-    } catch (e) {
-      btn.disabled = false;
-      btn.textContent = 'Send me a sign-in link';
-      status.textContent = 'Something went wrong sending this — please try again in a moment.';
-      status.classList.add('show', 'error');
-    }
-  }
-
-  document.getElementById('login-email').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') submitLogin();
-  });
-</script>
+<script src="/assets/safe-ui.js"></script>
+<script src="/assets/login.js"></script>
 
 </body>
 </html>
