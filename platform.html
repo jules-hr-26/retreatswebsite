@@ -493,7 +493,8 @@
   .gal-counter { position:absolute; bottom:102px; left:50%; transform:translateX(-50%); color:rgba(245,230,192,0.38); font-size:10.5px; letter-spacing:0.18em; text-transform:uppercase; font-family:inherit; white-space:nowrap; }
   .gal-thumbs { position:absolute; bottom:0; left:0; right:0; height:88px; display:flex; align-items:center; gap:5px; padding:0 60px; overflow-x:auto; scrollbar-width:none; background:linear-gradient(to top, rgba(8,18,12,0.9) 60%, transparent); }
   .gal-thumbs::-webkit-scrollbar { display:none; }
-  .gal-thumb { flex-shrink:0; width:108px; height:68px; object-fit:cover; cursor:pointer; opacity:0.38; transition:opacity 0.15s, box-shadow 0.15s; border-radius:2px; }
+  .gal-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+  .gal-thumb { padding:0; border:0; background:none; flex-shrink:0; width:108px; height:68px; object-fit:cover; cursor:pointer; opacity:0.38; transition:opacity 0.15s, box-shadow 0.15s; border-radius:2px; }
   .gal-thumb:hover { opacity:0.7; }
   .gal-thumb.active { opacity:1; box-shadow:0 0 0 2px #F5E6C0; }
   .month-label { font-size:10px; text-transform:uppercase; letter-spacing:0.14em; color:var(--ink-light); padding-bottom:10px; }
@@ -985,6 +986,8 @@
     .lib-header { padding:48px 16px 40px; }
     .shelf-grid { grid-template-columns:1fr; }
   }
+  :focus-visible { outline:3px solid var(--soil); outline-offset:4px; }
+  .gal-modal :focus-visible { outline-color:#F5E6C0; }
 </style>
 </head>
 <body>
@@ -1431,7 +1434,7 @@
         <div class="tl-group-wrap">
           <div class="tl-group-year">2022</div>
           <div class="tl-group-inner">
-            <div class="tl-item" data-bind-click="27">
+            <div role="button" tabindex="0" class="tl-item" data-bind-click="27">
               <div class="tl-card">
                 <img class="tl-photo" src="/images/tl-pv2022.webp" alt="Pilot Retreat · Plum Village, France" loading="lazy">
                 <div class="tl-label"><h4>Pilot Retreat</h4><p>Plum Village, France</p></div>
@@ -1444,13 +1447,13 @@
         <div class="tl-group-wrap">
           <div class="tl-group-year">2023</div>
           <div class="tl-group-inner">
-            <div class="tl-item" data-bind-click="28">
+            <div role="button" tabindex="0" class="tl-item" data-bind-click="28">
               <div class="tl-card">
                 <img class="tl-photo" src="/images/tl-na2023.webp" alt="North America Retreat · Cortes Island, BC" loading="lazy">
                 <div class="tl-label"><h4>North America</h4><p>Cortes Island, BC</p></div>
               </div>
             </div>
-            <div class="tl-item" data-bind-click="29">
+            <div role="button" tabindex="0" class="tl-item" data-bind-click="29">
               <div class="tl-card">
                 <img class="tl-photo" src="/images/tl-eu2023.webp" alt="Europe Retreat · Plum Village, France" loading="lazy">
                 <div class="tl-label"><h4>Europe</h4><p>Plum Village, France</p></div>
@@ -1463,19 +1466,19 @@
         <div class="tl-group-wrap">
           <div class="tl-group-year">2024</div>
           <div class="tl-group-inner">
-            <div class="tl-item" data-bind-click="30">
+            <div role="button" tabindex="0" class="tl-item" data-bind-click="30">
               <div class="tl-card">
                 <img class="tl-photo" style="object-position:center bottom" src="/images/tl-bali2024.webp" alt="Asia Retreat · Bali, Indonesia" loading="lazy">
                 <div class="tl-label"><h4>Asia</h4><p>Bali, Indonesia</p></div>
               </div>
             </div>
-            <div class="tl-item" data-bind-click="31">
+            <div role="button" tabindex="0" class="tl-item" data-bind-click="31">
               <div class="tl-card">
                 <img class="tl-photo" src="/images/tl-cr2024.webp" alt="Latin America Retreat · Costa Rica" loading="lazy">
                 <div class="tl-label"><h4>Latin America</h4><p>Costa Rica</p></div>
               </div>
             </div>
-            <div class="tl-item" data-bind-click="32">
+            <div role="button" tabindex="0" class="tl-item" data-bind-click="32">
               <div class="tl-card">
                 <img class="tl-photo" src="/images/tl-gg2024.webp" alt="Global Gathering · Plum Village, France" loading="lazy">
                 <div class="tl-label"><h4>Global Gathering</h4><p>Plum Village, France</p></div>
@@ -1488,19 +1491,19 @@
         <div class="tl-group-wrap">
           <div class="tl-group-year">2025</div>
           <div class="tl-group-inner">
-            <div class="tl-item" data-bind-click="33">
+            <div role="button" tabindex="0" class="tl-item" data-bind-click="33">
               <div class="tl-card">
                 <img class="tl-photo" src="/images/tl-tz2025.webp" alt="Africa Retreat · Tanzania" loading="lazy">
                 <div class="tl-label"><h4>Africa</h4><p>Tanzania</p></div>
               </div>
             </div>
-            <div class="tl-item" data-bind-click="34">
+            <div role="button" tabindex="0" class="tl-item" data-bind-click="34">
               <div class="tl-card">
                 <img class="tl-photo" src="/images/tl-africa2025.webp" alt="Oceania Retreat · Fiji" loading="lazy">
                 <div class="tl-label"><h4>Oceania</h4><p>Fiji</p></div>
               </div>
             </div>
-            <div class="tl-item" data-bind-click="35">
+            <div role="button" tabindex="0" class="tl-item" data-bind-click="35">
               <div class="tl-card">
                 <!-- SOURCE: Photos Global Gathering 2025/6A2A0235.JPG — Julia's selection, do not replace -->
                 <img class="tl-photo" src="/images/tl-pv2025.webp" alt="Global Gathering · Plum Village, France" loading="lazy">
@@ -1514,14 +1517,14 @@
         <div class="tl-group-wrap">
           <div class="tl-group-year">2026</div>
           <div class="tl-group-inner">
-            <div class="tl-item" data-bind-click="36">
+            <div role="button" tabindex="0" class="tl-item" data-bind-click="36">
               <div class="tl-card">
                 <!-- SOURCE: Photos Americas 2026/IMG_6107.JPG — Julia's selection, do not replace -->
                 <img class="tl-photo" src="/images/tl-mx2026.webp" alt="Americas Retreat · Mexico" loading="lazy">
                 <div class="tl-label"><h4>Americas</h4><p>Mexico</p></div>
               </div>
             </div>
-            <div class="tl-item" data-bind-click="37">
+            <div role="button" tabindex="0" class="tl-item" data-bind-click="37">
               <div class="tl-card">
                 <!-- SOURCE: Photos Asia Pacific 2026/Climate retreat - Aus 2026 _75.jpg — Julia's selection, do not replace -->
                 <img class="tl-photo" src="/images/tl-au2026.webp" alt="Asia Pacific Retreat · Australia" loading="lazy">
@@ -1544,14 +1547,14 @@
       <div class="label" style="margin-bottom:16px;margin-top:40px">Retreat photos · Oceania 2025</div>
       <p class="photos-note">These photographs offer a glimpse of the moments we shared. You are welcome to reflect on and write about your retreat experience. When sharing photographs publicly, please choose images without recognisable faces, or make sure that everyone pictured has given their consent.</p>
       <div class="ph-mosaic">
-        <div class="ph-cell" data-bind-click="38">
+        <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="38">
           <img src="/photos/oceania-2025/003.jpg" alt="" loading="eager">
         </div>
         <div class="ph-side">
-          <div class="ph-cell" data-bind-click="39">
+          <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="39">
             <img src="/photos/oceania-2025/013.jpg" alt="" loading="eager">
           </div>
-          <div class="ph-cell" data-bind-click="40">
+          <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="40">
             <img src="/photos/oceania-2025/022.jpg" alt="" loading="eager">
           </div>
         </div>
@@ -1605,14 +1608,14 @@
       <div class="label" style="margin-bottom:16px;margin-top:40px">Retreat photos · Asia Pacific 2026</div>
       <p class="photos-note">These photographs offer a glimpse of the moments we shared. You are welcome to reflect on and write about your retreat experience. When sharing photographs publicly, please choose images without recognisable faces, or make sure that everyone pictured has given their consent.</p>
       <div class="ph-mosaic">
-        <div class="ph-cell" data-bind-click="42">
+        <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="42">
           <img src="/photos/asia-pacific-2026/005.jpg" alt="" loading="eager">
         </div>
         <div class="ph-side">
-          <div class="ph-cell" data-bind-click="43">
+          <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="43">
             <img src="/photos/asia-pacific-2026/022.jpg" alt="" loading="eager">
           </div>
-          <div class="ph-cell" data-bind-click="44">
+          <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="44">
             <img src="/photos/asia-pacific-2026/036.jpg" alt="" loading="eager">
           </div>
         </div>
@@ -1685,14 +1688,14 @@
       <div class="label" style="margin-bottom:16px;margin-top:40px">Retreat photos · Hollyhock 2023</div>
       <p class="photos-note">These photographs offer a glimpse of the moments we shared. You are welcome to reflect on and write about your retreat experience. When sharing photographs publicly, please choose images without recognisable faces, or make sure that everyone pictured has given their consent.</p>
       <div class="ph-mosaic">
-        <div class="ph-cell" data-bind-click="46">
+        <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="46">
           <img src="/photos/na-2023/002.jpg" alt="" loading="eager">
         </div>
         <div class="ph-side">
-          <div class="ph-cell" data-bind-click="47">
+          <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="47">
             <img src="/photos/na-2023/006.jpg" alt="" loading="eager">
           </div>
-          <div class="ph-cell" data-bind-click="48">
+          <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="48">
             <img src="/photos/na-2023/010.jpg" alt="" loading="eager">
           </div>
         </div>
@@ -1740,14 +1743,14 @@
       <div class="label" style="margin-bottom:16px;margin-top:40px">Retreat photos · Plum Village 2023</div>
       <p class="photos-note">These photographs offer a glimpse of the moments we shared. You are welcome to reflect on and write about your retreat experience. When sharing photographs publicly, please choose images without recognisable faces, or make sure that everyone pictured has given their consent.</p>
       <div class="ph-mosaic">
-        <div class="ph-cell" data-bind-click="50">
+        <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="50">
           <img src="/photos/eu-2023/climate-2023-29.jpg" alt="" loading="eager">
         </div>
         <div class="ph-side">
-          <div class="ph-cell" data-bind-click="51">
+          <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="51">
             <img src="/photos/eu-2023/climate-2023-125.jpg" alt="" loading="eager">
           </div>
-          <div class="ph-cell" data-bind-click="52">
+          <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="52">
             <img src="/photos/eu-2023/climate-2023-210.jpg" alt="" loading="eager">
           </div>
         </div>
@@ -1867,14 +1870,14 @@
       <div class="label" style="margin-bottom:16px;margin-top:40px">Retreat photos · Bali 2024</div>
       <p class="photos-note">These photographs offer a glimpse of the moments we shared. You are welcome to reflect on and write about your retreat experience. When sharing photographs publicly, please choose images without recognisable faces, or make sure that everyone pictured has given their consent.</p>
       <div class="ph-mosaic">
-        <div class="ph-cell" data-bind-click="54">
+        <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="54">
           <img src="/photos/bali-2024/climate-feb2024-41.jpg" alt="" loading="eager">
         </div>
         <div class="ph-side">
-          <div class="ph-cell" data-bind-click="55">
+          <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="55">
             <img src="/photos/bali-2024/climate-feb2024-17.jpg" alt="" loading="eager">
           </div>
-          <div class="ph-cell" data-bind-click="56">
+          <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="56">
             <img src="/photos/bali-2024/climate-feb2024-155.jpg" alt="" loading="eager">
           </div>
         </div>
@@ -1932,14 +1935,14 @@
       <div class="label" style="margin-bottom:16px;margin-top:40px">Retreat photos · Latin America 2024</div>
       <p class="photos-note">These photographs offer a glimpse of the moments we shared. You are welcome to reflect on and write about your retreat experience. When sharing photographs publicly, please choose images without recognisable faces, or make sure that everyone pictured has given their consent.</p>
       <div class="ph-mosaic">
-        <div class="ph-cell" data-bind-click="58">
+        <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="58">
           <img src="/photos/latam-2024/go-dharmatalk-24.jpg" alt="" loading="eager">
         </div>
         <div class="ph-side">
-          <div class="ph-cell" data-bind-click="59">
+          <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="59">
             <img src="/photos/latam-2024/go-meditation-28.jpg" alt="" loading="eager">
           </div>
-          <div class="ph-cell" data-bind-click="60">
+          <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="60">
             <img src="/photos/latam-2024/go-sharingcircles-14.jpg" alt="" loading="eager">
           </div>
         </div>
@@ -2020,14 +2023,14 @@
       <div class="label" style="margin-bottom:16px;margin-top:40px">Retreat photos · Global Gathering 2024</div>
       <p class="photos-note">These photographs offer a glimpse of the moments we shared. You are welcome to reflect on and write about your retreat experience. When sharing photographs publicly, please choose images without recognisable faces, or make sure that everyone pictured has given their consent.</p>
       <div class="ph-mosaic">
-        <div class="ph-cell" data-bind-click="62">
+        <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="62">
           <img src="/photos/gg2024/006.jpg" alt="" loading="eager">
         </div>
         <div class="ph-side">
-          <div class="ph-cell" data-bind-click="63">
+          <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="63">
             <img src="/photos/gg2024/023.jpg" alt="" loading="eager">
           </div>
-          <div class="ph-cell" data-bind-click="64">
+          <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="64">
             <img src="/photos/gg2024/039.jpg" alt="" loading="eager">
           </div>
         </div>
@@ -2101,14 +2104,14 @@
       <div class="label" style="margin-bottom:16px;margin-top:40px">Retreat photos · Africa 2025</div>
       <p class="photos-note">These photographs offer a glimpse of the moments we shared. You are welcome to reflect on and write about your retreat experience. When sharing photographs publicly, please choose images without recognisable faces, or make sure that everyone pictured has given their consent.</p>
       <div class="ph-mosaic">
-        <div class="ph-cell" data-bind-click="66">
+        <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="66">
           <img src="/photos/africa-2025/6a2a2664.jpg" alt="" loading="eager">
         </div>
         <div class="ph-side">
-          <div class="ph-cell" data-bind-click="67">
+          <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="67">
             <img src="/photos/africa-2025/032.jpg" alt="" loading="eager">
           </div>
-          <div class="ph-cell" data-bind-click="68">
+          <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="68">
             <img src="/photos/africa-2025/053.jpg" alt="" loading="eager">
           </div>
         </div>
@@ -2202,14 +2205,14 @@
       <div class="label" style="margin-bottom:16px;margin-top:40px">Retreat photos · Global Gathering 2025</div>
       <p class="photos-note">These photographs offer a glimpse of the moments we shared. You are welcome to reflect on and write about your retreat experience. When sharing photographs publicly, please choose images without recognisable faces, or make sure that everyone pictured has given their consent.</p>
       <div class="ph-mosaic">
-        <div class="ph-cell" data-bind-click="70">
+        <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="70">
           <img src="/photos/gg-2025/6a2a0006.jpg" alt="" loading="eager">
         </div>
         <div class="ph-side">
-          <div class="ph-cell" data-bind-click="71">
+          <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="71">
             <img src="/photos/gg-2025/6a2a0051.jpg" alt="" loading="eager">
           </div>
-          <div class="ph-cell" data-bind-click="72">
+          <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="72">
             <img src="/photos/gg-2025/6a2a0070.jpg" alt="" loading="eager">
           </div>
         </div>
@@ -2306,14 +2309,14 @@
       <div class="label" style="margin-bottom:16px;margin-top:40px">Retreat photos · Americas 2026</div>
       <p class="photos-note">These photographs offer a glimpse of the moments we shared. You are welcome to reflect on and write about your retreat experience. When sharing photographs publicly, please choose images without recognisable faces, or make sure that everyone pictured has given their consent.</p>
       <div class="ph-mosaic">
-        <div class="ph-cell" data-bind-click="74">
+        <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="74">
           <img src="/photos/americas-2026/006.jpg" alt="" loading="eager">
         </div>
         <div class="ph-side">
-          <div class="ph-cell" data-bind-click="75">
+          <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="75">
             <img src="/photos/americas-2026/023.jpg" alt="" loading="eager">
           </div>
-          <div class="ph-cell" data-bind-click="76">
+          <div role="button" tabindex="0" aria-label="Open retreat photo" class="ph-cell" data-bind-click="76">
             <img src="/photos/americas-2026/038.jpg" alt="" loading="eager">
           </div>
         </div>
@@ -2855,7 +2858,7 @@
   <button class="gal-prev" data-bind-click="127" aria-label="Previous photo">&#8592;</button>
   <img id="gal-img" class="gal-img" src="" alt="">
   <button class="gal-next" data-bind-click="128" aria-label="Next photo">&#8594;</button>
-  <div id="gal-counter" class="gal-counter"></div>
+  <div aria-live="polite" id="gal-counter" class="gal-counter"></div>
   <div id="gal-thumbs" class="gal-thumbs"></div>
 </div>
 
@@ -3061,9 +3064,9 @@
       <div class="form-field">
         <label class="form-label">Format</label>
         <div class="offer-fee-row" style="margin-top:8px">
-          <div class="offer-fee-opt selected" id="of-fmt-remote"   data-bind-click="148">Remote</div>
-          <div class="offer-fee-opt"          id="of-fmt-inperson" data-bind-click="149">In person</div>
-          <div class="offer-fee-opt"          id="of-fmt-both"     data-bind-click="150">Both</div>
+          <div role="button" tabindex="0" class="offer-fee-opt selected" id="of-fmt-remote"   data-bind-click="148">Remote</div>
+          <div role="button" tabindex="0" class="offer-fee-opt"          id="of-fmt-inperson" data-bind-click="149">In person</div>
+          <div role="button" tabindex="0" class="offer-fee-opt"          id="of-fmt-both"     data-bind-click="150">Both</div>
         </div>
       </div>
     </div>

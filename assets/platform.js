@@ -1305,22 +1305,26 @@ function submitForumPropose() {
 }
 
 // Photo gallery / lightbox
+var galReturnFocus = null;
 var galIdx = 0;
 var galSrcs = [];
 function openGallery(startIdx, galleryId) {
+  galReturnFocus = document.activeElement;
   galleryId = galleryId || 'na-gallery-data';
   galSrcs = Array.from(document.querySelectorAll('#' + galleryId + ' img')).map(function(i) { return i.dataset.src || i.src; });
   galIdx = startIdx;
   var thumbs = document.getElementById('gal-thumbs');
   thumbs.innerHTML = galSrcs.map(function(src, i) {
-    return '<img class="gal-thumb" src="' + escHtml(src) + '" loading="lazy" alt="" ' + actionAttrs('galJump', [i]) + '>';
+    return '<button type="button" class="gal-thumb" aria-label="View photo ' + (i + 1) + '" ' + actionAttrs('galJump', [i]) + '><img src="' + escHtml(src) + '" loading="lazy" alt=""></button>';
   }).join('');
   galRender();
   document.getElementById('gal-modal').classList.add('open');
+  document.querySelector('#gal-modal .gal-close').focus();
   document.body.style.overflow = 'hidden';
 }
 function closeGallery() {
   document.getElementById('gal-modal').classList.remove('open');
+  if (galReturnFocus) galReturnFocus.focus();
   document.body.style.overflow = '';
 }
 function galleryNav(dir) {
@@ -1341,6 +1345,13 @@ function galRender() {
 document.addEventListener('keydown', function(e) {
   var modal = document.getElementById('gal-modal');
   if (!modal || !modal.classList.contains('open')) return;
+  if (e.key === 'Tab') {
+    var controls = Array.from(modal.querySelectorAll('button'));
+    var first = controls[0], last = controls[controls.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') e.preventDefault();
   if (e.key === 'ArrowLeft')  galleryNav(-1);
   if (e.key === 'ArrowRight') galleryNav(1);
   if (e.key === 'Escape')     closeGallery();
@@ -2255,4 +2266,13 @@ document.querySelector('[data-bind-click="150"]').addEventListener('click', func
 document.querySelector('[data-bind-click="151"]').addEventListener('click', function(event) {
   var result = (function(event) { submitOffer() }).call(this, event);
   if (result === false) { event.preventDefault(); event.stopPropagation(); }
+});
+
+// Custom card controls retain their layout and support keyboard activation.
+document.querySelectorAll('.tl-item, .ph-cell, .offer-fee-opt').forEach(function(control) {
+  control.addEventListener('keydown', function(event) {
+    if (event.target === control && (event.key === 'Enter' || event.key === ' ')) {
+      event.preventDefault(); control.click();
+    }
+  });
 });
