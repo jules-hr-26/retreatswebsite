@@ -1,6 +1,7 @@
 -- ================================================================
 -- CNLC Platform — Supabase Schema
--- Run in: Supabase Dashboard → SQL Editor → New query
+-- Fresh installations only: run this baseline, then migrations in filename order.
+-- Existing production databases: apply only migrations not already recorded.
 -- ================================================================
 
 -- ── Alumni allowlist ───────────────────────────────────────────
@@ -132,12 +133,13 @@ CREATE TABLE forum_memberships (
   forum_name   text NOT NULL,
   member_email text NOT NULL,
   joined_at    timestamptz NOT NULL DEFAULT now(),
+  created_at   timestamptz NOT NULL DEFAULT now(),
   notify       text NOT NULL DEFAULT 'yes',
   UNIQUE (forum_name, member_email)
 );
 
 -- ── Admin accounts ─────────────────────────────────────────────
--- Separate from member auth. Admin panel uses Supabase Auth password login.
+-- Admin access uses the same revocable member session plus a server-side role check.
 CREATE TABLE admins (
   id         uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   email      text NOT NULL UNIQUE,
@@ -188,3 +190,40 @@ ALTER TABLE site_settings     ENABLE ROW LEVEL SECURITY;
 
 -- No public policies = anon key sees nothing.
 -- Service role key bypasses RLS entirely (used only in Vercel server functions).
+
+ALTER TABLE public.alumni_allowlist ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON public.alumni_allowlist FROM anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.alumni_allowlist TO service_role;
+ALTER TABLE public.members ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON public.members FROM anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.members TO service_role;
+ALTER TABLE public.events ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON public.events FROM anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.events TO service_role;
+ALTER TABLE public.event_attendees ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON public.event_attendees FROM anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.event_attendees TO service_role;
+ALTER TABLE public.proposed_events ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON public.proposed_events FROM anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.proposed_events TO service_role;
+ALTER TABLE public.offerings ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON public.offerings FROM anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.offerings TO service_role;
+ALTER TABLE public.forum_posts ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON public.forum_posts FROM anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.forum_posts TO service_role;
+ALTER TABLE public.forum_replies ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON public.forum_replies FROM anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.forum_replies TO service_role;
+ALTER TABLE public.forum_memberships ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON public.forum_memberships FROM anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.forum_memberships TO service_role;
+ALTER TABLE public.admins ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON public.admins FROM anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.admins TO service_role;
+ALTER TABLE public.audit_log ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON public.audit_log FROM anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.audit_log TO service_role;
+ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON public.site_settings FROM anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.site_settings TO service_role;
