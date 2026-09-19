@@ -22,7 +22,7 @@ export default async function handler(req, res) {
       sector:    m.sector || '',
       cohorts:   (m.cohort || '').split(',').map((c) => c.trim()).filter(Boolean),
       role:      m.role_title || '',
-      email:     (m.display_email || m.auth_email || '').trim(),
+      email:     (m.display_email || '').trim(),
       headshotData: m.headshot_data || '',
     }));
 
