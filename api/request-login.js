@@ -20,13 +20,6 @@ export default async function handler(req, res) {
       const host = req.headers['x-forwarded-host'] || req.headers.host;
       const link = `https://${host}/api/verify-login?token=${token}`;
 
-      // Admin test bypass: skip email for whitelisted addresses, redirect directly.
-      // Set ADMIN_TEST_EMAILS=email1,email2 in Vercel env; remove when real email delivery is confirmed.
-      const adminEmails = (process.env.ADMIN_TEST_EMAILS || '').split(',').map(e => e.trim()).filter(Boolean);
-      if (adminEmails.includes(match.email)) {
-        return res.status(200).json({ ok: true, redirect: `/api/verify-login?token=${token}` });
-      }
-
       const emailRes = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
