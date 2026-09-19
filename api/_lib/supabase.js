@@ -89,3 +89,11 @@ export async function remove(table, filters) {
     throw new Error(`Supabase remove(${table}) failed: ${res.status} ${body}`);
   }
 }
+
+// RPC — only server-side callers possess this service credential.
+export async function rpc(name, args) {
+  const res = await fetch(`${BASE()}/rpc/${name}`, {
+    method: 'POST', headers: headers(), body: JSON.stringify(args),
+  });
+  return check(res, `rpc(${name})`);
+}

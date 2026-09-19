@@ -1,3 +1,4 @@
+import { allowLoginAttempt } from './_lib/rate-limit.js';
 import { findAlumni } from './_lib/allowlist.js';
 import { issueLogin } from '../lib/auth.js';
 
@@ -5,10 +6,11 @@ import { issueLogin } from '../lib/auth.js';
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST required' });
 
-  const { email } = req.body || {};
-  if (!email || !String(email).trim()) return res.status(400).json({ error: 'email required' });
+  const email = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+  if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ error: 'valid email required' });
 
   try {
+    if (!await allowLoginAttempt(req, email)) return res.status(200).json({ ok: true });
     const match = await findAlumni(email);
 
     if (match) {
