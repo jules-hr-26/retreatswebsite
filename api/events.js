@@ -100,7 +100,7 @@ export default async function handler(req, res) {
       if (payload?.purpose === 'event-optout') {
         await update('event_attendees',
           { event_name: payload.eventName, member_email: payload.email },
-          { status: 'no' }
+          { notify: false }
         );
       }
     } catch (err) {
@@ -198,7 +198,7 @@ async function notifyAttendees(eventName, newAttendee, host) {
   ]);
 
   const toNotify = attendeeRows.filter(r =>
-    r.member_email !== newAttendee.email && r.status === 'yes'
+    r.member_email !== newAttendee.email && r.status === 'yes' && r.notify !== false
   );
   if (!toNotify.length) return;
 
