@@ -1539,7 +1539,51 @@ function ocFilter(btn, value, type) {
   });
   document.getElementById('oc-empty').style.display = visible === 0 ? 'block' : 'none';
 }
+async function loadOfferings() {
+  var grid = document.getElementById('oc-grid');
+  var empty = document.getElementById('oc-empty');
+  empty.style.display = 'block';
+  empty.textContent = 'Loading offerings…';
+  try {
+    var response = await fetch('/api/list-offerings');
+    if (!response.ok) throw new Error('Unable to load');
+    var data = await response.json();
+    grid.replaceChildren();
+    (data.offerings || []).forEach(function(offer) {
+      var card = document.createElement('article');
+      card.className = 'oc-card';
+      card.dataset.cat = offer.category || '';
+      card.dataset.fee = offer.fee_type || '';
+      [['oc-name', offer.name], ['oc-cat-tag', offer.category], ['oc-title', offer.title],
+       ['oc-service-location', [offer.location, offer.format].filter(Boolean).join(' · ')],
+       ['oc-desc', offer.description], ['oc-fee', offer.fee_info]].forEach(function(field) {
+        if (!field[1]) return;
+        var el = document.createElement(field[0] === 'oc-title' ? 'h3' : 'p');
+        el.className = field[0]; el.textContent = field[1]; card.appendChild(el);
+      });
+      var links = document.createElement('div'); links.className = 'oc-ext-links';
+      [['Website', offer.website], ['LinkedIn', offer.linkedin]].forEach(function(item) {
+        var url = SafeUI.httpUrl(item[1]);
+        if (!url) return;
+        var link = document.createElement('a'); link.textContent = item[0]; link.href = url;
+        link.target = '_blank'; link.rel = 'noopener noreferrer'; links.appendChild(link);
+      });
+      if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(offer.email || '')) {
+        var contact = document.createElement('a'); contact.textContent = 'Contact';
+        contact.href = 'mailto:' + encodeURIComponent(offer.email); links.appendChild(contact);
+      }
+      card.appendChild(links); grid.appendChild(card);
+    });
+    empty.textContent = 'No offerings yet. Share the first one.';
+    empty.style.display = grid.children.length ? 'none' : 'block';
+    return true;
+  } catch {
+    empty.textContent = 'Offerings could not be loaded. Select this tab again to retry.';
+    return false;
+  }
+}
 function dirTab(tab) {
+  if (tab === 'offerings') loadOfferings();
   document.querySelectorAll('#page-directory .dir-tab').forEach(function(t){ t.classList.remove('active'); });
   document.querySelectorAll('#page-directory .dir-panel').forEach(function(p){ p.classList.remove('active'); });
   document.getElementById('dtab-' + tab).classList.add('active');
@@ -1588,7 +1632,7 @@ function submitOffer() {
   st.className = 'form-status show'; st.textContent = 'Submitting…';
   fetch('/api/submit-offer', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
     .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
-    .then(function(){ st.textContent = 'Thank you! Your offer is now visible in the directory.'; })
+    .then(async function(){ var loaded = await loadOfferings(); st.textContent = loaded ? 'Thank you! Your offer is now visible in the directory.' : 'Your offer was saved. Reopen the offerings tab to load it.'; })
     .catch(function(){ if (_offerBtn) _offerBtn.disabled = false; st.className = 'form-status error show'; st.textContent = 'Something went wrong — please try again.'; });
 }
 
