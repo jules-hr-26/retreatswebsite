@@ -15,6 +15,8 @@ export function response() {
 }
 
 for (const [handler, query] of [
+  [events, { action: 'optout', source: 'sheet' }],
+  [events, { action: 'optout', calendarId: 'private' }],
   [events, { source: 'sheet' }], [events, { calendarId: 'private' }],
   [bulletin, { action: 'forums' }], [bulletin, { action: 'posts', forum: 'BIPOC Sangha' }],
 ]) {

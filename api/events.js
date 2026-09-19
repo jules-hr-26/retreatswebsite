@@ -11,7 +11,8 @@ export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   const { calendarId, source, action } = req.query || {};
   // Only signed opt-out links are public. All community reads require a session.
-  if (action !== 'optout') {
+  const isOptout = req.method === 'GET' && action === 'optout' && !source && !calendarId;
+  if (!isOptout) {
     const session = await getSession(req.headers.cookie);
     if (!session?.email) return res.status(401).json({ error: 'not signed in' });
   }
