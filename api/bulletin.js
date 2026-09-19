@@ -12,6 +12,10 @@ function esc(s) {
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   const { action } = req.query || {};
+  if (action !== 'optout') {
+    const session = await verifyToken(readCookie(req.headers.cookie, 'cnlc_session'), process.env.SESSION_SECRET).catch(() => null);
+    if (!session?.email) return res.status(401).json({ error: 'not signed in' });
+  }
 
   // ── GET: forum list ──────────────────────────────────────────────
   if (req.method === 'GET' && action === 'forums') {

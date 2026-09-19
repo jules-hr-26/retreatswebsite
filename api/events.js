@@ -6,7 +6,13 @@ function esc(s) {
 }
 
 export default async function handler(req, res) {
+  res.setHeader('Cache-Control', 'no-store');
   const { calendarId, source, action } = req.query || {};
+  // Only signed opt-out links are public. All community reads require a session.
+  if (action !== 'optout') {
+    const session = await verifyToken(readCookie(req.headers.cookie, 'cnlc_session'), process.env.SESSION_SECRET).catch(() => null);
+    if (!session?.email) return res.status(401).json({ error: 'not signed in' });
+  }
 
   // ── Luma proxy (unchanged) ────────────────────────────────────
   if (calendarId) {
@@ -19,7 +25,7 @@ export default async function handler(req, res) {
       );
       clearTimeout(timeout);
       const data = await response.json();
-      res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
+      res.setHeader('Cache-Control', 'no-store');
       return res.status(response.ok ? 200 : response.status).json(data);
     } catch (err) {
       if (err.name === 'AbortError') return res.status(504).json({ error: 'upstream timeout' });
