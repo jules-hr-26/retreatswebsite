@@ -1464,7 +1464,7 @@ async function loadDirectory() {
   renderDirectory();
 }
 
-// City autocomplete via OpenStreetMap Nominatim
+// City suggestions through the authenticated same-origin Photon proxy
 (function() {
   var cityDebounce = null;
   var lastResults = [];
@@ -1478,9 +1478,10 @@ async function loadDirectory() {
     if (!dl) return;
     if (q.length < 2) { dl.innerHTML = ''; lastResults = []; return; }
     cityDebounce = setTimeout(function() {
-      fetch('https://photon.komoot.io/api/?q=' + encodeURIComponent(q) + '&limit=8&layer=city')
+      fetch('/api/cities?q=' + encodeURIComponent(q))
       .then(function(r) { return r.json(); })
       .then(function(data) {
+        if (cityInput.value.trim() !== q) return;
         lastResults = data.features || [];
         var selectedCountry = ((document.getElementById('rf-country') || {}).value || '').trim().toLowerCase();
         var toShow = selectedCountry
@@ -1495,7 +1496,7 @@ async function loadDirectory() {
           if (seen.has(key)) return '';
           seen.add(key);
           var country = (f.properties && f.properties.country) || '';
-          return '<option value="' + name.replace(/"/g,'&quot;') + '">' + (country ? country : '') + '</option>';
+          return '<option value="' + SafeUI.escape(name) + '">' + SafeUI.escape(country) + '</option>';
         }).join('');
       })
       .catch(function() {});
