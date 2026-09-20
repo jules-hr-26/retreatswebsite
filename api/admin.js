@@ -147,8 +147,15 @@ export default async function handler(req, res) {
   if (action === 'update-allowlist') {
     const { id, email, firstName, lastName } = body;
     if (!id || !email) return res.status(400).json({ error: 'id and email required' });
+    const existing = await select('alumni_allowlist', { id });
+    if (!existing.length) return res.status(404).json({ error: 'allowlist entry not found' });
+    const nextEmail = email.trim().toLowerCase();
+    if (existing[0].email !== nextEmail) {
+      // An old address must not regain its sessions if it is added back later.
+      await revokeMemberSessions(existing[0].email);
+    }
     await update('alumni_allowlist', { id }, {
-      email:      email.trim().toLowerCase(),
+      email:      nextEmail,
       first_name: (firstName || '').trim(),
       last_name:  (lastName  || '').trim(),
     });
