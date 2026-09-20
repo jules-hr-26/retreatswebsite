@@ -1,4 +1,5 @@
 import { getSession } from '../lib/auth.js';
+import { safeHeadshot } from './_lib/images.js';
 import { readCookie, verifyToken } from '../lib/session.js';
 import { select } from './_lib/supabase.js';
 
@@ -33,7 +34,7 @@ export default async function handler(req, res) {
       role: m.role_title || '',
 
       shareWithCommunity: !!m.in_directory,
-      headshotData: m.headshot_data || '',
+      headshotData: safeHeadshot(m.headshot_data),
     });
   } catch (err) {
     console.error('[get-profile]', err.message);

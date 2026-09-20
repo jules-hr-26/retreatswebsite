@@ -881,8 +881,9 @@ function renderClimateGrid(events) {
 
     var avatars = (ev.attendees || []).slice(0, 5).map(function(a) {
       var title = escHtml(a.name || a.email);
-      if (a.headshot) {
-        return '<div class="climate-avatar" title="' + title + '"><img src="data:image/jpeg;base64,' + SafeUI.headshot(a.headshot) + '" alt="' + title + '"></div>';
+      var headshot = SafeUI.headshot(a.headshot);
+      if (headshot) {
+        return '<div class="climate-avatar" title="' + title + '"><img src="data:image/jpeg;base64,' + headshot + '" alt="' + title + '"></div>';
       }
       var initials = a.name ? a.name.trim().split(' ').map(function(p){ return p[0]; }).slice(0,2).join('') : '?';
       return '<div class="climate-avatar" title="' + title + '">' + escHtml(initials.toUpperCase()) + '</div>';
@@ -1367,6 +1368,7 @@ document.addEventListener('keydown', function(e) {
 function setNavAvatar(firstName, headshotData) {
   var btn = document.querySelector('.nav-profile');
   if (!btn) return;
+  headshotData = SafeUI.headshot(headshotData);
   if (headshotData) {
     btn.textContent = '';
     var img = document.createElement('img');
@@ -1450,8 +1452,9 @@ function renderDirectory() {
     var contactDiv = (sectorTag || retreatTags)
       ? '<div class="d-contact d-contact--sep">' + contact + '</div>'
       : '<div class="d-contact">' + contact + '</div>';
-    var avatarContent = m.headshotData
-      ? '<img src="data:image/jpeg;base64,' + SafeUI.headshot(m.headshotData) + '" alt="">'
+    var headshot = SafeUI.headshot(m.headshotData);
+    var avatarContent = headshot
+      ? '<img src="data:image/jpeg;base64,' + headshot + '" alt="">'
       : escDir(dirInitial(m));
     return '<details class="d-card"><summary><div class="d-avatar">' + avatarContent + '</div><h4>' +
       escDir(m.firstName + ' ' + m.lastName) + '</h4>' + roleOrgLine + locationLine +

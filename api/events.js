@@ -1,4 +1,5 @@
 import { eventDates } from './_lib/dates.js';
+import { safeHeadshot } from './_lib/images.js';
 import { getSession } from '../lib/auth.js';
 import { select, insert, update } from './_lib/supabase.js';
 import { readCookie, verifyToken, createToken } from '../lib/session.js';
@@ -56,7 +57,7 @@ export default async function handler(req, res) {
 
       const headshotMap = {};
       memberRows.forEach(r => {
-        if (r.auth_email && r.headshot_data) headshotMap[r.auth_email] = r.headshot_data;
+        if (r.auth_email) headshotMap[r.auth_email] = safeHeadshot(r.headshot_data);
       });
 
       const attendeesByEvent = {};

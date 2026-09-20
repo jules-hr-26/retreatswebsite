@@ -6,7 +6,11 @@ var SafeUI = {
     });
   },
   headshot: function(value) {
-    return typeof value === 'string' && value.length <= 180000 && /^[A-Za-z0-9+/]+={0,2}$/.test(value) ? value : '';
+    if (typeof value !== 'string' || value.length > 180000 || value.length % 4 !== 0 || !/^[A-Za-z0-9+/]+={0,2}$/.test(value)) return '';
+    try {
+      var bytes = atob(value);
+      return btoa(bytes) === value && bytes.startsWith('\xff\xd8\xff') && bytes.endsWith('\xff\xd9') ? value : '';
+    } catch (_) { return ''; }
   },
   httpUrl: function(value) {
     try { var url = new URL(value); return /^https?:$/.test(url.protocol) ? url.href : ''; }

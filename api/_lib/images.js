@@ -20,3 +20,8 @@ export function validHeadshot(value) {
   }
   return false;
 }
+
+// Apply the same boundary to older stored values as to new uploads.
+export function safeHeadshot(value) {
+  return typeof value === 'string' && validHeadshot(value) ? value : '';
+}

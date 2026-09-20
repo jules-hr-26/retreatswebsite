@@ -1,5 +1,5 @@
 import { getSession } from '../lib/auth.js';
-import { validHeadshot } from './_lib/images.js';
+import { validHeadshot, safeHeadshot } from './_lib/images.js';
 import { readCookie, verifyToken } from '../lib/session.js';
 import { select, upsert } from './_lib/supabase.js';
 
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
 
   try {
     const existing = await select('members', { auth_email: session.email });
-    const existingHeadshot = existing.length ? (existing[0].headshot_data || '') : '';
+    const existingHeadshot = safeHeadshot(existing[0]?.headshot_data);
     const finalHeadshot = headshotData || existingHeadshot;
 
     await upsert('members', {
