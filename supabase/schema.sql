@@ -4,6 +4,10 @@
 -- Existing production databases: apply only migrations not already recorded.
 -- ================================================================
 
+-- Keep fresh-install tables private throughout setup, including on projects
+-- whose default privileges grant access to API roles.
+BEGIN;
+
 -- ── Alumni allowlist ───────────────────────────────────────────
 -- Controls who can register. Mirrors "Alumni Email Allowlist" sheet.
 CREATE TABLE alumni_allowlist (
@@ -64,8 +68,7 @@ CREATE TABLE event_attendees (
   UNIQUE (event_name, member_email)
 );
 
--- ── Proposed community events (email → Julia) ─────────────────
--- Currently only sent by email, never stored. Now persisted.
+-- ── Proposed community events ─────────────────────────────────
 CREATE TABLE proposed_events (
   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   title       text NOT NULL,
@@ -79,8 +82,7 @@ CREATE TABLE proposed_events (
   created_at  timestamptz NOT NULL DEFAULT now()
 );
 
--- ── Community offerings (email → Julia) ───────────────────────
--- Currently only sent by email, never stored. Now persisted.
+-- ── Community offerings ───────────────────────────────────────
 CREATE TABLE offerings (
   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   name        text NOT NULL,
@@ -133,7 +135,6 @@ CREATE TABLE forum_memberships (
   forum_name   text NOT NULL,
   member_email text NOT NULL,
   joined_at    timestamptz NOT NULL DEFAULT now(),
-  created_at   timestamptz NOT NULL DEFAULT now(),
   notify       text NOT NULL DEFAULT 'yes',
   UNIQUE (forum_name, member_email)
 );
@@ -175,21 +176,8 @@ CREATE TABLE site_settings (
 -- writes go through the Vercel API layer, never direct from browser.
 -- ================================================================
 
-ALTER TABLE alumni_allowlist  ENABLE ROW LEVEL SECURITY;
-ALTER TABLE members           ENABLE ROW LEVEL SECURITY;
-ALTER TABLE events            ENABLE ROW LEVEL SECURITY;
-ALTER TABLE event_attendees   ENABLE ROW LEVEL SECURITY;
-ALTER TABLE proposed_events   ENABLE ROW LEVEL SECURITY;
-ALTER TABLE offerings         ENABLE ROW LEVEL SECURITY;
-ALTER TABLE forum_posts       ENABLE ROW LEVEL SECURITY;
-ALTER TABLE forum_replies     ENABLE ROW LEVEL SECURITY;
-ALTER TABLE forum_memberships ENABLE ROW LEVEL SECURITY;
-ALTER TABLE admins            ENABLE ROW LEVEL SECURITY;
-ALTER TABLE audit_log         ENABLE ROW LEVEL SECURITY;
-ALTER TABLE site_settings     ENABLE ROW LEVEL SECURITY;
-
--- No public policies = anon key sees nothing.
--- Service role key bypasses RLS entirely (used only in Vercel server functions).
+-- No public policies: API roles get no rows even if a table grant is restored.
+-- Service-role requests still require authorization in the Vercel API layer.
 
 ALTER TABLE public.alumni_allowlist ENABLE ROW LEVEL SECURITY;
 REVOKE ALL ON public.alumni_allowlist FROM anon, authenticated;
@@ -227,3 +215,6 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON public.audit_log TO service_role;
 ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
 REVOKE ALL ON public.site_settings FROM anon, authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.site_settings TO service_role;
+
+REVOKE ALL ON ALL TABLES IN SCHEMA public FROM PUBLIC;
+COMMIT;
