@@ -1,18 +1,35 @@
 import { eventDates } from './_lib/dates.js';
 import { getSession, revokeMemberSessions } from '../lib/auth.js';
 import { select, insert, upsert, update, remove } from './_lib/supabase.js';
-import { readCookie, verifyToken } from '../lib/session.js';
+import { requiredAdminRole } from './_lib/admin-permissions.js';
 
 async function getAdmin(req) {
   const session = await getSession(req.headers.cookie);
   if (!session?.email) return null;
   const rows = await select('admins', { email: session.email }).catch(() => []);
-  if (!rows.length) return null;
+  if (!rows.length || !['admin', 'super_admin'].includes(rows[0].role)) return null;
   return { email: session.email, firstName: session.firstName, lastName: session.lastName, role: rows[0].role };
 }
 
 function esc(s) {
   return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+async function canChangeAllowedEmail(emails, res) {
+  try {
+    for (const email of new Set(emails)) {
+      const rows = await select('admins', { email });
+      if (rows.length) {
+        res.status(409).json({ error: 'admin_block', message: 'This person is an admin — remove their admin access in the Admins tab first.' });
+        return false;
+      }
+    }
+    return true;
+  } catch {
+    // A failed protection check must not authorize access removal.
+    res.status(503).json({ error: 'Could not verify admin protection. Please retry.' });
+    return false;
+  }
 }
 
 export default async function handler(req, res) {
@@ -21,9 +38,18 @@ export default async function handler(req, res) {
   const admin = await getAdmin(req);
   if (!admin) return res.status(401).json({ error: 'admin access required' });
 
+  if (!['GET', 'POST'].includes(req.method)) return res.status(405).json({ error: 'method not allowed' });
+  const body = req.body || {};
+  const action = req.method === 'GET' ? req.query?.action : body.action;
+  const requiredRole = requiredAdminRole(req.method, action);
+  if (!requiredRole) return res.status(400).json({ error: 'unknown action' });
+  if (requiredRole === 'super_admin' && admin.role !== 'super_admin') {
+    return res.status(403).json({ error: 'super_admin required' });
+  }
+
   // ── GET ──────────────────────────────────────────────────────────
   if (req.method === 'GET') {
-    const { action, search } = req.query || {};
+    const { search } = req.query || {};
 
     if (action === 'me') {
       return res.status(200).json({ email: admin.email, firstName: admin.firstName, lastName: admin.lastName, role: admin.role });
@@ -91,7 +117,6 @@ export default async function handler(req, res) {
     }
 
     if (action === 'export-allowlist') {
-      if (admin.role !== 'super_admin') return res.status(403).json({ error: 'super_admin required' });
       const rows = await select('alumni_allowlist', {}, { order: 'first_name.asc' });
       const header = 'First Name,Last Name,Email';
       const lines = rows.map(r => [r.first_name, r.last_name, r.email].map(v => `"${String(v || '').replace(/"/g, '""')}"`).join(','));
@@ -99,7 +124,6 @@ export default async function handler(req, res) {
     }
 
     if (action === 'admins') {
-      if (admin.role !== 'super_admin') return res.status(403).json({ error: 'super_admin required' });
       const rows = await select('admins', {}, { order: 'created_at.asc' }).catch(() => []);
       return res.status(200).json({ admins: rows });
     }
@@ -108,13 +132,6 @@ export default async function handler(req, res) {
   }
 
   // ── POST ─────────────────────────────────────────────────────────
-  if (req.method !== 'POST') return res.status(405).json({ error: 'method not allowed' });
-
-  const body = req.body || {};
-  const { action } = body;
-  if (['export-member', 'delete-member', 'gdpr-erase-member'].includes(action) && admin.role !== 'super_admin') {
-    return res.status(403).json({ error: 'super_admin required' });
-  }
 
   // ── Allowlist ────────────────────────────────────────────────────
   if (action === 'add-allowlist') {
@@ -151,6 +168,7 @@ export default async function handler(req, res) {
     if (!existing.length) return res.status(404).json({ error: 'allowlist entry not found' });
     const nextEmail = email.trim().toLowerCase();
     if (existing[0].email !== nextEmail) {
+      if (!await canChangeAllowedEmail([existing[0].email, nextEmail], res)) return;
       // An old address must not regain its sessions if it is added back later.
       await revokeMemberSessions(existing[0].email);
     }
@@ -166,8 +184,7 @@ export default async function handler(req, res) {
     const { email } = body;
     if (!email) return res.status(400).json({ error: 'email required' });
     const e = email.trim().toLowerCase();
-    const adminRows = await select('admins', { email: e }).catch(() => []);
-    if (adminRows.length) return res.status(409).json({ error: 'admin_block', message: 'This person is an admin — remove their admin access in the Admins tab first.' });
+    if (!await canChangeAllowedEmail([e], res)) return;
     await revokeMemberSessions(e);
     await remove('alumni_allowlist', { email: e });
     return res.status(200).json({ ok: true });
@@ -317,7 +334,6 @@ export default async function handler(req, res) {
 
   // ── Admin management (super_admin only) ──────────────────────────
   if (action === 'add-admin') {
-    if (admin.role !== 'super_admin') return res.status(403).json({ error: 'super_admin required' });
     const { email, name, role } = body;
     if (!email) return res.status(400).json({ error: 'email required' });
     const cleanEmail = email.trim().toLowerCase();
@@ -367,7 +383,6 @@ export default async function handler(req, res) {
   }
 
   if (action === 'update-admin') {
-    if (admin.role !== 'super_admin') return res.status(403).json({ error: 'super_admin required' });
     const { email, name, role } = body;
     if (!email) return res.status(400).json({ error: 'email required' });
     await update('admins', { email: email.trim().toLowerCase() }, {
@@ -378,7 +393,6 @@ export default async function handler(req, res) {
   }
 
   if (action === 'remove-admin') {
-    if (admin.role !== 'super_admin') return res.status(403).json({ error: 'super_admin required' });
     const { email } = body;
     if (!email) return res.status(400).json({ error: 'email required' });
     if (email.trim().toLowerCase() === admin.email) {
